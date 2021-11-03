@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 
@@ -13,7 +14,13 @@ class _AddProductViewState extends State<AddProductView> {
   Widget build(BuildContext context) {
     print("AddProductView build is called.");
     return Scaffold(
-
+      appBar: AppBar(
+        title: const Text(
+            "Add Product"
+        ),
+        centerTitle: true,
+      ),
+      bottomNavigationBar: NavigationBar(index: 3,),
     );
   }
 }
