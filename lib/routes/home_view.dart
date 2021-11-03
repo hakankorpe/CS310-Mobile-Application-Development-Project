@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 
-
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -10,7 +9,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
   @override
   Widget build(BuildContext context) {
     print("HomeView build is called.");
@@ -33,14 +31,13 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-
-            ],
+            children: [],
           ),
         ),
       ),
-      bottomNavigationBar: const NavigationBar(),
+      bottomNavigationBar: NavigationBar(
+        index: 0,
+      ),
     );
   }
 }
-

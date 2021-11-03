@@ -2,7 +2,6 @@ import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -50,22 +49,22 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                       const Text(
-                          "lebrbjames",
+                        "lebrbjames",
                         style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/editProfile');
-                          },
-                          child: const Text(
-                            "Edit Profile",
-                            style: TextStyle(
-                              color: Colors.green,
-                            ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/editProfile');
+                        },
+                        child: const Text(
+                          "Edit Profile",
+                          style: TextStyle(
+                            color: Colors.green,
                           ),
+                        ),
                         style: OutlinedButton.styleFrom(
                           //backgroundColor: Colors.white,
                           side: const BorderSide(
@@ -77,27 +76,37 @@ class _ProfileViewState extends State<ProfileView> {
                       )
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: const [
-                          Text(
-                            "Rating:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          //TODO: find star rating bar
-                          Icon(Icons.star, color: Colors.orange,),
-                          Icon(Icons.star, color: Colors.orange,),
-                          Icon(Icons.star, color: Colors.orange,),
-                          Icon(Icons.star, color: Colors.orange,),
-                          Icon(Icons.star, color: Colors.orange,),
-                        ],
-                      )
-                    ]
-                  ),
+                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    Row(
+                      children: const [
+                        Text(
+                          "Rating:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        //TODO: find star rating bar
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                      ],
+                    )
+                  ]),
                 ],
               ),
               const Divider(
@@ -109,7 +118,10 @@ class _ProfileViewState extends State<ProfileView> {
                 children: [
                   OutlinedButton.icon(
                     onPressed: () {},
-                    icon: const Icon(Icons.shopping_bag, color: Colors.black,),
+                    icon: const Icon(
+                      Icons.shopping_bag,
+                      color: Colors.black,
+                    ),
                     label: Row(
                       children: const [
                         SizedBox(width: 25),
@@ -135,7 +147,10 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   OutlinedButton.icon(
                     onPressed: () {},
-                    icon: const Icon(Icons.bookmark, color: Colors.black,),
+                    icon: const Icon(
+                      Icons.bookmark,
+                      color: Colors.black,
+                    ),
                     label: Row(
                       children: const [
                         SizedBox(width: 25),
@@ -192,15 +207,15 @@ class _ProfileViewState extends State<ProfileView> {
                 onPressed: () {},
                 icon: const Icon(Icons.attach_money, color: Colors.black),
                 label: Row(
-                    children: const [
-                      SizedBox(width: 25),
-                      Text(
-                        "My Products",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
+                  children: const [
+                    SizedBox(width: 25),
+                    Text(
+                      "My Products",
+                      style: TextStyle(
+                        color: Colors.black,
                       ),
-                    ],
+                    ),
+                  ],
                 ),
                 style: OutlinedButton.styleFrom(
                   //backgroundColor: Colors.white,
@@ -218,10 +233,10 @@ class _ProfileViewState extends State<ProfileView> {
               OutlinedButton(
                 onPressed: () {},
                 child: const Text(
-                      "Log Out",
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                      ),
+                  "Log Out",
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                  ),
                 ),
                 style: OutlinedButton.styleFrom(
                   //backgroundColor: Colors.white,
@@ -236,7 +251,9 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       ),
-      bottomNavigationBar: const NavigationBar(),
+      bottomNavigationBar: NavigationBar(
+        index: 3,
+      ),
     );
   }
 }
