@@ -117,7 +117,9 @@ class _ProfileViewState extends State<ProfileView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/orders');
+                    },
                     icon: const Icon(
                       Icons.shopping_bag,
                       color: Colors.black,
@@ -146,7 +148,9 @@ class _ProfileViewState extends State<ProfileView> {
                     thickness: 1.5,
                   ),
                   OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/bookmarks');
+                    },
                     icon: const Icon(
                       Icons.bookmark,
                       color: Colors.black,
@@ -175,7 +179,9 @@ class _ProfileViewState extends State<ProfileView> {
                     thickness: 1.0,
                   ),
                   OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/comments');
+                    },
                     icon: const Icon(Icons.comment, color: Colors.black),
                     label: Row(
                       children: const [
@@ -204,7 +210,9 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               const SizedBox(height: 90),
               OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/onSale');
+                },
                 icon: const Icon(Icons.attach_money, color: Colors.black),
                 label: Row(
                   children: const [

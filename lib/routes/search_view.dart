@@ -13,19 +13,20 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     print("SearchView build is called.");
     return Scaffold(
-        bottomNavigationBar: NavigationBar(
-          index: 1,
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: const [
+            Spacer(),
+            Text("Search"),
+            Spacer(),
+            Icon(Icons.shopping_cart),
+          ],
         ),
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Spacer(),
-              Text("Welcome"),
-              Spacer(),
-              Icon(Icons.shopping_cart),
-            ],
-          ),
-        ));
+      ),
+      bottomNavigationBar: NavigationBar(
+        index: 1,
+      ),
+    );
   }
 }

@@ -13,6 +13,17 @@ class _CategoryMainViewState extends State<CategoryMainView> {
   Widget build(BuildContext context) {
     print("CategoryMainView build is called.");
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: const [
+            Spacer(),
+            Text("Categories"),
+            Spacer(),
+            Icon(Icons.shopping_cart),
+          ],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         index: 2,
       ),
