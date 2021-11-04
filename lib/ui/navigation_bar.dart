@@ -17,7 +17,7 @@ class _NavigationBarState extends State<NavigationBar> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      currentIndex: widget.index,
+      currentIndex: widget.index % 4,
       selectedItemColor: Colors.black,
       selectedFontSize: 13,
       selectedIconTheme: const IconThemeData(

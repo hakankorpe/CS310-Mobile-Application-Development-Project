@@ -36,7 +36,7 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/onSale");
+                      Navigator.popAndPushNamed(context, "/onSale");
                     },
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -60,7 +60,7 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/sold");
+                      Navigator.popAndPushNamed(context, "/sold");
                     },
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -100,7 +100,7 @@ class _CommentApproveViewState extends State<CommentApproveView> {
           ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 3,),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

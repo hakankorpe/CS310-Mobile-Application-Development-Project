@@ -58,7 +58,7 @@ class _OnSaleViewState extends State<OnSaleView> {
                           ),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, "/sold");
+                        Navigator.popAndPushNamed(context, "/sold");
                       },
                       style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -81,7 +81,7 @@ class _OnSaleViewState extends State<OnSaleView> {
                         ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/commentApprove");
+                      Navigator.popAndPushNamed(context, "/commentApprove");
                     },
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -108,7 +108,7 @@ class _OnSaleViewState extends State<OnSaleView> {
             size: 30,
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 3,),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }
