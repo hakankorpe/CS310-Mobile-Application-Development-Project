@@ -30,7 +30,7 @@ class _OrdersViewState extends State<OrdersView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 3,),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

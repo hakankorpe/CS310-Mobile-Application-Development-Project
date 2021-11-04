@@ -20,7 +20,7 @@ class _BookmarksViewState extends State<BookmarksView> {
         ),
         centerTitle: true,
       ),
-      bottomNavigationBar: NavigationBar(index: 3,),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

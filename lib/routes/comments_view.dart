@@ -20,7 +20,7 @@ class _CommentsViewState extends State<CommentsView> {
         ),
         centerTitle: true,
       ),
-      bottomNavigationBar: NavigationBar(index: 3,),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

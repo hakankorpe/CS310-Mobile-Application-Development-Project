@@ -239,7 +239,9 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               const SizedBox(height: 90),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.popAndPushNamed(context, "/login");
+                },
                 child: const Text(
                   "Log Out",
                   style: TextStyle(
@@ -259,9 +261,7 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        index: 3,
-      ),
+      bottomNavigationBar: NavigationBar(index: 3,),
     );
   }
 }
