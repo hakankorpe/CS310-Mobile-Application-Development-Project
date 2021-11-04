@@ -17,11 +17,16 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: const [
-            Spacer(),
+          children: [
+            const Spacer(),
             Text("Welcome"),
-            Spacer(),
-            Icon(Icons.shopping_cart),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "/cart");
+              },
+              icon: Icon(Icons.shopping_cart),
+            ),
           ],
         ),
       ),
