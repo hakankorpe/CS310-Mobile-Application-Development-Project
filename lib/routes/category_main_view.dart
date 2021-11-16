@@ -14,15 +14,15 @@ class _CategoryMainViewState extends State<CategoryMainView> {
     print("CategoryMainView build is called.");
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: const [
-            Spacer(),
-            Text("Categories"),
-            Spacer(),
-            Icon(Icons.shopping_cart),
-          ],
-        ),
+        title: const Text("Categories"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/cart");
+            },
+            icon: const Icon(Icons.shopping_cart),
+          ),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         index: 2,

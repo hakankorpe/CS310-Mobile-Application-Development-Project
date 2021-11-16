@@ -89,9 +89,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30,),
               Form(
                 key: _formKey,
                 child: Column(
@@ -130,18 +128,52 @@ class _EditProfileViewState extends State<EditProfileView> {
                       children: [
                         Expanded(
                           flex: 1,
-                          child: TextFormField(),
+                          child: TextFormField(
+                            obscureText: true,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.text,
+                            decoration: const InputDecoration(
+                              hintText: "New Password",
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                              ),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10,),
                     Row(
                       children: [
                         Expanded(
                           flex: 1,
-                          child: TextFormField(),
+                          child: TextFormField(
+                            obscureText: true,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.text,
+                            decoration: const InputDecoration(
+                              hintText: "New Password Again",
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                              ),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -166,9 +198,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        index: 3,
-      ),
+      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

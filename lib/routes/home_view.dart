@@ -14,21 +14,27 @@ class _HomeViewState extends State<HomeView> {
     print("HomeView build is called.");
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Spacer(),
-            const Text("Welcome"),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "/cart");
-              },
-              icon: const Icon(Icons.shopping_cart),
-            ),
-          ],
+        title: const Text(
+            "Welcome",
+          style: TextStyle(
+            color: Colors.black
+          ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/cart");
+            },
+            icon: const Icon(
+                Icons.shopping_cart,
+              color: Colors.black,
+            ),
+          ),
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(5),
@@ -56,7 +62,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -120,7 +126,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -183,7 +189,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -269,7 +275,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -333,7 +339,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -396,7 +402,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -482,7 +488,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -546,7 +552,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -609,7 +615,7 @@ class _HomeViewState extends State<HomeView> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
