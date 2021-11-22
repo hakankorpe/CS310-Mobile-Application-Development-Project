@@ -29,6 +29,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: "^1.10.0"
+  firebase_analytics: ^8.3.4
+  firebase_auth: ^3.2.0
+  #google_sign_in: any
+  #flutter_facebook_auth: any
+
   flutter_signin_button: ^2.0.0
 
 

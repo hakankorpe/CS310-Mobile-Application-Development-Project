@@ -1,9 +1,17 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  const ProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _ProfileViewState createState() => _ProfileViewState();
@@ -14,17 +22,24 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     print("ProfileView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Profile"),
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
+            "Profile",
+          style: kAppBarTitleTextStyle,
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+        padding: const EdgeInsets.fromLTRB(0, Dimen.parentMargin, 0, Dimen.parentMargin),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              //const Divider(thickness: Dimen.divider_1_5,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -109,10 +124,8 @@ class _ProfileViewState extends State<ProfileView> {
                   ]),
                 ],
               ),
-              const Divider(
-                thickness: 2.0,
-              ),
-              const SizedBox(height: 30),
+              const Divider(thickness: Dimen.divider_1_5,),
+              const SizedBox(height: Dimen.sizedBox_30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -126,7 +139,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     label: Row(
                       children: const [
-                        SizedBox(width: 25),
+                        SizedBox(width: Dimen.sizedBox_30),
                         Text(
                           "My Orders",
                           style: TextStyle(
@@ -144,9 +157,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                  const Divider(
-                    thickness: 1.5,
-                  ),
+                  const Divider(thickness: Dimen.divider_1_5,),
                   OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pushNamed(context, '/bookmarks');
@@ -157,7 +168,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     label: Row(
                       children: const [
-                        SizedBox(width: 25),
+                        SizedBox(width: Dimen.sizedBox_30),
                         Text(
                           "My Bookmarks",
                           style: TextStyle(
@@ -175,9 +186,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                  const Divider(
-                    thickness: 1.0,
-                  ),
+                  const Divider(thickness: Dimen.divider_1_5,),
                   OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pushNamed(context, '/comments');
@@ -185,7 +194,7 @@ class _ProfileViewState extends State<ProfileView> {
                     icon: const Icon(Icons.comment, color: Colors.black),
                     label: Row(
                       children: const [
-                        SizedBox(width: 25),
+                        SizedBox(width: Dimen.sizedBox_30),
                         Text(
                           "My Comments",
                           style: TextStyle(
@@ -203,12 +212,10 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                  const Divider(
-                    thickness: 1.5,
-                  ),
+                  const Divider(thickness: Dimen.divider_1_5,),
                 ],
               ),
-              const SizedBox(height: 90),
+              const SizedBox(height: Dimen.sizedBox_90),
               OutlinedButton.icon(
                 onPressed: () {
                   Navigator.pushNamed(context, '/onSale');
@@ -216,7 +223,7 @@ class _ProfileViewState extends State<ProfileView> {
                 icon: const Icon(Icons.attach_money, color: Colors.black),
                 label: Row(
                   children: const [
-                    SizedBox(width: 25),
+                    SizedBox(width: Dimen.sizedBox_30),
                     Text(
                       "My Products",
                       style: TextStyle(
@@ -234,10 +241,8 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 ),
               ),
-              const Divider(
-                thickness: 1.5,
-              ),
-              const SizedBox(height: 90),
+              const Divider(thickness: Dimen.divider_1_5,),
+              const SizedBox(height: Dimen.sizedBox_90),
               OutlinedButton(
                 onPressed: () {
                   Navigator.popAndPushNamed(context, "/login");

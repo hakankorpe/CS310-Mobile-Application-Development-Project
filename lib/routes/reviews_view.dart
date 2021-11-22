@@ -1,9 +1,15 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 
 class ReviewsView extends StatefulWidget {
-  const ReviewsView({Key? key}) : super(key: key);
+  const ReviewsView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _ReviewsViewState createState() => _ReviewsViewState();
@@ -14,6 +20,7 @@ class _ReviewsViewState extends State<ReviewsView> {
   Widget build(BuildContext context) {
     print("ReviewsView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text(
           "Product Page",

@@ -1,9 +1,17 @@
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
 class CheckoutView extends StatefulWidget {
-  const CheckoutView({Key? key}) : super(key: key);
+  const CheckoutView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _CheckoutViewState createState() => _CheckoutViewState();
@@ -17,14 +25,19 @@ class _CheckoutViewState extends State<CheckoutView> {
   Widget build(BuildContext context) {
     print("CheckoutView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
           "Checkout",
+          style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
+        iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,

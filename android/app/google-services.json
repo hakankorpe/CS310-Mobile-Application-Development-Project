@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "15652284638",
+    "project_id": "cs310-footwear",
+    "storage_bucket": "cs310-footwear.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15652284638:android:1eeda1411feb23b672ba4f",
+        "android_client_info": {
+          "package_name": "com.example.cs310_footwear_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15652284638-0fe7p27rkjupgan3osijje7fr8h2stsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_4bOnWLoNpMeZbk-grs3LqqdZZUDImT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15652284638-0fe7p27rkjupgan3osijje7fr8h2stsk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

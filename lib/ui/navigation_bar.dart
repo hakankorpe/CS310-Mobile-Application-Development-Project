@@ -1,4 +1,7 @@
 import 'package:cs310_footwear_project/routes/profile_view.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatefulWidget {
@@ -30,6 +33,8 @@ class _NavigationBarState extends State<NavigationBar> {
         color: Colors.grey,
         size: 24,
       ),
+      backgroundColor: AppColors.navigationBarBackgroundColor,
+      elevation: Dimen.navigationBarElevation,
       showSelectedLabels: true,
       showUnselectedLabels: true,
       items: const [

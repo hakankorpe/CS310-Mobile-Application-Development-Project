@@ -6,6 +6,10 @@ class AppColors {
   static const Color appBarBackgroundColor = Colors.white;
   static const Color appBarElementColor = Colors.black;
 
+  static const Color navigationBarBackgroundColor = Colors.white;
+
+  static const Color floatingActionButtonColor = Colors.black;
+
   static const Color primary = Colors.lightBlue;
   static const Color secondary = const Color(0xFF80D8FF);
 

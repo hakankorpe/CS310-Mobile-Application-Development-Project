@@ -1,26 +1,67 @@
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
+
+  String _message = "";
+
+  void setMessage(String msg) {
+    setState(() {
+      _message = msg;
+    });
+  }
+
+  Future<void> _setLogEvent() async {
+    await widget.analytics.logEvent(
+        name: 'CS310_Test',
+        parameters: <String, dynamic> {
+          "string": "myString",
+          "int" : 12,
+          "long" : 123456789,
+          "bool" : true,
+        }
+    );
+    setMessage("setLogEvent succeeded.");
+  }
+
+  Future<void> _setCurrentScreen() async {
+    await widget.analytics.setCurrentScreen(
+        screenName: "Home View",
+        screenClassOverride: "HomeView",
+    );
+    setMessage("setCurrentScreen succeeded.");
+  }
+
+  Future<void> _setUserId() async {
+    await widget.analytics.setUserId("sayanarman");
+    setMessage("setUserId succeeded.");
+  }
+
   @override
   Widget build(BuildContext context) {
     print("HomeView build is called.");
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
-            "Welcome",
-          style: TextStyle(
-            color: Colors.black
-          ),
+        title: Text(
+            "Welcome to FootWear",
+          style: kAppBarTitleTextStyle,
         ),
         actions: [
           IconButton(
@@ -29,15 +70,16 @@ class _HomeViewState extends State<HomeView> {
             },
             icon: const Icon(
                 Icons.shopping_cart,
-              color: Colors.black,
+              color: AppColors.appBarElementColor,
             ),
           ),
         ],
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(Dimen.regularMargin),
         child: Column(
             //mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.end,
@@ -53,7 +95,7 @@ class _HomeViewState extends State<HomeView> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(height: Dimen.sizedBox_5,),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -121,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 15,),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -266,7 +308,7 @@ class _HomeViewState extends State<HomeView> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(height: Dimen.sizedBox_5,),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -334,7 +376,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 15,),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -479,7 +521,7 @@ class _HomeViewState extends State<HomeView> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 5,),
+                    const SizedBox(height: Dimen.sizedBox_5,),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -547,7 +589,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 15,),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),

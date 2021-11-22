@@ -1,9 +1,17 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 
 class SoldView extends StatefulWidget {
-  const SoldView({Key? key}) : super(key: key);
+  const SoldView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _SoldViewState createState() => _SoldViewState();
@@ -14,14 +22,19 @@ class _SoldViewState extends State<SoldView> {
   Widget build(BuildContext context) {
     print("SoldView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
-            "My Products"
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
+            "My Products",
+          style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
+        iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        padding: Dimen.regularPadding,
         child: Column(
           children: [
             Row(

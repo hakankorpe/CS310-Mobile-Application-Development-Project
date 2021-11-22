@@ -1,9 +1,15 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 
 class SizeChartView extends StatefulWidget {
-  const SizeChartView({Key? key}) : super(key: key);
+  const SizeChartView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _SizeChartViewState createState() => _SizeChartViewState();
@@ -14,6 +20,7 @@ class _SizeChartViewState extends State<SizeChartView> {
   Widget build(BuildContext context) {
     print("SizeChartView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text(
           "Product Page",

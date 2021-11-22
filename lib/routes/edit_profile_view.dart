@@ -1,8 +1,16 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({Key? key}) : super(key: key);
+  const EditProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
 
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
@@ -18,9 +26,16 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     print("EditProfileView build is called.");
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Edit Profile"),
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
+            "Edit Profile",
+          style: kAppBarTitleTextStyle,
+        ),
         centerTitle: true,
+        iconTheme: kAppBarIconStyle,
       ),
       body: SingleChildScrollView(
         child: Padding(
