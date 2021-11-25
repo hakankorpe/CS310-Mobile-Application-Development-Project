@@ -1,5 +1,6 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -29,14 +30,17 @@ class _AddProductViewState extends State<AddProductView> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
-            "Add Product"
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
+            "Add Product",
+          style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
         iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -83,10 +87,10 @@ class _AddProductViewState extends State<AddProductView> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 30,),
-                const Divider(thickness: 1.5,),
+                const SizedBox(height: Dimen.sizedBox_30,),
+                const Divider(thickness: Dimen.divider_1_5,),
                 const Text("Product Details"),
-                const Divider(thickness: 1.5,),
+                const Divider(thickness: Dimen.divider_1_5,),
                 Row(
                   children: [
                     Expanded(

@@ -1,5 +1,7 @@
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
+import 'package:cs310_footwear_project/utils/dimension.dart';
+import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +24,17 @@ class _SizeChartViewState extends State<SizeChartView> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        backgroundColor: AppColors.appBarBackgroundColor,
+        elevation: Dimen.appBarElevation,
+        title: Text(
           "Product Page",
+          style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
+        iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,

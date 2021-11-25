@@ -18,6 +18,7 @@ import 'package:cs310_footwear_project/routes/reviews_view.dart';
 import 'package:cs310_footwear_project/routes/search_view.dart';
 import 'package:cs310_footwear_project/routes/sizechart_view.dart';
 import 'package:cs310_footwear_project/routes/sold_view.dart';
+import 'package:cs310_footwear_project/routes/walkthrough_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -81,8 +82,10 @@ class AppBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: <NavigatorObserver>[observer],
-      initialRoute: '/home',
+      initialRoute: '/walkthrough',
       routes: {
+        '/walkthrough' : (context) => WalkthroughView(analytics: analytics, observer: observer,),
+
         '/home': (context) => HomeView(analytics: analytics, observer: observer,),
 
         '/categoryMain': (context) => CategoryMainView(analytics: analytics, observer: observer,),
