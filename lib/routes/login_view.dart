@@ -4,6 +4,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -24,15 +25,15 @@ class _LoginViewState extends State<LoginView> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
-  late String email;
-  late String pass;
+  String email = "";
+  String pass = "";
 
 
   void _showButtonPressDialog(BuildContext context, String provider) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('$provider Button Pressed!'),
       backgroundColor: Colors.black26,
-      duration: Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
     ));
   }
 
@@ -137,6 +138,28 @@ class _LoginViewState extends State<LoginView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
+
+                          validator: (value) {
+                            if(value == null) {
+                              return 'E-mail field cannot be empty!';
+                            }
+                            else {
+                              String trimmedValue = value.trim();
+                              if(trimmedValue.isEmpty) {
+                                return 'E-mail field cannot be empty!';
+                              }
+                              if(!EmailValidator.validate(trimmedValue)) {
+                                return 'Please enter a valid email';
+                              }
+                            }
+                            return null;
+                          },
+
+                          onSaved: (value) {
+                            if(value != null) {
+                              email = value;
+                            }
+                          },
                         ),
                       ),
                     ],
@@ -161,6 +184,27 @@ class _LoginViewState extends State<LoginView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
+
+                          validator: (value) {
+                            if(value == null) {
+                              return 'Password field cannot be empty!';
+                            } else {
+                              String trimmedValue = value.trim();
+                              if(trimmedValue.isEmpty) {
+                                return 'Password field cannot be empty!';
+                              }
+                              if(trimmedValue.length < 8) {
+                                return 'Your password must contain at least 8 characters!';
+                              }
+                            }
+                            return null;
+                          },
+
+                          onSaved: (value) {
+                            if(value != null) {
+                              pass = value;
+                            }
+                          },
                         ),
                       ),
                     ],
@@ -171,7 +215,15 @@ class _LoginViewState extends State<LoginView> {
                       Expanded(
                         flex: 1,
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if(_formKey.currentState!.validate()) {
+                              print('Mail: '+email+"\nPass: "+pass);
+                              _formKey.currentState!.save();
+                              print("CurrentState Save is called.");
+                              print('Mail: '+email+"\nPass: "+pass);
+                              Navigator.popAndPushNamed(context, "/profile");
+                            }
+                          },
                           child: Text(
                             "Log In",
                             style: kButtonDarkTextStyle,
