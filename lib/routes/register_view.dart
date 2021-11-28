@@ -5,6 +5,8 @@ import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
 
 
@@ -55,8 +57,12 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  late String email;
-  late String pass;
+  String name = "";
+  String surname = "";
+  String username = "";
+  String email = "";
+  String pass = "";
+  String pass2 = "";
 
 
   @override
@@ -135,6 +141,7 @@ class _RegisterViewState extends State<RegisterView> {
                       flex: 1,
                       child: TextFormField(
                         keyboardType: TextInputType.text,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
                           hintText: "Name",
                           border: OutlineInputBorder(
@@ -145,6 +152,33 @@ class _RegisterViewState extends State<RegisterView> {
                             BorderRadius.all(Radius.circular(8.0)),
                           ),
                         ),
+
+                        validator: (value) {
+                          if(value == null) {
+                            return 'Name field cannot be empty!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if(trimmedValue.isEmpty) {
+                              return 'Name field cannot be empty!';
+                            }
+                            if(!isAlpha(value)) {
+                              return 'Please enter only letters for your name!';
+                            }
+                          }
+                          return null;
+                        },
+
+                        onSaved: (value) {
+                          if(value != null) {
+                            name = value;
+                          }
+                        },
+
+                        onChanged: (value) {
+                          if(value != null) {
+                            name = value;
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(width: Dimen.sizedBox_15,),
@@ -152,6 +186,7 @@ class _RegisterViewState extends State<RegisterView> {
                       flex: 1,
                       child: TextFormField(
                         keyboardType: TextInputType.text,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
                           hintText: "Surname",
                           border: OutlineInputBorder(
@@ -162,6 +197,33 @@ class _RegisterViewState extends State<RegisterView> {
                             BorderRadius.all(Radius.circular(8.0)),
                           ),
                         ),
+
+                        validator: (value) {
+                          if(value == null) {
+                            return 'Surname field cannot be empty!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if(trimmedValue.isEmpty) {
+                              return 'Surname field cannot be empty!';
+                            }
+                            if(!isAlpha(value)) {
+                              return 'Please enter only letters for your surname!';
+                            }
+                          }
+                          return null;
+                        },
+
+                        onSaved: (value) {
+                          if(value != null) {
+                            surname = value;
+                          }
+                        },
+
+                        onChanged: (value) {
+                          if(value != null) {
+                            surname = value;
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -173,6 +235,7 @@ class _RegisterViewState extends State<RegisterView> {
                         flex: 1,
                         child: TextFormField(
                           keyboardType: TextInputType.text,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(
                             hintText: "Username",
                             border: OutlineInputBorder(
@@ -183,6 +246,30 @@ class _RegisterViewState extends State<RegisterView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
+
+                          validator: (value) {
+                            if(value == null) {
+                              return 'Username field cannot be empty!';
+                            } else {
+                              String trimmedValue = value.trim();
+                              if(trimmedValue.isEmpty) {
+                                return 'Username field cannot be empty!';
+                              }
+                            }
+                            return null;
+                          },
+
+                          onSaved: (value) {
+                            if(value != null) {
+                              username = value;
+                            }
+                          },
+
+                          onChanged: (value) {
+                            if(value != null) {
+                              username = value;
+                            }
+                          },
                         ),
                     ),
                   ],
@@ -194,6 +281,7 @@ class _RegisterViewState extends State<RegisterView> {
                       flex: 1,
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
                             hintText: "E-Mail Address",
                             border: OutlineInputBorder(
@@ -204,6 +292,34 @@ class _RegisterViewState extends State<RegisterView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                         ),
+
+                        validator: (value) {
+                          if(value == null) {
+                            return 'E-mail field cannot be empty!';
+                          }
+                          else {
+                            String trimmedValue = value.trim();
+                            if(trimmedValue.isEmpty) {
+                              return 'E-mail field cannot be empty!';
+                            }
+                            if(!EmailValidator.validate(trimmedValue)) {
+                              return 'Please enter a valid email';
+                            }
+                          }
+                          return null;
+                        },
+
+                        onSaved: (value) {
+                          if(value != null) {
+                            email = value;
+                          }
+                        },
+
+                        onChanged: (value) {
+                          if(value != null) {
+                            email = value;
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -218,6 +334,7 @@ class _RegisterViewState extends State<RegisterView> {
                         keyboardType: TextInputType.text,
                         autocorrect: false,
                         enableSuggestions: false,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
                             hintText: "Password",
                             border: OutlineInputBorder(
@@ -228,6 +345,33 @@ class _RegisterViewState extends State<RegisterView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                         ),
+
+                        validator: (value) {
+                          if(value == null) {
+                            return 'Password field cannot be empty!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if(trimmedValue.isEmpty) {
+                              return 'Password field cannot be empty!';
+                            }
+                            if(trimmedValue.length < 8) {
+                              return 'Your password must contain at least 8 characters!';
+                            }
+                          }
+                          return null;
+                        },
+
+                        onSaved: (value) {
+                          if(value != null) {
+                            pass = value;
+                          }
+                        },
+
+                        onChanged: (value) {
+                          if(value != null) {
+                            pass = value;
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -242,6 +386,7 @@ class _RegisterViewState extends State<RegisterView> {
                         keyboardType: TextInputType.text,
                         autocorrect: false,
                         enableSuggestions: false,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
                             hintText: "Password again",
                             border: OutlineInputBorder(
@@ -252,6 +397,33 @@ class _RegisterViewState extends State<RegisterView> {
                               BorderRadius.all(Radius.circular(8.0)),
                             ),
                         ),
+
+                        validator: (value) {
+                          if(value == null) {
+                            return 'Password field cannot be empty!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if(trimmedValue.isEmpty) {
+                              return 'Password field cannot be empty!';
+                            }
+                            if(value != pass) {
+                              return 'Please enter the same password!';
+                            }
+                          }
+                          return null;
+                        },
+
+                        onSaved: (value) {
+                          if(value != null) {
+                            pass2 = value;
+                          }
+                        },
+
+                        onChanged: (value) {
+                          if(value != null) {
+                            pass2 = value;
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -264,9 +436,11 @@ class _RegisterViewState extends State<RegisterView> {
                       child: OutlinedButton(
                         onPressed: () {
                           if(_formKey.currentState!.validate()) {
+                            print('Mail: '+email+"\nPass: "+pass);
                             _formKey.currentState!.save();
-
-
+                            print("CurrentState Save is called.");
+                            print('Mail: '+email+"\nPass: "+pass);
+                            Navigator.popAndPushNamed(context, "/profile");
                           }
                         },
                         child: Text(
