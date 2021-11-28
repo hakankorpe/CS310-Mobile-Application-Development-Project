@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -21,6 +24,54 @@ class _EditProfileViewState extends State<EditProfileView> {
   String oldPass = "";
   String newPass = "";
   String newPassAgain = "";
+
+  XFile? _image;
+
+  _imgFromCamera() async {
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+              child: Wrap(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text("Photo Library"),
+                    onTap: () {
+                      _imgFromGallery();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.photo_camera),
+                    title: const Text("Camera"),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+          );
+        }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +107,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 60.0,
+                        child: _image != null
+                          ? Image.file(File(_image!.path))
+                          : Container(),
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {_showPicker(context);},
                         child: const Text(
                           "Change profile picture",
                           style: TextStyle(
