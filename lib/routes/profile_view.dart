@@ -243,11 +243,12 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               const Divider(thickness: Dimen.divider_1_5,),
               const SizedBox(height: Dimen.sizedBox_90),
-              OutlinedButton(
+              OutlinedButton.icon(
+                icon: const Icon(Icons.logout, color: Colors.redAccent),
                 onPressed: () {
                   Navigator.popAndPushNamed(context, "/login");
                 },
-                child: const Text(
+                label: const Text(
                   "Log Out",
                   style: TextStyle(
                     color: Colors.redAccent,

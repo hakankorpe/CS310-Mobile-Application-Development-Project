@@ -86,6 +86,20 @@ class _WalkthroughViewState extends State<WalkthroughView> {
                 image: NetworkImage(
                   imageURLs[currentPage],
                 ),
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                          : null,
+                      color: Colors.black,
+                    ),
+                  );
+                },
               ),
               Center(
                 child: Text(
@@ -95,18 +109,21 @@ class _WalkthroughViewState extends State<WalkthroughView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (currentPage == 0) const Spacer(),
-                  if (currentPage > 0) OutlinedButton(
+                  OutlinedButton(
                       onPressed: previousPage,
                       child: Text(
-                          "Skip",
+                          currentPage!=0 ? 'Back':'',
                         style: kSelectedViewButtonTextStyle,
                       ),
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: currentPage!=0 ? Colors.black:Colors.white,
+                        side: BorderSide(
+                          color: currentPage!=0 ? Colors.black:Colors.white,
+                          width: 0,
+                        ),
                       ),
                   ),
-                  if (currentPage > 0) const Spacer(),
+                  const Spacer(),
                   DotsIndicator(
                       dotsCount: totalPage,
                       position: currentPage.toDouble(),
@@ -119,7 +136,7 @@ class _WalkthroughViewState extends State<WalkthroughView> {
                   OutlinedButton(
                       onPressed: nextPage,
                       child: Text(
-                          "Next",
+                        currentPage!=totalPage-1 ? 'Next':'Start',
                         style: kSelectedViewButtonTextStyle,
                       ),
                       style: OutlinedButton.styleFrom(

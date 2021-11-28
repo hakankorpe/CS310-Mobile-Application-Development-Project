@@ -128,6 +128,7 @@ class _LoginViewState extends State<LoginView> {
                         flex: 1,
                         child: TextFormField(
                           keyboardType: TextInputType.emailAddress,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(
                             hintText: "E-Mail Address",
                             border: OutlineInputBorder(
@@ -174,6 +175,7 @@ class _LoginViewState extends State<LoginView> {
                           keyboardType: TextInputType.text,
                           autocorrect: false,
                           enableSuggestions: false,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(
                             hintText: "Password",
                             border: OutlineInputBorder(
