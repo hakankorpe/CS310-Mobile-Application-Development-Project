@@ -12,9 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
 
-
 class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const RegisterView(
+      {Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -24,7 +25,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
   AuthService auth = AuthService();
 
   final _formKey = GlobalKey<FormState>();
@@ -34,7 +34,6 @@ class _RegisterViewState extends State<RegisterView> {
   String email = "";
   String pass = "";
   String pass2 = "";
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,9 @@ class _RegisterViewState extends State<RegisterView> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: Dimen.sizedBox_30,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_30,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -110,7 +111,9 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -125,39 +128,42 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Name field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Name field cannot be empty!';
                               }
-                              if(!isAlpha(value)) {
+
+                              RegExp exp = RegExp(r"[a-zA-Z]+(\s[a-zA-Z]+)*");
+                              RegExpMatch? match = exp.firstMatch(value);
+
+                              if (value != match?[0].toString()) {
                                 return 'Please enter only letters for your name!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               name = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               name = value;
                             }
                           },
                         ),
                       ),
-                      const SizedBox(width: Dimen.sizedBox_15,),
+                      const SizedBox(
+                        width: Dimen.sizedBox_15,
+                      ),
                       Expanded(
                         flex: 1,
                         child: TextFormField(
@@ -170,33 +176,33 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Surname field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Surname field cannot be empty!';
                               }
-                              if(!isAlpha(value)) {
+                              RegExp exp = RegExp(r"[a-zA-Z]+(\s[a-zA-Z]+)*");
+                              RegExpMatch? match = exp.firstMatch(value);
+
+                              if (value != match?[0].toString()) {
                                 return 'Please enter only letters for your surname!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               surname = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               surname = value;
                             }
                           },
@@ -204,7 +210,9 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -219,30 +227,27 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Username field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Username field cannot be empty!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               username = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               username = value;
                             }
                           },
@@ -250,7 +255,9 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -265,34 +272,30 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'E-mail field cannot be empty!';
-                            }
-                            else {
+                            } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'E-mail field cannot be empty!';
                               }
-                              if(!EmailValidator.validate(trimmedValue)) {
+                              if (!EmailValidator.validate(trimmedValue)) {
                                 return 'Please enter a valid email';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               email = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               email = value;
                             }
                           },
@@ -300,7 +303,9 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -318,33 +323,30 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Password field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Password field cannot be empty!';
                               }
-                              if(trimmedValue.length < 8) {
+                              if (trimmedValue.length < 8) {
                                 return 'Your password must contain at least 8 characters!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               pass = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               pass = value;
                             }
                           },
@@ -352,7 +354,9 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -370,33 +374,30 @@ class _RegisterViewState extends State<RegisterView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Password field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Password field cannot be empty!';
                               }
-                              if(value != pass) {
+                              if (value != pass) {
                                 return 'Please enter the same password!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               pass2 = value;
                             }
                           },
-
                           onChanged: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               pass2 = value;
                             }
                           },
@@ -404,26 +405,34 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
                         flex: 1,
                         child: OutlinedButton(
                           onPressed: () {
-                            if(_formKey.currentState!.validate()) {
-                              print('Mail: '+email+"\nPass: "+pass);
+                            if (_formKey.currentState!.validate()) {
+                              print('Mail: ' + email + "\nPass: " + pass);
                               _formKey.currentState!.save();
                               print("CurrentState Save is called.");
-                              print('Mail: '+email+"\nPass: "+pass);
+                              print('Mail: ' + email + "\nPass: " + pass);
 
-                              Future<dynamic> message = auth.signupWithMailAndPass(email, pass);
-                              print("Register View ${message.toString()}");
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(content: Text('Registering...')));
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                    const SnackBar(content: Text('This mail is already in use!')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Registering......')));
+
+                              auth
+                                  .signupWithMailAndPass(email, pass)
+                                  .then((value) {
+                                if (value is String) {
+                                  return ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                          SnackBar(content: Text("${value}")));
+                                }
+                              });
                             }
                           },
                           child: Text(
@@ -442,10 +451,11 @@ class _RegisterViewState extends State<RegisterView> {
             ),
           ),
         ),
-        bottomNavigationBar: NavigationBar(index: 3,),
+        bottomNavigationBar: NavigationBar(
+          index: 3,
+        ),
       );
-    }
-    else {
+    } else {
       return ProfileView(analytics: analytics, observer: observer);
     }
   }

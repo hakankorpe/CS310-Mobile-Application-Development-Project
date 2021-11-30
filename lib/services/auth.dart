@@ -24,9 +24,12 @@ class AuthService {
 
   Future signupWithMailAndPass(String mail, String pass) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: mail, password: pass);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: mail, password: pass);
       User user = result.user!;
       return _userFromFirebase(user);
+    } on FirebaseAuthException catch (e) {
+      return e.code.toString();
     } catch (e) {
       print(e.toString());
       String message = e.toString();
@@ -36,13 +39,12 @@ class AuthService {
 
   Future loginWithMailAndPass(String mail, String pass) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(email: mail, password: pass);
+      UserCredential result =
+          await _auth.signInWithEmailAndPassword(email: mail, password: pass);
       User user = result.user!;
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found') {
-        //signupWithMailAndPass(mail, pass);
-      }
+      return e.code.toString();
     } catch (e) {
       print(e.toString());
       return null;
@@ -63,7 +65,8 @@ class AuthService {
       await FirebaseAuth.instance.currentUser!.delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
-        print('The user must reauthenticate before this operation can be executed.');
+        print(
+            'The user must reauthenticate before this operation can be executed.');
       }
     }
   }

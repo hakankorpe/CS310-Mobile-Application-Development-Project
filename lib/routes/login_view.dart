@@ -12,9 +12,9 @@ import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const LoginView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -24,7 +24,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-
   final _formKey = GlobalKey<FormState>();
   String email = "";
   String pass = "";
@@ -37,7 +36,6 @@ class _LoginViewState extends State<LoginView> {
       _message = msg;
     });
   }
-
 
   void _showButtonPressDialog(BuildContext context, String provider) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -80,7 +78,9 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: Dimen.sizedBox_30,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_30,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -127,7 +127,9 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_50,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_50,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -142,28 +144,25 @@ class _LoginViewState extends State<LoginView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'E-mail field cannot be empty!';
-                            }
-                            else {
+                            } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'E-mail field cannot be empty!';
                               }
-                              if(!EmailValidator.validate(trimmedValue)) {
+                              if (!EmailValidator.validate(trimmedValue)) {
                                 return 'Please enter a valid email';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               email = value;
                             }
                           },
@@ -171,7 +170,9 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_20,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -189,27 +190,25 @@ class _LoginViewState extends State<LoginView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-
                           validator: (value) {
-                            if(value == null) {
+                            if (value == null) {
                               return 'Password field cannot be empty!';
                             } else {
                               String trimmedValue = value.trim();
-                              if(trimmedValue.isEmpty) {
+                              if (trimmedValue.isEmpty) {
                                 return 'Password field cannot be empty!';
                               }
-                              if(trimmedValue.length < 8) {
+                              if (trimmedValue.length < 8) {
                                 return 'Your password must contain at least 8 characters!';
                               }
                             }
                             return null;
                           },
-
                           onSaved: (value) {
-                            if(value != null) {
+                            if (value != null) {
                               pass = value;
                             }
                           },
@@ -217,22 +216,34 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_15,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_15,
+                  ),
                   Row(
                     children: [
                       Expanded(
                         flex: 1,
                         child: OutlinedButton(
                           onPressed: () {
-                            if(_formKey.currentState!.validate()) {
-                              print('Mail: '+email+"\nPass: "+pass);
+                            if (_formKey.currentState!.validate()) {
+                              print('Mail: ' + email + "\nPass: " + pass);
                               _formKey.currentState!.save();
                               print("CurrentState Save is called.");
-                              print('Mail: '+email+"\nPass: "+pass);
+                              print('Mail: ' + email + "\nPass: " + pass);
 
-                              auth.loginWithMailAndPass(email, pass);
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(content: Text('Logging in')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Logging in')));
+
+                              auth
+                                  .loginWithMailAndPass(email, pass)
+                                  .then((value) {
+                                if (value is String) {
+                                  return ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                          SnackBar(content: Text("${value}")));
+                                }
+                              });
+
                               //Navigator.popAndPushNamed(context, "/profile");
                             }
                           },
@@ -247,14 +258,18 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_15,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_15,
+                  ),
                   SignInButton(
                     Buttons.Google,
                     onPressed: () {
                       _showButtonPressDialog(context, 'Google');
                     },
                   ),
-                  const SizedBox(height: Dimen.sizedBox_15,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_15,
+                  ),
                   SignInButton(
                     Buttons.FacebookNew,
                     onPressed: () {
@@ -266,11 +281,11 @@ class _LoginViewState extends State<LoginView> {
             ),
           ),
         ),
-
-        bottomNavigationBar: NavigationBar(index: 3,),
+        bottomNavigationBar: NavigationBar(
+          index: 3,
+        ),
       );
-    }
-    else {
+    } else {
       return ProfileView(analytics: analytics, observer: observer);
     }
   }
