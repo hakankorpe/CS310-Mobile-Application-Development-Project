@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/routes/home_view.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -5,12 +6,15 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WalkthroughView extends StatefulWidget {
   const WalkthroughView({Key? key, required this.analytics, required this.observer}) : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
+
+  static const String id = "/splashScreen";
 
   @override
   _WalkthroughViewState createState() => _WalkthroughViewState();
@@ -60,6 +64,26 @@ class _WalkthroughViewState extends State<WalkthroughView> {
       });
     }
   }
+
+  //uture<Widget?> checkFirstSeen() async {
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // bool _seen = (prefs.getBool('seen') ?? false);
+  //
+  // if (_seen) {
+  //   Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+  //       HomeView(analytics: widget.analytics, observer: widget.observer)));
+  // } else {
+  //   await prefs.setBool('seen', true);
+  //   Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+  //       WalkthroughView(analytics: widget.analytics, observer: widget.observer)));
+  // }
+  //
+  //
+  //override
+  //oid initState() {
+  // super.initState();
+  // checkFirstSeen();
+  //
 
   @override
   Widget build(BuildContext context) {

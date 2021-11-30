@@ -155,9 +155,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       CircleAvatar(
                         radius: 60.0,
-                        child: _image != null
-                          ? Image.file(File(_image!.path))
-                          : Container(),
+                        child: ClipRRect(
+                          child: _image != null
+                              ? Image.file(File(_image!.path))
+                              : Image.network("https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"),
+                          borderRadius: BorderRadius.all(Radius.circular(60.0)),
+                        ),
                       ),
                       OutlinedButton(
                         onPressed: () {_showPicker(context);},

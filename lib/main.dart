@@ -26,6 +26,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,24 +73,55 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
   }
 }
 
-class AppBase extends StatelessWidget {
-  const AppBase({
-    Key? key,
-  }) : super(key: key);
+class AppBase extends StatefulWidget {
+  const AppBase({Key? key}) : super(key: key);
+
+  @override
+  _AppBaseState createState() => _AppBaseState();
+}
+
+class _AppBaseState extends State<AppBase> {
 
   static FirebaseAnalytics analytics = FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
+
   @override
   Widget build(BuildContext context) {
+
+    Future<Widget?> checkFirstSeen() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool _seen = (prefs.getBool('seen') ?? false);
+
+      if (_seen) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+            HomeView(analytics: analytics, observer: observer)));
+      } else {
+        await prefs.setBool('seen', true);
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+            WalkthroughView(analytics: analytics, observer: observer)));
+      }
+    }
+    void setStateForWalk() {
+      setState(() {
+        checkFirstSeen();
+      });
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      setStateForWalk();
+    }
+
     return StreamProvider<User?>.value(
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
         navigatorObservers: <NavigatorObserver>[observer],
-        initialRoute: '/walkthrough',
+        //initialRoute: '/walkthrough',
         routes: {
-          '/walkthrough' : (context) => WalkthroughView(analytics: analytics, observer: observer,),
+          '/' : (context) => WalkthroughView(analytics: analytics, observer: observer,),
 
           '/home': (context) => HomeView(analytics: analytics, observer: observer,),
 

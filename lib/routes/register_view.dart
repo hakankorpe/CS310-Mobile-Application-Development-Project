@@ -417,9 +417,13 @@ class _RegisterViewState extends State<RegisterView> {
                               print("CurrentState Save is called.");
                               print('Mail: '+email+"\nPass: "+pass);
 
-                              auth.signupWithMailAndPass(email, pass);
+                              Future<dynamic> message = auth.signupWithMailAndPass(email, pass);
+                              print("Register View ${message.toString()}");
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(content: Text('Registering...')));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                    const SnackBar(content: Text('This mail is already in use!')));
                             }
                           },
                           child: Text(
