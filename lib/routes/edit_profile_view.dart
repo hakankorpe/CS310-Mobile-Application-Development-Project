@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'dart:io' show File, Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -20,6 +20,9 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
+
+  bool isIOS = Platform.isIOS;
+
   final _formKey = GlobalKey<FormState>();
   String oldPass = "";
   String newPass = "";
@@ -44,7 +47,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   void _showPicker(context) {
-    showModalBottomSheet(
+    !isIOS ? showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return SafeArea(
@@ -68,6 +71,49 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                 ],
               ),
+          );
+        }
+    )
+    : showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: CupertinoActionSheet(
+              actions: <CupertinoActionSheetAction>[
+                CupertinoActionSheetAction(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text("Photo Library"),
+                      Icon(CupertinoIcons.photo_on_rectangle),
+                    ],
+                  ),
+                  onPressed: () {
+                    _imgFromGallery();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoActionSheetAction(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text("Camera"),
+                      Icon(CupertinoIcons.photo_camera),
+                    ],
+                  ),
+                  onPressed: () {
+                    _imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: const Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
           );
         }
     );

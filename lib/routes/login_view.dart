@@ -1,3 +1,5 @@
+import 'package:cs310_footwear_project/routes/profile_view.dart';
+import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -8,6 +10,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
+import 'package:provider/provider.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -22,11 +25,18 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
 
-  FirebaseAuth auth = FirebaseAuth.instance;
-
   final _formKey = GlobalKey<FormState>();
   String email = "";
   String pass = "";
+  String _message = '';
+
+  AuthService auth = AuthService();
+
+  void setmessage(String msg) {
+    setState(() {
+      _message = msg;
+    });
+  }
 
 
   void _showButtonPressDialog(BuildContext context, String provider) {
@@ -40,34 +50,30 @@ class _LoginViewState extends State<LoginView> {
   @override
   void initState() {
     super.initState();
-
-    auth.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print("User is signed up.");
-      }
-      else {
-        print("User is signed in.");
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     print("LoginView build is called.");
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(
+    final user = Provider.of<User?>(context);
+    FirebaseAnalytics analytics = widget.analytics;
+    FirebaseAnalyticsObserver observer = widget.observer;
+
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: AppColors.scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: Text(
             "FootWear",
             style: kAppBarTitleTextStyle,
+          ),
+          centerTitle: true,
+          backgroundColor: AppColors.appBarBackgroundColor,
+          elevation: Dimen.appBarElevation,
         ),
-        centerTitle: true,
-        backgroundColor: AppColors.appBarBackgroundColor,
-        elevation: Dimen.appBarElevation,
-      ),
-      body: Padding(
-        padding: Dimen.regularPadding,
-        child: SingleChildScrollView(
+        body: Padding(
+          padding: Dimen.regularPadding,
+          child: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
@@ -223,7 +229,11 @@ class _LoginViewState extends State<LoginView> {
                               _formKey.currentState!.save();
                               print("CurrentState Save is called.");
                               print('Mail: '+email+"\nPass: "+pass);
-                              Navigator.popAndPushNamed(context, "/profile");
+
+                              auth.loginWithMailAndPass(email, pass);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(content: Text('Logging in')));
+                              //Navigator.popAndPushNamed(context, "/profile");
                             }
                           },
                           child: Text(
@@ -257,7 +267,11 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
 
-      bottomNavigationBar: NavigationBar(index: 3,),
-    );
+        bottomNavigationBar: NavigationBar(index: 3,),
+      );
+    }
+    else {
+      return ProfileView(analytics: analytics, observer: observer);
+    }
   }
 }

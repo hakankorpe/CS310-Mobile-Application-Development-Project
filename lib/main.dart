@@ -19,11 +19,13 @@ import 'package:cs310_footwear_project/routes/search_view.dart';
 import 'package:cs310_footwear_project/routes/sizechart_view.dart';
 import 'package:cs310_footwear_project/routes/sold_view.dart';
 import 'package:cs310_footwear_project/routes/walkthrough_view.dart';
+import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,40 +82,44 @@ class AppBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorObservers: <NavigatorObserver>[observer],
-      initialRoute: '/walkthrough',
-      routes: {
-        '/walkthrough' : (context) => WalkthroughView(analytics: analytics, observer: observer,),
+    return StreamProvider<User?>.value(
+      value: AuthService().user,
+      initialData: null,
+      child: MaterialApp(
+        navigatorObservers: <NavigatorObserver>[observer],
+        initialRoute: '/walkthrough',
+        routes: {
+          '/walkthrough' : (context) => WalkthroughView(analytics: analytics, observer: observer,),
 
-        '/home': (context) => HomeView(analytics: analytics, observer: observer,),
+          '/home': (context) => HomeView(analytics: analytics, observer: observer,),
 
-        '/categoryMain': (context) => CategoryMainView(analytics: analytics, observer: observer,),
-        '/categorySelected': (context) => CategorySelectedView(analytics: analytics, observer: observer,),
+          '/categoryMain': (context) => CategoryMainView(analytics: analytics, observer: observer,),
+          '/categorySelected': (context) => CategorySelectedView(analytics: analytics, observer: observer,),
 
-        '/profile': (context) => ProfileView(analytics: analytics, observer: observer,),
-        '/orders': (context) => OrdersView(analytics: analytics, observer: observer,),
-        '/editProfile': (context) => EditProfileView(analytics: analytics, observer: observer,),
-        '/comments': (context) => CommentsView(analytics: analytics, observer: observer,),
-        '/bookmarks': (context) => BookmarksView(analytics: analytics, observer: observer,),
+          '/profile': (context) => ProfileView(analytics: analytics, observer: observer,),
+          '/orders': (context) => OrdersView(analytics: analytics, observer: observer,),
+          '/editProfile': (context) => EditProfileView(analytics: analytics, observer: observer,),
+          '/comments': (context) => CommentsView(analytics: analytics, observer: observer,),
+          '/bookmarks': (context) => BookmarksView(analytics: analytics, observer: observer,),
 
-        '/onSale': (context) => OnSaleView(analytics: analytics, observer: observer,),
-        '/sold': (context) => SoldView(analytics: analytics, observer: observer,),
-        '/commentApprove': (context) => CommentApproveView(analytics: analytics, observer: observer,),
-        'addProduct': (context) => AddProductView(analytics: analytics, observer: observer,),
+          '/onSale': (context) => OnSaleView(analytics: analytics, observer: observer,),
+          '/sold': (context) => SoldView(analytics: analytics, observer: observer,),
+          '/commentApprove': (context) => CommentApproveView(analytics: analytics, observer: observer,),
+          'addProduct': (context) => AddProductView(analytics: analytics, observer: observer,),
 
-        '/search': (context) => SearchView(analytics: analytics, observer: observer,),
+          '/search': (context) => SearchView(analytics: analytics, observer: observer,),
 
-        '/description': (context) => DescriptionView(analytics: analytics, observer: observer,),
-        '/sizeChart': (context) => SizeChartView(analytics: analytics, observer: observer,),
-        '/reviews': (context) => ReviewsView(analytics: analytics, observer: observer,),
+          '/description': (context) => DescriptionView(analytics: analytics, observer: observer,),
+          '/sizeChart': (context) => SizeChartView(analytics: analytics, observer: observer,),
+          '/reviews': (context) => ReviewsView(analytics: analytics, observer: observer,),
 
-        '/cart': (context) => CartView(analytics: analytics, observer: observer,),
-        '/checkout': (context) => CheckoutView(analytics: analytics, observer: observer,),
+          '/cart': (context) => CartView(analytics: analytics, observer: observer,),
+          '/checkout': (context) => CheckoutView(analytics: analytics, observer: observer,),
 
-        '/login': (context) => LoginView(analytics: analytics, observer: observer,),
-        '/register': (context) => RegisterView(analytics: analytics, observer: observer,),
-      },
+          '/login': (context) => LoginView(analytics: analytics, observer: observer,),
+          '/register': (context) => RegisterView(analytics: analytics, observer: observer,),
+        },
+      ),
     );
   }
 }
