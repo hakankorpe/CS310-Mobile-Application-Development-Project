@@ -13,12 +13,16 @@ import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
-  const RegisterView(
-      {Key? key, required this.analytics, required this.observer})
+  RegisterView(
+      {Key? key,
+      this.mailAddress,
+      required this.analytics,
+      required this.observer})
       : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
+  String? mailAddress;
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -41,6 +45,7 @@ class _RegisterViewState extends State<RegisterView> {
     final user = Provider.of<User?>(context);
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
+    String hintTextForEmail = widget.mailAddress ?? "Email";
 
     if (user == null) {
       return Scaffold(
@@ -263,11 +268,12 @@ class _RegisterViewState extends State<RegisterView> {
                       Expanded(
                         flex: 1,
                         child: TextFormField(
+                          enabled: widget.mailAddress == null,
                           keyboardType: TextInputType.emailAddress,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "E-Mail Address",
-                            border: OutlineInputBorder(
+                          decoration: InputDecoration(
+                            hintText: hintTextForEmail,
+                            border: const OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.lightBlueAccent,
                               ),
@@ -306,105 +312,115 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(
                     height: Dimen.sizedBox_20,
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TextFormField(
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "Password",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                  widget.mailAddress != null
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: TextFormField(
+                                enabled: widget.mailAddress == null,
+                                obscureText: true,
+                                keyboardType: TextInputType.text,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                decoration: const InputDecoration(
+                                  hintText: "Password",
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.lightBlueAccent,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Password field cannot be empty!';
+                                  } else {
+                                    String trimmedValue = value.trim();
+                                    if (trimmedValue.isEmpty) {
+                                      return 'Password field cannot be empty!';
+                                    }
+                                    if (trimmedValue.length < 8) {
+                                      return 'Your password must contain at least 8 characters!';
+                                    }
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  if (value != null) {
+                                    pass = value;
+                                  }
+                                },
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    pass = value;
+                                  }
+                                },
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Password field cannot be empty!';
-                            } else {
-                              String trimmedValue = value.trim();
-                              if (trimmedValue.isEmpty) {
-                                return 'Password field cannot be empty!';
-                              }
-                              if (trimmedValue.length < 8) {
-                                return 'Your password must contain at least 8 characters!';
-                              }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              pass = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            if (value != null) {
-                              pass = value;
-                            }
-                          },
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(
                     height: Dimen.sizedBox_20,
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TextFormField(
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "Password again",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                  widget.mailAddress != null
+                      ? SizedBox(height: 0)
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: TextFormField(
+                                enabled: widget.mailAddress == null,
+                                obscureText: true,
+                                keyboardType: TextInputType.text,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                decoration: const InputDecoration(
+                                  hintText: "Password again",
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.lightBlueAccent,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Password field cannot be empty!';
+                                  } else {
+                                    String trimmedValue = value.trim();
+                                    if (trimmedValue.isEmpty) {
+                                      return 'Password field cannot be empty!';
+                                    }
+                                    if (value != pass) {
+                                      return 'Please enter the same password!';
+                                    }
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  if (value != null) {
+                                    pass2 = value;
+                                  }
+                                },
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    pass2 = value;
+                                  }
+                                },
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Password field cannot be empty!';
-                            } else {
-                              String trimmedValue = value.trim();
-                              if (trimmedValue.isEmpty) {
-                                return 'Password field cannot be empty!';
-                              }
-                              if (value != pass) {
-                                return 'Please enter the same password!';
-                              }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              pass2 = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            if (value != null) {
-                              pass2 = value;
-                            }
-                          },
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(
                     height: Dimen.sizedBox_20,
                   ),

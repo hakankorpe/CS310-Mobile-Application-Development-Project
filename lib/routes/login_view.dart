@@ -1,4 +1,5 @@
 import 'package:cs310_footwear_project/routes/profile_view.dart';
+import 'package:cs310_footwear_project/routes/register_view.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -261,21 +262,31 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(
                     height: Dimen.sizedBox_15,
                   ),
-                  SignInButton(
-                    Buttons.Google,
-                    onPressed: () {
-                      _showButtonPressDialog(context, 'Google');
-                    },
-                  ),
+                  SignInButton(Buttons.Google, onPressed: () {
+                    auth.signInWithGoogle().then((value) {
+                      if (value is String) {
+                        return ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("${value}")));
+                      }
+                    });
+                  }),
                   const SizedBox(
                     height: Dimen.sizedBox_15,
                   ),
-                  SignInButton(
-                    Buttons.FacebookNew,
-                    onPressed: () {
-                      _showButtonPressDialog(context, 'FacebookNew');
-                    },
-                  ),
+                  SignInButton(Buttons.Google, text: "Sign up with Google",
+                      onPressed: () {
+                    auth.getUserCredentials().then((value) {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        final user = Provider.of<User?>(context);
+
+                        return RegisterView(
+                            analytics: analytics,
+                            observer: observer,
+                            mailAddress: (value!)[1]);
+                      }));
+                    });
+                  }),
                 ],
               ),
             ),

@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final googleSignIn = GoogleSignIn();
 
   User? _userFromFirebase(User? user) {
     return user ?? null;
@@ -19,6 +22,35 @@ class AuthService {
     } catch (e) {
       print(e.toString());
       return null;
+    }
+  }
+
+  Future getUserCredentials() async {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    return [credential, googleUser!.email];
+  }
+
+  Future signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final credential = await getUserCredentials();
+
+      // Once signed in, return the UserCredential
+      return await FirebaseAuth.instance.signInWithCredential(credential[0]);
+    } on FirebaseAuthException catch (e) {
+      googleSignIn.disconnect();
+      return e.message;
     }
   }
 
@@ -53,6 +85,7 @@ class AuthService {
 
   Future signOut() async {
     try {
+      await googleSignIn.disconnect();
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());
