@@ -1,5 +1,6 @@
 import 'package:cs310_footwear_project/routes/profile_view.dart';
 import 'package:cs310_footwear_project/routes/register_view.dart';
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -59,6 +60,9 @@ class _LoginViewState extends State<LoginView> {
     FirebaseAnalyticsObserver observer = widget.observer;
 
     if (user == null) {
+
+      setCurrentScreen(widget.analytics, "Login View", "loginView");
+
       return Scaffold(
         backgroundColor: AppColors.scaffoldBackgroundColor,
         appBar: AppBar(

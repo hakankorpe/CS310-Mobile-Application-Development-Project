@@ -1,4 +1,5 @@
 import 'package:cs310_footwear_project/routes/profile_view.dart';
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -48,6 +49,9 @@ class _RegisterViewState extends State<RegisterView> {
     String hintTextForEmail = widget.mailAddress ?? "Email";
 
     if (user == null) {
+
+      setCurrentScreen(widget.analytics, "Register View", "registerView");
+
       return Scaffold(
         backgroundColor: AppColors.scaffoldBackgroundColor,
         appBar: AppBar(

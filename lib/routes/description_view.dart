@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -21,6 +22,9 @@ class _DescriptionViewState extends State<DescriptionView> {
   @override
   Widget build(BuildContext context) {
     print("DescriptionView build is called.");
+
+    setCurrentScreen(widget.analytics, "Description View", "descriptionView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(

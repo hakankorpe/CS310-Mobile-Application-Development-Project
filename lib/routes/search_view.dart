@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -23,6 +24,9 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     print("SearchView build is called.");
+
+    setCurrentScreen(widget.analytics, "Search View", "searchView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(

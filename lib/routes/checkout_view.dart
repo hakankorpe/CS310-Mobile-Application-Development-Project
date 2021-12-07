@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -24,6 +25,9 @@ class _CheckoutViewState extends State<CheckoutView> {
   @override
   Widget build(BuildContext context) {
     print("CheckoutView build is called.");
+
+    setCurrentScreen(widget.analytics, "Checkout View", "checkoutView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(

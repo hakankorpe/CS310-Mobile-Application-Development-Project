@@ -1,4 +1,5 @@
 import 'dart:io' show File, Platform;
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -122,6 +123,9 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     print("EditProfileView build is called.");
+
+    setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(

@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -55,6 +56,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     print("HomeView build is called.");
+
+    setCurrentScreen(widget.analytics, "Home View", "homeView");
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,

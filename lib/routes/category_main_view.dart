@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -20,6 +21,9 @@ class _CategoryMainViewState extends State<CategoryMainView> {
   @override
   Widget build(BuildContext context) {
     print("CategoryMainView build is called.");
+
+    setCurrentScreen(widget.analytics, "Category Main View", "categoryMainView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(

@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -21,6 +22,9 @@ class _CommentApproveViewState extends State<CommentApproveView> {
   @override
   Widget build(BuildContext context) {
     print("CommentApproveView build is called.");
+
+    setCurrentScreen(widget.analytics, "Comment Approve View", "commentApproveView");
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
