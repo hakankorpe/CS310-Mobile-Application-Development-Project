@@ -14,7 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const ProfileView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -24,10 +25,9 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-
   AuthService auth = AuthService();
   DBService db = DBService();
-
+  dynamic _userInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +35,15 @@ class _ProfileViewState extends State<ProfileView> {
     final user = Provider.of<User?>(context);
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
-    dynamic _userInfo;
 
-    if (user != null && _userInfo == null) {
-      db.getUserInfo(user.uid).then((value) {
-        setState(() {
-          _userInfo = value;
+    if ((user != null)) {
+      if (_userInfo == null) {
+        db.getUserInfo(user.uid).then((value) {
+          setState(() {
+            _userInfo = value;
+          });
         });
-      });
-      print(_userInfo);
+      }
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
 
@@ -59,7 +59,8 @@ class _ProfileViewState extends State<ProfileView> {
           centerTitle: true,
         ),
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(0, Dimen.parentMargin, 0, Dimen.parentMargin),
+          padding: const EdgeInsets.fromLTRB(
+              0, Dimen.parentMargin, 0, Dimen.parentMargin),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -82,15 +83,17 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     Column(
                       children: [
-                        const Text(
-                          "LeBron James",
+                        Text(
+                          (_userInfo?["name"] ?? "") +
+                              " " +
+                              (_userInfo?["surname"] ?? ""),
                           style: TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Text(
-                          "lebrbjames",
+                        Text(
+                          _userInfo?["username"] ?? "",
                           style: TextStyle(
                             color: Colors.black,
                             fontStyle: FontStyle.italic,
@@ -117,40 +120,44 @@ class _ProfileViewState extends State<ProfileView> {
                         )
                       ],
                     ),
-                    Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      Row(
-                        children: const [
-                          Text(
-                            "Rating:",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          //TODO: find star rating bar
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                        ],
-                      )
-                    ]),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: const [
+                              Text(
+                                "Rating:",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              //TODO: find star rating bar
+                              Icon(
+                                Icons.star,
+                                color: Colors.orange,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.orange,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.orange,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.orange,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.orange,
+                              ),
+                            ],
+                          )
+                        ]),
                   ],
                 ),
-                const Divider(thickness: Dimen.divider_1_5,),
+                const Divider(
+                  thickness: Dimen.divider_1_5,
+                ),
                 const SizedBox(height: Dimen.sizedBox_30),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -183,7 +190,9 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    const Divider(thickness: Dimen.divider_1_5,),
+                    const Divider(
+                      thickness: Dimen.divider_1_5,
+                    ),
                     OutlinedButton.icon(
                       onPressed: () {
                         Navigator.pushNamed(context, '/bookmarks');
@@ -212,7 +221,9 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    const Divider(thickness: Dimen.divider_1_5,),
+                    const Divider(
+                      thickness: Dimen.divider_1_5,
+                    ),
                     OutlinedButton.icon(
                       onPressed: () {
                         Navigator.pushNamed(context, '/comments');
@@ -238,7 +249,9 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    const Divider(thickness: Dimen.divider_1_5,),
+                    const Divider(
+                      thickness: Dimen.divider_1_5,
+                    ),
                   ],
                 ),
                 const SizedBox(height: Dimen.sizedBox_90),
@@ -267,14 +280,17 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   ),
                 ),
-                const Divider(thickness: Dimen.divider_1_5,),
+                const Divider(
+                  thickness: Dimen.divider_1_5,
+                ),
                 const SizedBox(height: Dimen.sizedBox_90),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.logout, color: Colors.redAccent),
                   onPressed: () {
+                    _userInfo = null;
                     auth.signOut();
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('Logging out')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Logging out')));
                   },
                   label: const Text(
                     "Log Out",
@@ -295,11 +311,15 @@ class _ProfileViewState extends State<ProfileView> {
             ),
           ),
         ),
-        bottomNavigationBar: NavigationBar(index: 3,),
+        bottomNavigationBar: NavigationBar(
+          index: 3,
+        ),
       );
-    }
-    else {
-      return LoginView(observer: observer, analytics: analytics,);
+    } else {
+      return LoginView(
+        observer: observer,
+        analytics: analytics,
+      );
     }
   }
 }

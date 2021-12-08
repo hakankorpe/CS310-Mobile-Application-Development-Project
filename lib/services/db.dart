@@ -1,15 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DBService {
-  final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
 
-  Future addUserAutoID(String name, String surname, String mail, String token) async {
-    userCollection.add({
-      'name': name,
-      'surname': surname,
-      'userToken': token,
-      'email': mail
-    })
+  Future addUserAutoID(
+      String name, String surname, String mail, String token) async {
+    userCollection
+        .add({
+          'name': name,
+          'surname': surname,
+          'userToken': token,
+          'email': mail
+        })
         .then((value) => print('User added'))
         .catchError((error) => print('Error: ${error.toString()}'));
   }
@@ -27,11 +30,12 @@ class DBService {
   }
 
   Future getUserInfo(String token) async {
-    userCollection.doc(token).get().then((DocumentSnapshot documentSnapshot) {
+    return userCollection
+        .doc(token)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
       print(documentSnapshot.data());
       return documentSnapshot.data();
     });
   }
-
-  
 }
