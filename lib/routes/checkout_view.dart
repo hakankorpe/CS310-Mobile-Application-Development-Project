@@ -4,6 +4,7 @@ import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -126,8 +127,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                 const SizedBox(height: 25,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
+                  children: const [
+                    Text(
                       "Order Summary",
                       style: TextStyle(
                         color: Colors.redAccent,
@@ -156,7 +157,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ),
                         const SizedBox(width: 10,),
                         ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              FirebaseCrashlytics.instance.crash();
+                            },
                             child: const Text(
                               "Confirm"
                             ),

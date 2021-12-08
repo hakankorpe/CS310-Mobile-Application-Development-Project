@@ -109,6 +109,7 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
+
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Image(
@@ -117,8 +118,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -181,8 +182,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -230,6 +231,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -244,8 +246,72 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
+                                ),
+                                const Text(
+                                  "Melinda",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                const Text(
+                                  "Nike",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text(
+                                      "3.99₺",
+                                      style: TextStyle(
+                                          color: Colors.black
+                                      ),
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Text(
+                                          "4.8",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.orangeAccent,
+                                        ),
+                                        Text(
+                                          "(999+)",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.white),
+                            ),
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image(
+                                  image: const NetworkImage(
+                                    "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
+
+
+                                  ),
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -322,6 +388,7 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
+
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Image(
@@ -330,8 +397,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -394,8 +461,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -443,6 +510,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -457,8 +525,72 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
+                                ),
+                                const Text(
+                                  "Melinda",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                const Text(
+                                  "Nike",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text(
+                                      "3.99₺",
+                                      style: TextStyle(
+                                          color: Colors.black
+                                      ),
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Text(
+                                          "4.8",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.orangeAccent,
+                                        ),
+                                        Text(
+                                          "(999+)",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.white),
+                            ),
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image(
+                                  image: const NetworkImage(
+                                    "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
+
+
+                                  ),
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -535,6 +667,7 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             onPressed: () {Navigator.pushNamed(context, "/description");},
                             child: Column(
+
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Image(
@@ -543,8 +676,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -607,8 +740,8 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",
@@ -656,6 +789,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                           ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -670,8 +804,72 @@ class _HomeViewState extends State<HomeView> {
 
 
                                   ),
-                                  width: MediaQuery.of(context).size.width/3,
-                                  height: MediaQuery.of(context).size.width/3,
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
+                                ),
+                                const Text(
+                                  "Melinda",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                const Text(
+                                  "Nike",
+                                  style: TextStyle(
+                                      color: Colors.black
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text(
+                                      "3.99₺",
+                                      style: TextStyle(
+                                          color: Colors.black
+                                      ),
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Text(
+                                          "4.8",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.orangeAccent,
+                                        ),
+                                        Text(
+                                          "(999+)",
+                                          style: TextStyle(
+                                              color: Colors.black
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: Dimen.sizedBox_15,),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.white),
+                            ),
+                            onPressed: () {Navigator.pushNamed(context, "/description");},
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image(
+                                  image: const NetworkImage(
+                                    "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
+
+
+                                  ),
+                                  width: MediaQuery.of(context).size.width/3.5,
+                                  height: MediaQuery.of(context).size.width/3.5,
                                 ),
                                 const Text(
                                   "Melinda",

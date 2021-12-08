@@ -14,12 +14,15 @@ class DBService {
         .catchError((error) => print('Error: ${error.toString()}'));
   }
 
-  Future addUser(String name, String surname, String mail, String token) async {
+  Future addUser(String name, String surname, String mail, String token,
+      String username, String password) async {
     userCollection.doc(token).set({
       'name': name,
       'surname': surname,
       'userToken': token,
-      'email': mail
+      'username': username,
+      'email': mail,
+      'password': password,
     });
   }
 }

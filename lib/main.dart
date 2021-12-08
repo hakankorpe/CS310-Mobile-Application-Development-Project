@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,8 @@ class MyFirebaseApp extends StatefulWidget {
 }
 
 class _MyFirebaseAppState extends State<MyFirebaseApp> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final Future<FirebaseApp> _initialization =  Firebase.initializeApp();
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,7 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
+          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
           return const AppBase();
         }
 

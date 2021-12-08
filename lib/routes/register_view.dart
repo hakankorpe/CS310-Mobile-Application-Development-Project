@@ -445,7 +445,7 @@ class _RegisterViewState extends State<RegisterView> {
                                       content: Text('Registering......')));
 
                               auth
-                                  .signupWithMailAndPass(email, pass)
+                                  .signupWithMailAndPass(email, pass, name, surname, username)
                                   .then((value) {
                                 if (value is String) {
                                   return ScaffoldMessenger.of(context)
