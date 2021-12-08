@@ -68,7 +68,7 @@ class AuthService {
         reason: e.toString(),
       );
       FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled;
-      googleSignIn.disconnect();
+      //googleSignIn.disconnect();
       return e.message;
     } catch (e) {
       await FirebaseCrashlytics.instance.recordError(
@@ -77,7 +77,7 @@ class AuthService {
         reason: e.toString(),
       );
       FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled;
-      googleSignIn.disconnect();
+      //googleSignIn.disconnect();
     }
   }
 
@@ -139,6 +139,7 @@ class AuthService {
     try {
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.disconnect();
+        await googleSignIn.signOut();
       }
       return await _auth.signOut();
     } catch (e) {
