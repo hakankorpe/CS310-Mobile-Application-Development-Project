@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "15652284638-ukr9033ahmrg0qhq8bgkbc81726st90b.apps.googleusercontent.com",
+          "client_id": "15652284638-0dr3jd2us8lakncifleqq853d8uop8nc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.cs310_footwear_project",
@@ -37,6 +37,13 @@
             {
               "client_id": "15652284638-0fe7p27rkjupgan3osijje7fr8h2stsk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "15652284638-9pqdg167427vbgih6rp72sgahv7kp7ft.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cs310FootwearProject"
+              }
             }
           ]
         }
