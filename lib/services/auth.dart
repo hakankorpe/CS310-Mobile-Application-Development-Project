@@ -5,7 +5,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 
-
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final googleSignIn = GoogleSignIn();
@@ -35,19 +34,21 @@ class AuthService {
   }
 
   Future getUserCredentials() async {
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    if (!(await googleSignIn.isSignedIn())) {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-    return [credential, googleUser!.email];
+      return [credential, googleUser!.email];
+    }
   }
 
   Future signInWithGoogle() async {
@@ -77,8 +78,8 @@ class AuthService {
     }
   }
 
-  Future signupWithMailAndPass(String mail, String pass, String name, String surname,
-      String username) async {
+  Future signupWithMailAndPass(String mail, String pass, String name,
+      String surname, String username) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
@@ -133,7 +134,7 @@ class AuthService {
 
   Future signOut() async {
     try {
-      if (googleSignIn.currentUser != null) await googleSignIn.disconnect();
+      if (await googleSignIn.isSignedIn()) await googleSignIn.disconnect();
       return await _auth.signOut();
     } catch (e) {
       await FirebaseCrashlytics.instance.recordError(
