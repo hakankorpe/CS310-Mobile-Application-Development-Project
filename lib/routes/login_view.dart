@@ -60,7 +60,6 @@ class _LoginViewState extends State<LoginView> {
     FirebaseAnalyticsObserver observer = widget.observer;
 
     if (user == null) {
-
       setCurrentScreen(widget.analytics, "Login View", "loginView");
 
       return Scaffold(
@@ -272,23 +271,6 @@ class _LoginViewState extends State<LoginView> {
                         return ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(content: Text("${value}")));
                       }
-                    });
-                  }),
-                  const SizedBox(
-                    height: Dimen.sizedBox_15,
-                  ),
-                  SignInButton(Buttons.Google, text: "Sign up with Google",
-                      onPressed: () {
-                    auth.getUserCredentials().then((value) {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        final user = Provider.of<User?>(context);
-
-                        return RegisterView(
-                            analytics: analytics,
-                            observer: observer,
-                            mailAddress: (value!)[1]);
-                      }));
                     });
                   }),
                 ],

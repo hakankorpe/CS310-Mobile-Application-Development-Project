@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
@@ -34,10 +35,10 @@ class AuthService {
   }
 
   Future getUserCredentials() async {
-    if (!(await googleSignIn.isSignedIn())) {
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-      // Obtain the auth details from the request
+    // Obtain the auth details from the request
+    try {
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
 
@@ -48,6 +49,8 @@ class AuthService {
       );
 
       return [credential, googleUser!.email];
+    } on PlatformException catch (e) {
+      print(e);
     }
   }
 
@@ -134,7 +137,9 @@ class AuthService {
 
   Future signOut() async {
     try {
-      if (await googleSignIn.isSignedIn()) await googleSignIn.disconnect();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.disconnect();
+      }
       return await _auth.signOut();
     } catch (e) {
       await FirebaseCrashlytics.instance.recordError(
