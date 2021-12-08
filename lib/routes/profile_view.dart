@@ -28,14 +28,22 @@ class _ProfileViewState extends State<ProfileView> {
   AuthService auth = AuthService();
   DBService db = DBService();
 
+
   @override
   Widget build(BuildContext context) {
     print("ProfileView build is called.");
     final user = Provider.of<User?>(context);
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
+    dynamic _userInfo;
 
-    if (user != null) {
+    if (user != null && _userInfo == null) {
+      db.getUserInfo(user.uid).then((value) {
+        setState(() {
+          _userInfo = value;
+        });
+      });
+      print(_userInfo);
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
 

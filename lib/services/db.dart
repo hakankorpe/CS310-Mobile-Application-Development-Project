@@ -25,4 +25,13 @@ class DBService {
       'password': password,
     });
   }
+
+  Future getUserInfo(String token) async {
+    userCollection.doc(token).get().then((DocumentSnapshot documentSnapshot) {
+      print(documentSnapshot.data());
+      return documentSnapshot.data();
+    });
+  }
+
+  
 }
