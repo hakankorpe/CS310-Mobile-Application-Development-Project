@@ -1,3 +1,4 @@
+import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -8,7 +9,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 class SearchView extends StatefulWidget {
-  const SearchView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const SearchView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -18,7 +20,6 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -27,14 +28,37 @@ class _SearchViewState extends State<SearchView> {
 
     setCurrentScreen(widget.analytics, "Search View", "searchView");
 
+    const dummyImageUrl =
+        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
+
+    const dummyItem = FootWearItem(
+      imageUrl: dummyImageUrl,
+      brandName: "Nike",
+      sellerName: "Melinda",
+      price: 3.99,
+      rating: 4.8,
+      reviews: 1000,
+    );
+
+    const foundItems = <FootWearItem>[
+      dummyItem,
+      dummyItem,
+      dummyItem,
+      dummyItem,
+      dummyItem,
+      dummyItem,
+      dummyItem,
+      dummyItem,
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColors.appBarBackgroundColor,
         elevation: Dimen.appBarElevation,
         title: Text(
-            "Search",
-            style: kAppBarTitleTextStyle,
+          "Search",
+          style: kAppBarTitleTextStyle,
         ),
         actions: [
           IconButton(
@@ -42,7 +66,7 @@ class _SearchViewState extends State<SearchView> {
               Navigator.pushNamed(context, "/cart");
             },
             icon: const Icon(
-                Icons.shopping_cart,
+              Icons.shopping_cart,
               color: AppColors.appBarElementColor,
             ),
           ),
@@ -53,318 +77,67 @@ class _SearchViewState extends State<SearchView> {
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                            Icons.search,
-                          color: Colors.black,
-                        )
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      )),
+                  Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Search",
+                      ),
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
-                    Expanded(
-                        flex: 1,
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Search",
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                    ),
-                  ],
-                ),
-                //const SizedBox(height: 5,),
-                const Divider(thickness: 1.5, color: Colors.black38,),
-                const SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Text("Add Filters Button Later On"),
-                  ],
-                ),
-                const SizedBox(height: 10,),
-                const Text(
-                    "4 Results for \"Nike\"",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
                   ),
+                ],
+              ),
+              //const SizedBox(height: 5,),
+              const Divider(
+                thickness: 1.5,
+                color: Colors.black38,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: const [
+                  Text("Add Filters Button Later On"),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "${foundItems.length} Results for \"Nike\"",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-                const SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.white),
-                      ),
-                      onPressed: () {Navigator.pushNamed(context, "/description");},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                            image: const NetworkImage(
-                              "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-
-
-                            ),
-                            width: MediaQuery.of(context).size.width/3,
-                            height: MediaQuery.of(context).size.width/3,
-                          ),
-                          const Text(
-                            "Melinda",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          const Text(
-                            "Nike",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text(
-                                "3.99₺",
-                                style: TextStyle(
-                                    color: Colors.black
-                                ),
-                              ),
-                              Row(
-                                children: const [
-                                  Text(
-                                    "4.8",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.orangeAccent,
-                                  ),
-                                  Text(
-                                    "(999+)",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 15,),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.white),
-                      ),
-                      onPressed: () {Navigator.pushNamed(context, "/description");},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                            image: const NetworkImage(
-                              "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-
-
-                            ),
-                            width: MediaQuery.of(context).size.width/3,
-                            height: MediaQuery.of(context).size.width/3,
-                          ),
-                          const Text(
-                            "Melinda",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          const Text(
-                            "Nike",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text(
-                                "3.99₺",
-                                style: TextStyle(
-                                    color: Colors.black
-                                ),
-                              ),
-                              Row(
-                                children: const [
-                                  Text(
-                                    "4.8",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.orangeAccent,
-                                  ),
-                                  Text(
-                                    "(999+)",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              IntrinsicWidth(
+                child: Wrap(
+                  spacing: 25.0,
+                  runSpacing: 25.0,
+                  alignment: WrapAlignment.center,
+                  children: foundItems,
                 ),
-                const SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.white),
-                      ),
-                      onPressed: () {Navigator.pushNamed(context, "/description");},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                            image: const NetworkImage(
-                              "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-
-
-                            ),
-                            width: MediaQuery.of(context).size.width/3,
-                            height: MediaQuery.of(context).size.width/3,
-                          ),
-                          const Text(
-                            "Melinda",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          const Text(
-                            "Nike",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text(
-                                "3.99₺",
-                                style: TextStyle(
-                                    color: Colors.black
-                                ),
-                              ),
-                              Row(
-                                children: const [
-                                  Text(
-                                    "4.8",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.orangeAccent,
-                                  ),
-                                  Text(
-                                    "(999+)",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 15,),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.white),
-                      ),
-                      onPressed: () {Navigator.pushNamed(context, "/description");},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                            image: const NetworkImage(
-                              "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-
-
-                            ),
-                            width: MediaQuery.of(context).size.width/3,
-                            height: MediaQuery.of(context).size.width/3,
-                          ),
-                          const Text(
-                            "Melinda",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          const Text(
-                            "Nike",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text(
-                                "3.99₺",
-                                style: TextStyle(
-                                    color: Colors.black
-                                ),
-                              ),
-                              Row(
-                                children: const [
-                                  Text(
-                                    "4.8",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.orangeAccent,
-                                  ),
-                                  Text(
-                                    "(999+)",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ]),
           ),
         ),
       ),
