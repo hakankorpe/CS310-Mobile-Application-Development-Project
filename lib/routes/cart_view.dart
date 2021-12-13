@@ -11,9 +11,9 @@ import 'package:provider/provider.dart';
 
 import 'login_view.dart';
 
-
 class CartView extends StatefulWidget {
-  const CartView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const CartView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -23,8 +23,7 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-
-  int countCartItem = 3;
+  int countCartItem = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,74 +49,89 @@ class _CartViewState extends State<CartView> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20),
-          child: countCartItem != 0 ? Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(height: 20,),
-              const Divider(thickness: 1.5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Expanded(flex: 3, child: Text("Product")),
-                  Expanded(flex: 2, child: Text("Price")),
-                  Expanded(flex: 2, child: Text("Quantity")),
-                  Expanded(flex: 2, child: Text("Subtotal")),
-                ],
-              ),
-              const Divider(thickness: 1.5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Expanded(flex: 3, child: Text("Product")),
-                  Expanded(flex: 2, child: Text("Price")),
-                  Expanded(flex: 2, child: Text("Quantity")),
-                  Expanded(flex: 2, child: Text("Subtotal")),
-                ],
-              ),
-              const Divider(thickness: 1.5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Expanded(flex: 3, child: Text("Product")),
-                  Expanded(flex: 2, child: Text("Price")),
-                  Expanded(flex: 2, child: Text("Quantity")),
-                  Expanded(flex: 2, child: Text("Subtotal")),
-                ],
-              ),
-              const Divider(thickness: 1.5,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("Total"),
-                  Text("570₺"),
-                ],
-              ),
-              const SizedBox(height: 20,),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/checkout");
-                },
-                child: Text(
-                    "Continue",
-                  style: kButtonDarkTextStyle,
-                ),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                ),
-              ),
-            ],
-          ) : const Center(
-              child: Text(
-                "Your cart is empty!",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.center,
-              )
-          ),
+          child: countCartItem != 0
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Divider(
+                      thickness: 1.5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Expanded(flex: 3, child: Text("Product")),
+                        Expanded(flex: 2, child: Text("Price")),
+                        Expanded(flex: 2, child: Text("Quantity")),
+                        Expanded(flex: 2, child: Text("Subtotal")),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1.5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Expanded(flex: 3, child: Text("Product")),
+                        Expanded(flex: 2, child: Text("Price")),
+                        Expanded(flex: 2, child: Text("Quantity")),
+                        Expanded(flex: 2, child: Text("Subtotal")),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1.5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Expanded(flex: 3, child: Text("Product")),
+                        Expanded(flex: 2, child: Text("Price")),
+                        Expanded(flex: 2, child: Text("Quantity")),
+                        Expanded(flex: 2, child: Text("Subtotal")),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1.5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Text("Total"),
+                        Text("570₺"),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/checkout");
+                      },
+                      child: Text(
+                        "Continue",
+                        style: kButtonDarkTextStyle,
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                      ),
+                    ),
+                  ],
+                )
+              : const Center(
+                  child: Text(
+                  "Your cart is empty!",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                )),
         ),
-        bottomNavigationBar: NavigationBar(index: 0,),
+        bottomNavigationBar: NavigationBar(
+          index: 0,
+        ),
       );
     } else {
       return LoginView(

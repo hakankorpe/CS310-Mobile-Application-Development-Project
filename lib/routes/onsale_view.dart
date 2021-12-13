@@ -7,9 +7,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
-
 class OnSaleView extends StatefulWidget {
-  const OnSaleView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const OnSaleView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -19,7 +19,6 @@ class OnSaleView extends StatefulWidget {
 }
 
 class _OnSaleViewState extends State<OnSaleView> {
-
   int countOnSale = 0;
 
   @override
@@ -43,62 +42,63 @@ class _OnSaleViewState extends State<OnSaleView> {
       body: Padding(
         padding: Dimen.regularPadding,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 Expanded(
                   flex: 1,
                   child: OutlinedButton(
-                      child: const Text(
-                          "On Sale",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                    child: const Text(
+                      "On Sale",
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        side: const BorderSide(
-                          color: Colors.black,
-                          width: 0,
-                        ),
+                    ),
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: OutlinedButton(
-                      child: const Text(
-                          "Sold",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
+                      side: const BorderSide(
+                        color: Colors.black,
+                        width: 0,
                       ),
-                      onPressed: () {
-                        Navigator.popAndPushNamed(context, "/sold");
-                      },
-                      style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          side: const BorderSide(
-                            color: Colors.white,
-                            width: 0,
-                          ),
-                      ),
+                    ),
                   ),
                 ),
                 Expanded(
                   flex: 1,
                   child: OutlinedButton(
                     child: const Text(
-                        "Comments",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
+                      "Sold",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, "/sold");
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      side: const BorderSide(
+                        color: Colors.white,
+                        width: 0,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: OutlinedButton(
+                    child: const Text(
+                      "Comments",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                     onPressed: () {
                       Navigator.popAndPushNamed(context, "/commentApprove");
@@ -121,20 +121,22 @@ class _OnSaleViewState extends State<OnSaleView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                countOnSale == 0 ? const Center(
-                    child: Text(
-                      "You have not put any products on sale yet.",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                ) : Container(
-
-                ),
+                countOnSale == 0
+                    ? const Center(
+                        child: Text(
+                        "You have not put any products on sale yet.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ))
+                    : Container(),
               ],
             ),
+            SizedBox(
+              height: 0,
+            )
           ],
         ),
       ),
@@ -144,11 +146,13 @@ class _OnSaleViewState extends State<OnSaleView> {
           Navigator.pushNamed(context, 'addProduct');
         },
         child: const Icon(
-            Icons.add,
-            size: 30,
+          Icons.add,
+          size: 30,
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 7,),
+      bottomNavigationBar: NavigationBar(
+        index: 7,
+      ),
     );
   }
 }
