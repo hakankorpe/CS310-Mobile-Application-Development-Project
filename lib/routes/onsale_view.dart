@@ -19,6 +19,9 @@ class OnSaleView extends StatefulWidget {
 }
 
 class _OnSaleViewState extends State<OnSaleView> {
+
+  int countOnSale = 0;
+
   @override
   Widget build(BuildContext context) {
     print("OnSaleView build is called.");
@@ -110,6 +113,25 @@ class _OnSaleViewState extends State<OnSaleView> {
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
+            Column(
+              //mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                countOnSale == 0 ? const Center(
+                    child: Text(
+                      "You have not put any products on sale yet.",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                ) : Container(
+
                 ),
               ],
             ),

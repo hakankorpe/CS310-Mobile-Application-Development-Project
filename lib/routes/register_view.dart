@@ -269,9 +269,9 @@ class _RegisterViewState extends State<RegisterView> {
                           enabled: widget.mailAddress == null,
                           keyboardType: TextInputType.emailAddress,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: "Email",
-                            border: const OutlineInputBorder(
+                            border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.lightBlueAccent,
                               ),
@@ -432,7 +432,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                               auth
                                   .signupWithMailAndPass(
-                                      email, pass, name, surname, username)
+                                      email, pass, name, surname, username, "mailAndPass")
                                   .then((value) {
                                 if (value is String) {
                                   return ScaffoldMessenger.of(context)

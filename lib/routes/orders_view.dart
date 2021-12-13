@@ -19,6 +19,9 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+
+  int countOrders = 0;
+
   @override
   Widget build(BuildContext context) {
     print("OrdersView build is called.");
@@ -41,8 +44,34 @@ class _OrdersViewState extends State<OrdersView> {
         padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              countOrders == 0 ? Center(
+                  child: Column(
+                    children: const [
+                      Text(
+                        "No purchase history!",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: Dimen.sizedBox_15,),
+                      Text(
+                        "Check back after your next shopping experience!",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  )
+              ) : Container(
 
+              ),
             ],
           ),
         ),

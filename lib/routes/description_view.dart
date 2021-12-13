@@ -19,6 +19,9 @@ class DescriptionView extends StatefulWidget {
 }
 
 class _DescriptionViewState extends State<DescriptionView> {
+
+  bool isBookmarked = false;
+
   @override
   Widget build(BuildContext context) {
     print("DescriptionView build is called.");
@@ -36,6 +39,23 @@ class _DescriptionViewState extends State<DescriptionView> {
         ),
         centerTitle: true,
         iconTheme: kAppBarIconStyle,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isBookmarked = !isBookmarked;
+              });
+            },
+            icon: isBookmarked ? const Icon(
+              Icons.bookmark,
+              color: AppColors.appBarElementColor,
+            )
+            : const Icon(
+              Icons.bookmark_border,
+              color: AppColors.appBarElementColor,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: Dimen.regularPadding,
@@ -70,10 +90,10 @@ class _DescriptionViewState extends State<DescriptionView> {
               const SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    "1300",
+                    "1300₺",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       decoration: TextDecoration.lineThrough,
@@ -99,7 +119,10 @@ class _DescriptionViewState extends State<DescriptionView> {
                   ),
                   // Quantity Selector
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Added to cart!')));
+                      },
                       icon: const Icon(
                         Icons.add_shopping_cart_rounded,
                         color: Colors.black,

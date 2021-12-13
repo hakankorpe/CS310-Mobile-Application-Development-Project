@@ -1,5 +1,9 @@
 import 'dart:io' show File, Platform;
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/auth.dart';
+import 'package:cs310_footwear_project/services/db.dart';
+import 'package:cs310_footwear_project/services/storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -9,6 +13,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
@@ -21,6 +26,11 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
+
+  StorageService storage = StorageService();
+  AuthService auth = AuthService();
+  DBService db = DBService();
+  dynamic _userInfo;
 
   bool isIOS = Platform.isIOS;
 
@@ -47,7 +57,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     });
   }
 
-  void _showPicker(context) {
+  Future<void> _showPicker(context) async {
     !isIOS ? showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -120,11 +130,48 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
+  Future<void> showAlertDialog(String title, String message, String buttonText) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Text(message),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(buttonText)
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel")
+            )
+          ],
+        );
+      }
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     print("EditProfileView build is called.");
+    final user = Provider.of<User?>(context);
 
     setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
+
+    db.getUserInfo(user!.uid).then((value) {
+      setState(() {
+        _userInfo = value;
+      });
+    });
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -167,14 +214,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                       ),
                       OutlinedButton(
-                        onPressed: () {_showPicker(context);},
+                        onPressed: () async {
+                          // Select the new image
+                          await _showPicker(context);
+                          print("Path is " + _image!.path);
+
+                          // Uplaod the new image to Firebase
+                          await storage.uploadProfilePict(_image!, 'test');
+                        },
                         child: const Text(
                           "Change profile picture",
                           style: TextStyle(
                             color: Colors.black,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],
@@ -184,7 +238,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showAlertDialog("Deleting Account",
+                          "Do you really want to delete your account on Footwear? This action cannot be undone!",
+                          "Delete");
+                    },
                     child: const Text(
                       "Delete Account",
                       style: TextStyle(
@@ -197,9 +255,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ),
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showAlertDialog("Disabling Account",
+                          "Do you really want to disable your account on Footwear? This action cannot be undone!\n" +
+                              "You can reactive your account by logging in again anytime.",
+                          "Disable");
+                    },
                     child: const Text(
-                      "Delete Account",
+                      "Disable Account",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -212,6 +275,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ],
               ),
               const SizedBox(height: 30,),
+              _userInfo?["sign-in-type"] == "mailAndPass" ?
               Form(
                 key: _formKey,
                 child: Column(
@@ -301,6 +365,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ),
                   ],
                 ),
+              ) : Form(
+                key: _formKey,
+                child: Column(),
               ),
               const SizedBox(
                 height: 20,

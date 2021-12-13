@@ -59,6 +59,8 @@ class AuthService {
       // Trigger the authentication flow
       final credential = await getUserCredentials();
 
+      print(credential);
+
       // Once signed in, return the UserCredential
       return await FirebaseAuth.instance.signInWithCredential(credential[0]);
     } on FirebaseAuthException catch (e) {
@@ -82,7 +84,7 @@ class AuthService {
   }
 
   Future signupWithMailAndPass(String mail, String pass, String name,
-      String surname, String username) async {
+      String surname, String username, String signInType) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: mail, password: pass);
@@ -91,7 +93,7 @@ class AuthService {
       // Add user to database before returning to profile
       DBService dbService = DBService();
       String userToken = await user.uid;
-      dbService.addUser(name, surname, mail, userToken, username, pass);
+      dbService.addUser(name, surname, mail, userToken, username, pass, signInType);
 
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {

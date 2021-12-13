@@ -19,6 +19,9 @@ class CommentApproveView extends StatefulWidget {
 }
 
 class _CommentApproveViewState extends State<CommentApproveView> {
+
+  int countToApprove = 0;
+
   @override
   Widget build(BuildContext context) {
     print("CommentApproveView build is called.");
@@ -113,6 +116,26 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                   ),
                 ),
               ],
+            ),
+            Padding(
+              padding: Dimen.regularPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  countToApprove == 0 ? const Center(
+                      child: Text(
+                        "There are no new comments to approve or deny.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                  ) : Container(
+
+                  )
+                ],
+              ),
             ),
           ],
         ),

@@ -160,8 +160,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                             onPressed: () {
                               FirebaseCrashlytics.instance.crash();
                             },
-                            child: const Text(
-                              "Confirm"
+                            child: Text(
+                              "Confirm",
+                              style: kButtonDarkTextStyle,
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.black,
                             ),
                         ),
                       ],

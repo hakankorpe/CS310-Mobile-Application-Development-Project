@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key, required this.analytics, required this.observer})
@@ -87,14 +88,15 @@ class _ProfileViewState extends State<ProfileView> {
                           (_userInfo?["name"] ?? "") +
                               " " +
                               (_userInfo?["surname"] ?? ""),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(height: Dimen.sizedBox_5,),
                         Text(
                           _userInfo?["username"] ?? "",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontStyle: FontStyle.italic,
                           ),
@@ -124,31 +126,27 @@ class _ProfileViewState extends State<ProfileView> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                 "Rating:",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              //TODO: find star rating bar
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
+                              //TODO: find a BETTER star rating bar
+                              RatingBar.builder(
+                                initialRating: 3.5,
+                                minRating: 0,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 20,
+                                itemBuilder: (context, _) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 5,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  print(rating);
+                                },
                               ),
                             ],
                           )

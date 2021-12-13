@@ -21,6 +21,7 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   final _formKey = GlobalKey<FormState>();
+  bool isSearched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,11 @@ class _SearchViewState extends State<SearchView> {
               Row(
                 children: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isSearched = !isSearched;
+                        });
+                      },
                       icon: const Icon(
                         Icons.search,
                         color: Colors.black,
@@ -102,41 +107,68 @@ class _SearchViewState extends State<SearchView> {
                   ),
                 ],
               ),
-              //const SizedBox(height: 5,),
               const Divider(
                 thickness: 1.5,
                 color: Colors.black38,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: const [
-                  Text("Add Filters Button Later On"),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "${foundItems.length} Results for \"Nike\"",
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              IntrinsicWidth(
-                child: Wrap(
-                  spacing: 25.0,
-                  runSpacing: 25.0,
-                  alignment: WrapAlignment.center,
-                  children: foundItems,
+              if (isSearched != false)
+                Row(
+                  children: const [
+                    Text("Add Filters Button Later On"),
+                  ],
                 ),
-              ),
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (isSearched != false)
+                Text(
+                  "${foundItems.length} Results for \"Nike\" in products",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (isSearched != false)
+                IntrinsicWidth(
+                  child: Wrap(
+                    spacing: 25.0,
+                    runSpacing: 25.0,
+                    alignment: WrapAlignment.center,
+                    children: foundItems,
+                  ),
+                ),
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (isSearched != false)
+                const Divider(
+                  thickness: 1.5,
+                  color: Colors.black38,
+                ),
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (isSearched != false)
+                Text(
+                  "${foundItems.length} Results for \"Nike\" in sellers",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
             ]),
           ),
         ),

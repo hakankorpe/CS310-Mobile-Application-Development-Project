@@ -19,6 +19,9 @@ class SoldView extends StatefulWidget {
 }
 
 class _SoldViewState extends State<SoldView> {
+
+  int countSold = 0;
+
   @override
   Widget build(BuildContext context) {
     print("SoldView build is called.");
@@ -112,7 +115,28 @@ class _SoldViewState extends State<SoldView> {
                     ),
                   ),
                 ),
+
               ],
+            ),
+            Padding(
+              padding: Dimen.regularPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  countSold == 0 ? const Center(
+                      child: Text(
+                        "You have not sold any products yet.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                  ) : Container(
+
+                  )
+                ],
+              ),
             ),
           ],
         ),

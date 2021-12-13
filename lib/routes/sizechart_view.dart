@@ -19,6 +19,9 @@ class SizeChartView extends StatefulWidget {
 }
 
 class _SizeChartViewState extends State<SizeChartView> {
+
+  bool isBookmarked = false;
+
   @override
   Widget build(BuildContext context) {
     print("SizeChartView build is called.");
@@ -36,6 +39,23 @@ class _SizeChartViewState extends State<SizeChartView> {
         ),
         centerTitle: true,
         iconTheme: kAppBarIconStyle,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isBookmarked = !isBookmarked;
+              });
+            },
+            icon: isBookmarked ? const Icon(
+              Icons.bookmark,
+              color: AppColors.appBarElementColor,
+            )
+                : const Icon(
+              Icons.bookmark_border,
+              color: AppColors.appBarElementColor,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: Dimen.regularPadding,
@@ -70,10 +90,10 @@ class _SizeChartViewState extends State<SizeChartView> {
               const SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    "1300",
+                    "1300₺",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       decoration: TextDecoration.lineThrough,
@@ -99,7 +119,10 @@ class _SizeChartViewState extends State<SizeChartView> {
                   ),
                   // Quantity Selector
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Added to cart!')));
+                    },
                     icon: const Icon(
                       Icons.add_shopping_cart_rounded,
                       color: Colors.black,
