@@ -38,7 +38,7 @@ class DBService {
         .doc(token)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      print(documentSnapshot.data());
+      //print(documentSnapshot.data());
       return documentSnapshot.data();
     });
   }

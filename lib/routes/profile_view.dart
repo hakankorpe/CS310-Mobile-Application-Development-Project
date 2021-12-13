@@ -29,10 +29,23 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   AuthService auth = AuthService();
   DBService db = DBService();
   dynamic _userInfo;
 
+  Future<void> initializeUserInfo(String userUID) async {
+    final SharedPreferences prefs = await _prefs;
+    Map<String, dynamic> userInfo = await db.getUserInfo(userUID);
+
+    prefs.setString("user-info", jsonEncode(userInfo));
+
+    setState(() {
+      _userInfo = jsonDecode(prefs.getString("user-info")!);
+    });
+
+    print(_userInfo);
+  }
 
 
   @override
@@ -44,20 +57,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     if ((user != null)) {
 
-      if (_userInfo == null) {
-
-        db.getUserInfo(user.uid)
-            .then((value) => [SharedPreferences.getInstance(), value])
-        .then((value) {
-          value[0].setStringList("user-info", jsonEncode(value[1]));
-    });
-
-        /*db.getUserInfo(user.uid).then((value) {
-          setState(() {
-            _userInfo = value;
-          });
-        });*/
-      }
+      if (_userInfo == null) initializeUserInfo(user.uid);
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
 
