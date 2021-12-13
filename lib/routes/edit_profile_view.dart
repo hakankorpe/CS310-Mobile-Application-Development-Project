@@ -13,6 +13,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' show basename;
 import 'package:provider/provider.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -39,21 +41,40 @@ class _EditProfileViewState extends State<EditProfileView> {
   String newPass = "";
   String newPassAgain = "";
 
-  XFile? _image;
+  //XFile? _image;
+  File? _image2;
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+
+    return File(imagePath).copy(image.path);
+  }
 
   _imgFromCamera() async {
     final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+
+    // Store the image permanently
+    final imagePermanent = await saveImagePermanently(image!.path);
+
     setState(() {
-      _image = image;
+      _image2 = imagePermanent;
     });
   }
 
   _imgFromGallery() async {
     final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+
+    // Store the image permanently
+    final imagePermanent = await saveImagePermanently(image!.path);
+
     setState(() {
-      _image = image;
+      _image2 = imagePermanent;
     });
   }
 
@@ -167,10 +188,9 @@ class _EditProfileViewState extends State<EditProfileView> {
 
     setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
 
+
     db.getUserInfo(user!.uid).then((value) {
-      setState(() {
-        _userInfo = value;
-      });
+      //_userInfo = value;
     });
 
     return Scaffold(
@@ -204,23 +224,26 @@ class _EditProfileViewState extends State<EditProfileView> {
                       const SizedBox(
                         height: 5,
                       ),
-                      CircleAvatar(
-                        radius: 60.0,
-                        child: ClipRRect(
-                          child: _image != null
-                              ? Image.file(File(_image!.path))
-                              : Image.network("https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"),
-                          borderRadius: BorderRadius.all(Radius.circular(60.0)),
+                      ClipOval(
+                        child: _image2 != null ?
+                            Image.file(
+                              _image2!,
+                              width: 120,
+                              height: 120,
+                            ) : Image.network(
+                            "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                          width: 120,
+                          height: 120,
                         ),
                       ),
                       OutlinedButton(
                         onPressed: () async {
                           // Select the new image
                           await _showPicker(context);
-                          print("Path is " + _image!.path);
+                          print("Path is " + _image2!.path);
 
                           // Uplaod the new image to Firebase
-                          await storage.uploadProfilePict(_image!, 'test');
+                          await storage.uploadProfilePict(_image2!, user.uid);
                         },
                         child: const Text(
                           "Change profile picture",

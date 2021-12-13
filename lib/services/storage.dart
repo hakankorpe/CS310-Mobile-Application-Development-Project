@@ -6,7 +6,7 @@ import 'dart:io';
 class StorageService {
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<void> uploadProfilePict(XFile imageToUpload, String uid) async {
+  Future<void> uploadProfilePict(File imageToUpload, String uid) async {
     try {
       await storage.ref("/${uid}.png").putFile(File(imageToUpload.path));
       print("Profile image of ${uid} has been uploaded.");

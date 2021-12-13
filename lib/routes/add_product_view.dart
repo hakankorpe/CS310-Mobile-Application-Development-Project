@@ -16,6 +16,8 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show File, Platform;
 
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' show basename;
 
 
 class AddProductView extends StatefulWidget {
@@ -46,21 +48,39 @@ class _AddProductViewState extends State<AddProductView> {
 
   bool isIOS = Platform.isIOS;
 
-  XFile? _image;
+  File? _image2;
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+
+    return File(imagePath).copy(image.path);
+  }
 
   _imgFromCamera() async {
     final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+
+    // Store the image permanently
+    final imagePermanent = await saveImagePermanently(image!.path);
+
     setState(() {
-      _image = image;
+      _image2 = imagePermanent;
     });
   }
 
   _imgFromGallery() async {
     final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+
+    // Store the image permanently
+    final imagePermanent = await saveImagePermanently(image!.path);
+
     setState(() {
-      _image = image;
+      _image2 = imagePermanent;
     });
   }
 
@@ -179,8 +199,8 @@ class _AddProductViewState extends State<AddProductView> {
                             ),
                           ),
                           Container(
-                            child: _image != null ? Image.file(
-                                File(_image!.path),
+                            child: _image2 != null ? Image.file(
+                                File(_image2!.path),
                               height: 180,
                               width: 180,
                             )
@@ -196,10 +216,10 @@ class _AddProductViewState extends State<AddProductView> {
                             onPressed: () async {
                               // Select the new image
                               await _showPicker(context);
-                              print("Path is " + _image!.path);
+                              print("Path is " + _image2!.path);
 
                               // Uplaod the new image to Firebase
-                              await storage.uploadProfilePict(_image!, 'test');
+                              await storage.uploadProfilePict(_image2!, 'test');
                             },
                             child: const Text(
                               "Upload image for product",

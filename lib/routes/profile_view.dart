@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cs310_footwear_project/routes/login_view.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
@@ -13,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key, required this.analytics, required this.observer})
@@ -30,6 +33,8 @@ class _ProfileViewState extends State<ProfileView> {
   DBService db = DBService();
   dynamic _userInfo;
 
+
+
   @override
   Widget build(BuildContext context) {
     print("ProfileView build is called.");
@@ -38,12 +43,20 @@ class _ProfileViewState extends State<ProfileView> {
     FirebaseAnalyticsObserver observer = widget.observer;
 
     if ((user != null)) {
+
       if (_userInfo == null) {
-        db.getUserInfo(user.uid).then((value) {
+
+        db.getUserInfo(user.uid)
+            .then((value) => [SharedPreferences.getInstance(), value])
+        .then((value) {
+          value[0].setStringList("user-info", jsonEncode(value[1]));
+    });
+
+        /*db.getUserInfo(user.uid).then((value) {
           setState(() {
             _userInfo = value;
           });
-        });
+        });*/
       }
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
