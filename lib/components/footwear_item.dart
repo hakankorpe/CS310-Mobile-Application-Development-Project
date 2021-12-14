@@ -10,8 +10,11 @@ class FootWearItem extends StatelessWidget {
   final double price;
   final double rating;
   final int reviews;
+  int? stockCount;
+  double? discount;
 
-  const FootWearItem({
+
+  FootWearItem({
     Key? key,
     required this.imageUrl,
     required this.brandName,
@@ -19,6 +22,8 @@ class FootWearItem extends StatelessWidget {
     required this.price,
     required this.rating,
     required this.reviews,
+    this.stockCount,
+    this.discount,
   }) : super(key: key);
 
   @override

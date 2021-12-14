@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cs310_footwear_project/routes/edit_profile_view.dart';
 import 'package:cs310_footwear_project/routes/login_view.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
@@ -70,6 +71,9 @@ class _ProfileViewState extends State<ProfileView> {
     if ((user != null)) {
 
       if (_userInfo == null) initializeUserInfo(user.uid);
+
+      if (_userInfo["sign-in-type"] == "google-sign-in" && _userInfo["username"] == "")
+        return EditProfileView(analytics: analytics, observer: observer);
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
 

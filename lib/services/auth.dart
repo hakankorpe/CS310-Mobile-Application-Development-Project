@@ -63,7 +63,11 @@ class AuthService {
       print(credential);
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential[0]);
+      return await FirebaseAuth.instance.signInWithCredential(credential[0])
+        .then((value) {
+          User user = value.user!;
+          db.addUser(user.displayName!, "", user.email!, user.uid, "", "", "google-sign-in");
+      });
     } on FirebaseAuthException catch (e) {
       await FirebaseCrashlytics.instance.recordError(
         e,

@@ -55,7 +55,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     return File(imagePath).copy(image.path);
   }
 
-  _imgFromCamera() async {
+  _imgFromCamera(String userID) async {
     final ImagePicker _picker = ImagePicker();
     final image = await _picker.pickImage(source: ImageSource.camera);
     if (image == null) return;
@@ -63,12 +63,14 @@ class _EditProfileViewState extends State<EditProfileView> {
     // Store the image permanently
     final imagePermanent = await saveImagePermanently(image!.path);
 
+
     setState(() {
       _image2 = imagePermanent;
+      storage.uploadProfilePict(_image2!, userID);
     });
   }
 
-  _imgFromGallery() async {
+  _imgFromGallery(String userID) async {
     final ImagePicker _picker = ImagePicker();
     final image = await _picker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -78,10 +80,11 @@ class _EditProfileViewState extends State<EditProfileView> {
 
     setState(() {
       _image2 = imagePermanent;
+      storage.uploadProfilePict(_image2!, userID);
     });
   }
 
-  Future<void> _showPicker(context) async {
+  Future<void> _showPicker(context, String userID) async {
     !isIOS ? showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -92,7 +95,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     leading: const Icon(Icons.photo_library),
                     title: const Text("Photo Library"),
                     onTap: () {
-                      _imgFromGallery();
+                      _imgFromGallery(userID);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -100,7 +103,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     leading: const Icon(Icons.photo_camera),
                     title: const Text("Camera"),
                     onTap: () {
-                      _imgFromCamera();
+                      _imgFromCamera(userID);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -124,7 +127,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ],
                   ),
                   onPressed: () {
-                    _imgFromGallery();
+                    _imgFromGallery(userID);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -137,7 +140,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ],
                   ),
                   onPressed: () {
-                    _imgFromCamera();
+                    _imgFromCamera(userID);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -250,7 +253,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                         height: 5,
                       ),
                       ClipOval(
-                        child: _image2 != null ?
+                        //_userInfo["sign-in-type"] != "google-sign-in"
+                        child: _image2 != null  ?
                             Image.file(
                               _image2!,
                               width: 120,
@@ -264,11 +268,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                       OutlinedButton(
                         onPressed: () async {
                           // Select the new image
-                          await _showPicker(context);
+                          _showPicker(context, user.uid);
                           print("Path is " + _image2!.path);
 
                           // Uplaod the new image to Firebase
-                          await storage.uploadProfilePict(_image2!, user.uid);
+                          //storage.uploadProfilePict(_image2!, user.uid);
                         },
                         child: const Text(
                           "Change profile picture",

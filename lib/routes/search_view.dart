@@ -32,7 +32,7 @@ class _SearchViewState extends State<SearchView> {
     const dummyImageUrl =
         "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
-    const dummyItem = FootWearItem(
+    final dummyItem = FootWearItem(
       imageUrl: dummyImageUrl,
       brandName: "Nike",
       sellerName: "Melinda",
@@ -41,7 +41,7 @@ class _SearchViewState extends State<SearchView> {
       reviews: 1000,
     );
 
-    const foundItems = <FootWearItem>[
+    final foundItems = <FootWearItem>[
       dummyItem,
       dummyItem,
       dummyItem,

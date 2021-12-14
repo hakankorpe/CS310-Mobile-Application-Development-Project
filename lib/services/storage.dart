@@ -40,6 +40,9 @@ class StorageService {
     } on FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print(e.code);
+      await storage
+        .ref('avatar.png')
+        .writeToFile(downloadToFile);
     }
   }
 }

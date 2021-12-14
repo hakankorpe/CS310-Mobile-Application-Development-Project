@@ -2,6 +2,7 @@ import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/ui/product_tile.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -147,7 +148,10 @@ class _OnSaleViewState extends State<OnSaleView> {
                         ),
                         textAlign: TextAlign.center,
                       ))
-                    : Container(),
+                    : Padding(
+                    padding: Dimen.regularPadding,
+                    child: Column(),
+                  ),
               ],
             ),
             SizedBox(
