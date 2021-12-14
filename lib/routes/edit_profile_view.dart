@@ -1,4 +1,5 @@
-import 'dart:io' show File, Platform;
+import 'dart:convert';
+import 'dart:io' show Directory, File, Platform;
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show basename;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
@@ -29,6 +31,7 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   StorageService storage = StorageService();
   AuthService auth = AuthService();
   DBService db = DBService();
@@ -180,14 +183,34 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
+  Future<void> initializeUserInfo(String userUID) async {
+    final SharedPreferences prefs = await _prefs;
+    Map<String, dynamic> userInfo = await db.getUserInfo(userUID);
+
+    prefs.setString("user-info", jsonEncode(userInfo));
+
+    //setState(() {
+      _userInfo = jsonDecode(prefs.getString("user-info")!);
+    //});
+
+    print(_userInfo);
+
+    storage.downloadImage(_userInfo['userToken']);
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    setState(() {
+      _image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     print("EditProfileView build is called.");
     final user = Provider.of<User?>(context);
 
-    setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
+    if (_userInfo == null) initializeUserInfo(user!.uid);
 
+    setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
 
     db.getUserInfo(user!.uid).then((value) {
       //_userInfo = value;
@@ -216,9 +239,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                 children: [
                   Column(
                     children: [
-                      const Text(
-                        "LeBron James",
-                        style: TextStyle(
+                      Text(
+                        (_userInfo?["name"] ?? "") +
+                            " " +
+                            (_userInfo?["surname"] ?? ""),
+                        style: const TextStyle(
                             color: Colors.red, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
@@ -313,6 +338,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             autocorrect: false,
                             enableSuggestions: false,
                             keyboardType: TextInputType.text,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: const InputDecoration(
                               hintText: "Old Password",
                               border: OutlineInputBorder(
@@ -326,6 +352,33 @@ class _EditProfileViewState extends State<EditProfileView> {
                             style: const TextStyle(
                               color: Colors.black,
                             ),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Password field cannot be empty!';
+                              } else {
+                                String trimmedValue = value.trim();
+                                if (trimmedValue.isEmpty) {
+                                  return 'Password field cannot be empty!';
+                                }
+                                if (trimmedValue.length < 8) {
+                                  return 'Your password must contain at least 8 characters!';
+                                }
+                                if (trimmedValue != _userInfo["password"]) {
+                                  return 'Please enter your old password correctly!';
+                                }
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                oldPass = value;
+                              }
+                            },
+                            onChanged: (value) {
+                              if (value != null) {
+                                oldPass = value;
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -342,6 +395,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             autocorrect: false,
                             enableSuggestions: false,
                             keyboardType: TextInputType.text,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: const InputDecoration(
                               hintText: "New Password",
                               border: OutlineInputBorder(
@@ -355,6 +409,33 @@ class _EditProfileViewState extends State<EditProfileView> {
                             style: const TextStyle(
                               color: Colors.black,
                             ),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Password field cannot be empty!';
+                              } else {
+                                String trimmedValue = value.trim();
+                                if (trimmedValue.isEmpty) {
+                                  return 'Password field cannot be empty!';
+                                }
+                                if (trimmedValue.length < 8) {
+                                  return 'Your password must contain at least 8 characters!';
+                                }
+                                if (trimmedValue == _userInfo["password"]) {
+                                  return 'Your new password should be different than your last password!';
+                                }
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                newPass = value;
+                              }
+                            },
+                            onChanged: (value) {
+                              if (value != null) {
+                                newPass = value;
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -369,6 +450,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             autocorrect: false,
                             enableSuggestions: false,
                             keyboardType: TextInputType.text,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: const InputDecoration(
                               hintText: "New Password Again",
                               border: OutlineInputBorder(
@@ -382,6 +464,30 @@ class _EditProfileViewState extends State<EditProfileView> {
                             style: const TextStyle(
                               color: Colors.black,
                             ),
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Password field cannot be empty!';
+                              } else {
+                                String trimmedValue = value.trim();
+                                if (trimmedValue.isEmpty) {
+                                  return 'Password field cannot be empty!';
+                                }
+                                if (value != newPass) {
+                                  return 'Please enter the same password!';
+                                }
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                newPassAgain = value;
+                              }
+                            },
+                            onChanged: (value) {
+                              if (value != null) {
+                                newPassAgain = value;
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -396,7 +502,27 @@ class _EditProfileViewState extends State<EditProfileView> {
                 height: 20,
               ),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Updating password...')));
+
+                    db
+                        .updateUserPassword(user.uid, newPass)
+                        .then((value) {
+                      if (value is String) {
+                        return ScaffoldMessenger.of(context)
+                            .showSnackBar(
+                            SnackBar(content: Text("${value}")));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Password updated!')));
+                      }
+                    });
+                  }
+                },
                 child: const Text(
                   "Change password",
                   style: TextStyle(color: Colors.black),

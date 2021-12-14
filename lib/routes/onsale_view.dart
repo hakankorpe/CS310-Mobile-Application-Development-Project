@@ -1,11 +1,15 @@
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
+import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OnSaleView extends StatefulWidget {
   const OnSaleView({Key? key, required this.analytics, required this.observer})
@@ -19,13 +23,25 @@ class OnSaleView extends StatefulWidget {
 }
 
 class _OnSaleViewState extends State<OnSaleView> {
+
+  StorageService storage = StorageService();
+  DBService db = DBService();
+
+  List? _onSaleProducts = [];
   int countOnSale = 0;
 
   @override
   Widget build(BuildContext context) {
     print("OnSaleView build is called.");
-
+    final user = Provider.of<User?>(context);
     setCurrentScreen(widget.analytics, "Onsale View", "onsaleView");
+
+    db.getProductsOnSale(user!.uid).then((value) {
+      _onSaleProducts = value;
+      if (_onSaleProducts != null) setState(() {
+        countOnSale = _onSaleProducts!.length;
+      });
+    });
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,

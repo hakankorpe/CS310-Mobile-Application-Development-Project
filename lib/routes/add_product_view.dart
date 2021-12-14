@@ -10,6 +10,7 @@ import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ import 'dart:io' show File, Platform;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show basename;
+import 'package:provider/provider.dart';
 
 
 class AddProductView extends StatefulWidget {
@@ -45,6 +47,7 @@ class _AddProductViewState extends State<AddProductView> {
   int stockCount = 0;
   double footSize = 0.0;
   String productDetails = "";
+  String category = "";
 
   bool isIOS = Platform.isIOS;
 
@@ -161,6 +164,7 @@ class _AddProductViewState extends State<AddProductView> {
   @override
   Widget build(BuildContext context) {
     print("AddProductView build is called.");
+    final user = Provider.of<User?>(context);
 
     setCurrentScreen(widget.analytics, "Add Product View", "addProductView");
 
@@ -200,7 +204,7 @@ class _AddProductViewState extends State<AddProductView> {
                           ),
                           Container(
                             child: _image2 != null ? Image.file(
-                                File(_image2!.path),
+                                _image2!,
                               height: 180,
                               width: 180,
                             )
@@ -216,10 +220,7 @@ class _AddProductViewState extends State<AddProductView> {
                             onPressed: () async {
                               // Select the new image
                               await _showPicker(context);
-                              print("Path is " + _image2!.path);
-
-                              // Uplaod the new image to Firebase
-                              await storage.uploadProfilePict(_image2!, 'test');
+                              print("Path for image is " + _image2!.path);
                             },
                             child: const Text(
                               "Upload image for product",
@@ -258,12 +259,12 @@ class _AddProductViewState extends State<AddProductView> {
                             },
                             onSaved: (value) {
                               if (value != null) {
-                                price = value as double;
+                                price = double.parse(value);
                               }
                             },
                             onChanged: (value) {
                               if (value != null) {
-                                price = value as double;
+                                price = double.parse(value);
                               }
                             },
                           ),
@@ -276,7 +277,7 @@ class _AddProductViewState extends State<AddProductView> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextFormField(
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: const InputDecoration(
                               hintText: "Product Name",
@@ -290,23 +291,23 @@ class _AddProductViewState extends State<AddProductView> {
                             ),
                             validator: (value) {
                               if (value == null) {
-                                return 'Please enter a price!';
+                                return 'Please enter a product name!';
                               } else {
                                 String trimmedValue = value.trim();
                                 if (trimmedValue.isEmpty) {
-                                  return 'Please enter a price!';
+                                  return 'Please enter a product name!';
                                 }
                               }
                               return null;
                             },
                             onSaved: (value) {
                               if (value != null) {
-                                price = value as double;
+                                productName = value;
                               }
                             },
                             onChanged: (value) {
                               if (value != null) {
-                                price = value as double;
+                                productName = value;
                               }
                             },
                           ),
@@ -373,12 +374,12 @@ class _AddProductViewState extends State<AddProductView> {
                             },
                             onSaved: (value) {
                               if (value != null) {
-                                brandName = value;
+                                category = value;
                               }
                             },
                             onChanged: (value) {
                               if (value != null) {
-                                brandName = value;
+                                category = value;
                               }
                             },
                           ),
@@ -409,12 +410,12 @@ class _AddProductViewState extends State<AddProductView> {
                             },
                             onSaved: (value) {
                               if (value != null) {
-                                stockCount = value as int;
+                                stockCount = int.parse(value);
                               }
                             },
                             onChanged: (value) {
                               if (value != null) {
-                                stockCount = value as int;
+                                stockCount = int.parse(value);
                               }
                             },
                           ),
@@ -445,12 +446,12 @@ class _AddProductViewState extends State<AddProductView> {
                             },
                             onSaved: (value) {
                               if (value != null) {
-                                footSize = value as double;
+                                footSize = double.parse(value);
                               }
                             },
                             onChanged: (value) {
                               if (value != null) {
-                                footSize = value as double;
+                                footSize = double.parse(value);
                               }
                             },
                           ),
@@ -524,7 +525,31 @@ class _AddProductViewState extends State<AddProductView> {
                 OutlinedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
 
+                        if (_image2 != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Adding product...')));
+
+                          db.addProductAuto(productName, brandName, category, price as double,
+                              stockCount as int, footSize as double, productDetails, user!.uid, _image2!)
+                              .then((value) {
+                            if (value is String) {
+                              return ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                  SnackBar(content: Text("${value}")));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Your product is on sale!')));
+
+                              Navigator.popAndPushNamed(context, "/onSale");
+                            }
+                          });
+                        }
+                        else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please upload an image!')));
+                        }
                       }
                     },
                     child: Text(

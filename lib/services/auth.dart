@@ -9,6 +9,7 @@ import 'package:cs310_footwear_project/services/db.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final googleSignIn = GoogleSignIn();
+  final DBService db = DBService();
 
   User? _userFromFirebase(User? user) {
     return user ?? null;
@@ -171,5 +172,20 @@ class AuthService {
             'The user must reauthenticate before this operation can be executed.');
       }
     }
+  }
+
+  Future updatePassword(String oldPassword, String newPassword) async {
+    final User currentUser = _auth.currentUser!;
+    final cred = EmailAuthProvider.credential(email: currentUser.email!, password: oldPassword);
+    
+    currentUser.reauthenticateWithCredential(cred).then((value) {
+      currentUser.updatePassword(newPassword).then((value) {
+        db.updateUserPassword(currentUser.uid, newPassword);
+        print("Password updated!!!");
+      }).catchError((error) {
+        print(error.toString());
+        return error.toString();
+      });
+    });
   }
 }

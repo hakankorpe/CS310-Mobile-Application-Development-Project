@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cs310_footwear_project/routes/login_view.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';
+import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -13,6 +15,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +35,9 @@ class _ProfileViewState extends State<ProfileView> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   AuthService auth = AuthService();
   DBService db = DBService();
+  StorageService storage = StorageService();
   dynamic _userInfo;
+  File? _image2;
 
   Future<void> initializeUserInfo(String userUID) async {
     final SharedPreferences prefs = await _prefs;
@@ -45,6 +50,13 @@ class _ProfileViewState extends State<ProfileView> {
     });
 
     print(_userInfo);
+
+    storage.downloadImage(_userInfo['userToken']);
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    setState(() {
+      _image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
+    });
   }
 
 
@@ -87,9 +99,32 @@ class _ProfileViewState extends State<ProfileView> {
                     Column(
                       children: [
                         Column(
-                          children: const [
-                            CircleAvatar(
-                              radius: 35,
+                          children: [
+                            ClipOval(
+                              child: _image2 != null ?
+                              Image.file(
+                                _image2!,
+                                width: 60,
+                                height: 60,
+                              ) : Image.network(
+                                "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                                width: 60,
+                                height: 60,
+                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                          : null,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         )

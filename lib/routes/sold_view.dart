@@ -1,11 +1,15 @@
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
+import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class SoldView extends StatefulWidget {
@@ -20,13 +24,24 @@ class SoldView extends StatefulWidget {
 
 class _SoldViewState extends State<SoldView> {
 
+  StorageService storage = StorageService();
+  DBService db = DBService();
+
+  List? _soldProducts = [];
   int countSold = 0;
 
   @override
   Widget build(BuildContext context) {
     print("SoldView build is called.");
-
+    final user = Provider.of<User?>(context);
     setCurrentScreen(widget.analytics, "Sold View", "soldView");
+
+    db.getProductsSold(user!.uid).then((value) {
+      _soldProducts = value;
+      if (_soldProducts != null) setState(() {
+        countSold = _soldProducts!.length;
+      });
+    });
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
