@@ -52,14 +52,16 @@ class _ProfileViewState extends State<ProfileView> {
 
     print(_userInfo);
 
-    storage.downloadImage(_userInfo['userToken']);
+    await storage.downloadImage(_userInfo['userToken']);
     Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    imageCache!.clear();
+    imageCache!.clearLiveImages();
 
     setState(() {
       _image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +71,10 @@ class _ProfileViewState extends State<ProfileView> {
     FirebaseAnalyticsObserver observer = widget.observer;
 
     if ((user != null)) {
-
       if (_userInfo == null) initializeUserInfo(user.uid);
 
-      if (_userInfo["sign-in-type"] == "google-sign-in" && _userInfo["username"] == "")
+      if (_userInfo?["sign-in-type"] == "google-sign-in" &&
+          _userInfo["username"] == "")
         return EditProfileView(analytics: analytics, observer: observer);
 
       setCurrentScreen(widget.analytics, "Profile View", "profileView");
@@ -105,30 +107,38 @@ class _ProfileViewState extends State<ProfileView> {
                         Column(
                           children: [
                             ClipOval(
-                              child: _image2 != null ?
-                              Image.file(
-                                _image2!,
-                                width: 60,
-                                height: 60,
-                              ) : Image.network(
-                                "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-                                width: 60,
-                                height: 60,
-                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                          : null,
-                                      color: Colors.black,
+                              child: _image2 != null
+                                  ? Image.file(
+                                      _image2!,
+                                      width: 60,
+                                      height: 60,
+                                      key: UniqueKey(),
+                                    )
+                                  : Image.network(
+                                      "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                                      width: 60,
+                                      height: 60,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                            color: Colors.black,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
-                              ),
                             ),
                           ],
                         )
@@ -145,7 +155,9 @@ class _ProfileViewState extends State<ProfileView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: Dimen.sizedBox_5,),
+                        SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
                         Text(
                           _userInfo?["username"] ?? "",
                           style: const TextStyle(
@@ -155,7 +167,8 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/editProfile');
+                            Navigator.of(context)
+                                .popAndPushNamed("/editProfile");
                           },
                           child: const Text(
                             "Edit Profile",
@@ -185,7 +198,8 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                               //TODO: find a BETTER star rating bar
                               RatingBar.builder(
-                                initialRating: 3.5,
+                                initialRating:
+                                    _userInfo?["rating"].toDouble() ?? 0.0,
                                 minRating: 0,
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,

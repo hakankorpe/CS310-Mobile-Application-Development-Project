@@ -18,19 +18,22 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show basename;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  EditProfileView(
+      {Key? key, required this.analytics, required this.observer, this.image2})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
+  File? image2;
 
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   StorageService storage = StorageService();
   AuthService auth = AuthService();
@@ -45,7 +48,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   String newPassAgain = "";
 
   //XFile? _image;
-  File? _image2;
 
   Future<File> saveImagePermanently(String imagePath) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -63,10 +65,12 @@ class _EditProfileViewState extends State<EditProfileView> {
     // Store the image permanently
     final imagePermanent = await saveImagePermanently(image!.path);
 
-
     setState(() {
-      _image2 = imagePermanent;
-      storage.uploadProfilePict(_image2!, userID);
+      imageCache!.clear();
+      imageCache!.clearLiveImages();
+
+      widget.image2 = imagePermanent;
+      storage.uploadProfilePict(widget.image2!, userID);
     });
   }
 
@@ -79,111 +83,108 @@ class _EditProfileViewState extends State<EditProfileView> {
     final imagePermanent = await saveImagePermanently(image!.path);
 
     setState(() {
-      _image2 = imagePermanent;
-      storage.uploadProfilePict(_image2!, userID);
+      widget.image2 = imagePermanent;
+      storage.uploadProfilePict(widget.image2!, userID);
     });
   }
 
   Future<void> _showPicker(context, String userID) async {
-    !isIOS ? showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-              child: Wrap(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.photo_library),
-                    title: const Text("Photo Library"),
-                    onTap: () {
-                      _imgFromGallery(userID);
+    !isIOS
+        ? showModalBottomSheet(
+            context: context,
+            builder: (BuildContext bc) {
+              return SafeArea(
+                child: Wrap(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text("Photo Library"),
+                      onTap: () {
+                        _imgFromGallery(userID);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.photo_camera),
+                      title: const Text("Camera"),
+                      onTap: () {
+                        _imgFromCamera(userID);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            })
+        : showCupertinoModalPopup(
+            context: context,
+            builder: (BuildContext bc) {
+              return SafeArea(
+                child: CupertinoActionSheet(
+                  actions: <CupertinoActionSheetAction>[
+                    CupertinoActionSheetAction(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("Photo Library"),
+                          Icon(CupertinoIcons.photo_on_rectangle),
+                        ],
+                      ),
+                      onPressed: () {
+                        _imgFromGallery(userID);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoActionSheetAction(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("Camera"),
+                          Icon(CupertinoIcons.photo_camera),
+                        ],
+                      ),
+                      onPressed: () {
+                        _imgFromCamera(userID);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: const Text("Cancel"),
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.photo_camera),
-                    title: const Text("Camera"),
-                    onTap: () {
-                      _imgFromCamera(userID);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-          );
-        }
-    )
-    : showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: CupertinoActionSheet(
-              actions: <CupertinoActionSheetAction>[
-                CupertinoActionSheetAction(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("Photo Library"),
-                      Icon(CupertinoIcons.photo_on_rectangle),
-                    ],
-                  ),
-                  onPressed: () {
-                    _imgFromGallery(userID);
-                    Navigator.of(context).pop();
-                  },
                 ),
-                CupertinoActionSheetAction(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("Camera"),
-                      Icon(CupertinoIcons.photo_camera),
-                    ],
-                  ),
-                  onPressed: () {
-                    _imgFromCamera(userID);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          );
-        }
-    );
+              );
+            });
   }
 
-  Future<void> showAlertDialog(String title, String message, String buttonText) async {
+  Future<void> showAlertDialog(
+      String title, String message, String buttonText) async {
     return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: Text(message),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(buttonText)
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(
+              child: Text(message),
             ),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("Cancel")
-            )
-          ],
-        );
-      }
-    );
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(buttonText)),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Cancel"))
+            ],
+          );
+        });
   }
 
   Future<void> initializeUserInfo(String userUID) async {
@@ -193,18 +194,21 @@ class _EditProfileViewState extends State<EditProfileView> {
     prefs.setString("user-info", jsonEncode(userInfo));
 
     //setState(() {
-      _userInfo = jsonDecode(prefs.getString("user-info")!);
+    _userInfo = jsonDecode(prefs.getString("user-info")!);
     //});
 
     print(_userInfo);
 
-    storage.downloadImage(_userInfo['userToken']);
+    await storage.downloadImage(_userInfo['userToken']);
+
+    imageCache!.clear();
+    imageCache!.clearLiveImages();
+
     Directory appDocDir = await getApplicationDocumentsDirectory();
     setState(() {
-      _image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
+      widget.image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -225,11 +229,15 @@ class _EditProfileViewState extends State<EditProfileView> {
         backgroundColor: AppColors.appBarBackgroundColor,
         elevation: Dimen.appBarElevation,
         title: Text(
-            "Edit Profile",
+          "Edit Profile",
           style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
         iconTheme: kAppBarIconStyle,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.popAndPushNamed(context, "/profile"),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -254,22 +262,23 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       ClipOval(
                         //_userInfo["sign-in-type"] != "google-sign-in"
-                        child: _image2 != null  ?
-                            Image.file(
-                              _image2!,
-                              width: 120,
-                              height: 120,
-                            ) : Image.network(
-                            "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-                          width: 120,
-                          height: 120,
-                        ),
+                        child: widget.image2 != null
+                            ? Image.file(
+                                widget.image2!,
+                                width: 120,
+                                height: 120,
+                              )
+                            : Image.network(
+                                "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                                width: 120,
+                                height: 120,
+                              ),
                       ),
                       OutlinedButton(
                         onPressed: () async {
                           // Select the new image
                           _showPicker(context, user.uid);
-                          print("Path is " + _image2!.path);
+                          print("Path is " + widget.image2!.path);
 
                           // Uplaod the new image to Firebase
                           //storage.uploadProfilePict(_image2!, user.uid);
@@ -291,7 +300,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      showAlertDialog("Deleting Account",
+                      showAlertDialog(
+                          "Deleting Account",
                           "Do you really want to delete your account on Footwear? This action cannot be undone!",
                           "Delete");
                     },
@@ -308,7 +318,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      showAlertDialog("Disabling Account",
+                      showAlertDialog(
+                          "Disabling Account",
                           "Do you really want to disable your account on Footwear? This action cannot be undone!\n" +
                               "You can reactive your account by logging in again anytime.",
                           "Disable");
@@ -326,182 +337,192 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 30,),
-              _userInfo?["sign-in-type"] == "mailAndPass" ?
-              Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: TextFormField(
-                            obscureText: true,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Old Password",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Password field cannot be empty!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Password field cannot be empty!';
-                                }
-                                if (trimmedValue.length < 8) {
-                                  return 'Your password must contain at least 8 characters!';
-                                }
-                                if (trimmedValue != _userInfo["password"]) {
-                                  return 'Please enter your old password correctly!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                oldPass = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                oldPass = value;
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: TextFormField(
-                            obscureText: true,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "New Password",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Password field cannot be empty!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Password field cannot be empty!';
-                                }
-                                if (trimmedValue.length < 8) {
-                                  return 'Your password must contain at least 8 characters!';
-                                }
-                                if (trimmedValue == _userInfo["password"]) {
-                                  return 'Your new password should be different than your last password!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                newPass = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                newPass = value;
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10,),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: TextFormField(
-                            obscureText: true,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "New Password Again",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Password field cannot be empty!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Password field cannot be empty!';
-                                }
-                                if (value != newPass) {
-                                  return 'Please enter the same password!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                newPassAgain = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                newPassAgain = value;
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ) : Form(
-                key: _formKey,
-                child: Column(),
+              const SizedBox(
+                height: 30,
               ),
+              _userInfo?["sign-in-type"] == "mailAndPass"
+                  ? Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  obscureText: true,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardType: TextInputType.text,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: const InputDecoration(
+                                    hintText: "Old Password",
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.lightBlueAccent,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Password field cannot be empty!';
+                                    } else {
+                                      String trimmedValue = value.trim();
+                                      if (trimmedValue.isEmpty) {
+                                        return 'Password field cannot be empty!';
+                                      }
+                                      if (trimmedValue.length < 8) {
+                                        return 'Your password must contain at least 8 characters!';
+                                      }
+                                      if (trimmedValue !=
+                                          _userInfo["password"]) {
+                                        return 'Please enter your old password correctly!';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    if (value != null) {
+                                      oldPass = value;
+                                    }
+                                  },
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      oldPass = value;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  obscureText: true,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardType: TextInputType.text,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: const InputDecoration(
+                                    hintText: "New Password",
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.lightBlueAccent,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Password field cannot be empty!';
+                                    } else {
+                                      String trimmedValue = value.trim();
+                                      if (trimmedValue.isEmpty) {
+                                        return 'Password field cannot be empty!';
+                                      }
+                                      if (trimmedValue.length < 8) {
+                                        return 'Your password must contain at least 8 characters!';
+                                      }
+                                      if (trimmedValue ==
+                                          _userInfo["password"]) {
+                                        return 'Your new password should be different than your last password!';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    if (value != null) {
+                                      newPass = value;
+                                    }
+                                  },
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      newPass = value;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  obscureText: true,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardType: TextInputType.text,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: const InputDecoration(
+                                    hintText: "New Password Again",
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.lightBlueAccent,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Password field cannot be empty!';
+                                    } else {
+                                      String trimmedValue = value.trim();
+                                      if (trimmedValue.isEmpty) {
+                                        return 'Password field cannot be empty!';
+                                      }
+                                      if (value != newPass) {
+                                        return 'Please enter the same password!';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    if (value != null) {
+                                      newPassAgain = value;
+                                    }
+                                  },
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      newPassAgain = value;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : Form(
+                      key: _formKey,
+                      child: Column(),
+                    ),
               const SizedBox(
                 height: 20,
               ),
@@ -513,13 +534,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Updating password...')));
 
-                    db
-                        .updateUserPassword(user.uid, newPass)
-                        .then((value) {
+                    db.updateUserPassword(user.uid, newPass).then((value) {
                       if (value is String) {
                         return ScaffoldMessenger.of(context)
-                            .showSnackBar(
-                            SnackBar(content: Text("${value}")));
+                            .showSnackBar(SnackBar(content: Text("${value}")));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Password updated!')));
@@ -540,7 +558,9 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 7,),
+      bottomNavigationBar: NavigationBar(
+        index: 7,
+      ),
     );
   }
 }

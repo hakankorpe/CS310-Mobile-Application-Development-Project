@@ -35,9 +35,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
-
-
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   StorageService storage = StorageService();
   AuthService auth = AuthService();
@@ -109,7 +106,7 @@ class _HomeViewState extends State<HomeView> {
       if (_userInfo == null) {
         initializeUserInfo(user!.uid);
 
-        if (_userInfo["sign-in-type"] == "google-sign-in" &&
+        if (_userInfo?["sign-in-type"] == "google-sign-in" &&
             _userInfo["username"] == "")
           return EditProfileView(analytics: analytics, observer: observer);
       }
@@ -159,8 +156,7 @@ class _HomeViewState extends State<HomeView> {
             //mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              FootWearDisplay(
-                  itemList: dummyItemList, displayName: "Featured"),
+              FootWearDisplay(itemList: dummyItemList, displayName: "Featured"),
               FootWearDisplay(
                   itemList: dummyItemList, displayName: "Discounts"),
               FootWearDisplay(
