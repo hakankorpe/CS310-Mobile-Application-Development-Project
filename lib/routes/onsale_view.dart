@@ -154,9 +154,9 @@ class _OnSaleViewState extends State<OnSaleView> {
                   ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 0,
-            )
+            ),
           ],
         ),
       ),

@@ -58,6 +58,7 @@ class _SoldViewState extends State<SoldView> {
       body: Padding(
         padding: Dimen.regularPadding,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
@@ -133,25 +134,29 @@ class _SoldViewState extends State<SoldView> {
 
               ],
             ),
-            Padding(
-              padding: Dimen.regularPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  countSold == 0 ? const Center(
-                      child: Text(
-                        "You have not sold any products yet.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                  ) : Container(
-
-                  )
-                ],
-              ),
+            Column(
+              //mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                countSold == 0
+                    ? const Center(
+                    child: Text(
+                      "You have not sold any products yet.",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ))
+                    : Padding(
+                  padding: Dimen.regularPadding,
+                  child: Column(),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 0,
             ),
           ],
         ),
