@@ -23,7 +23,7 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  int countCartItem = 0;
+  int countCartItem = 1;
 
   @override
   Widget build(BuildContext context) {

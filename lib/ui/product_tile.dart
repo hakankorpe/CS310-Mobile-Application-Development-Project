@@ -23,67 +23,83 @@ class ProductTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: Dimen.appBarElevation,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Column(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
                 children: [
                   Image.network(
-                      product.imageUrl,
-                    width: MediaQuery.of(context).size.width /3.5,
-                    height: MediaQuery.of(context).size.width /3.5,
+                    product.imageUrl,
+                    width: MediaQuery.of(context).size.width /5.5,
+                    height: MediaQuery.of(context).size.width /5.5,
                   ),
-                  Text(product.brandName),
+                  Text(
+                      product.brandName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
+              const SizedBox(width: Dimen.sizedBox_15,),
+              Column(
                 children: [
                   Row(
                     children: [
-                      const Text("Price: "),
-                      Text(
-                        product.price.toString() + "₺",
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          decoration: TextDecoration.lineThrough,
+                      const Text(
+                          "Price: ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Text(
-                          "${product.price * (1 - product.discount!)}"
+                      Column(
+                        children: [
+                          Text(
+                            product.price.toString() + "₺",
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                              decoration: TextDecoration.lineThrough,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                              "${product.price * (1 - product.discount!)}"
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: Dimen.sizedBox_5,),
                       IconButton(
-                          onPressed: priceUpdate,
-                          icon: const Icon(Icons.edit_sharp),
+                        onPressed: priceUpdate,
+                        icon: const Icon(Icons.edit_sharp,),
+                        iconSize: 20,
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  //const SizedBox(height: Dimen.sizedBox_5,),
                   Row(
                     children: [
-                      const Text("Stock: "),
-                      Text("x ${product.stockCount}",),
+                      const Text(
+                          "Stock: ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text("x${product.stockCount}",),
                       IconButton(
                         onPressed: stockUpdate,
-                        icon: const Icon(Icons.edit_sharp),
+                        icon: const Icon(Icons.edit_sharp,),
+                        iconSize: 20,
                       ),
                     ],
                   ),
+
                 ],
               ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
+              //const SizedBox(width: Dimen.sizedBox_15,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   OutlinedButton(
                     child: const Text(
@@ -94,41 +110,41 @@ class ProductTile extends StatelessWidget {
                     ),
                     onPressed: remove,
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                       side: const BorderSide(
-                        color: Colors.black,
+                        color: Colors.red,
                         width: 0,
                       ),
                     ),
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
                   OutlinedButton(
                     child: const Text(
                       "Discount",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                     onPressed: applyDiscount,
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: Colors.amberAccent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                       side: const BorderSide(
-                        color: Colors.black,
+                        color: Colors.amberAccent,
                         width: 0,
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const Divider(thickness: Dimen.divider_2,),
+        ],
       ),
     );
   }
