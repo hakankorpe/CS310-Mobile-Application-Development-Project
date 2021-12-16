@@ -4,7 +4,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 
-class ProductTile extends StatelessWidget {
+class  OnSaleTile extends StatelessWidget {
 
   final FootWearItem product;
   final VoidCallback remove;
@@ -12,7 +12,7 @@ class ProductTile extends StatelessWidget {
   final VoidCallback stockUpdate;
   final VoidCallback priceUpdate;
 
-  const ProductTile({
+  const OnSaleTile({
     required this.product,
     required this.remove,
     required this.applyDiscount,
