@@ -166,24 +166,46 @@ class _EditProfileViewState extends State<EditProfileView> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: SingleChildScrollView(
-              child: Text(message),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(buttonText)),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Cancel"))
-            ],
-          );
+          if (!isIOS) {
+            return AlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: Text(message),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(buttonText)),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancel"))
+              ],
+            );
+          }
+          else {
+            return CupertinoAlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: Text(message),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(buttonText)),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancel"))
+              ],
+            );
+          }
         });
   }
 

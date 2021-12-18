@@ -297,7 +297,7 @@ class _ProfileViewState extends State<ProfileView> {
                         children: const [
                           SizedBox(width: Dimen.sizedBox_30),
                           Text(
-                            "My Comments",
+                            "My Reviews",
                             style: TextStyle(
                               color: Colors.black,
                             ),

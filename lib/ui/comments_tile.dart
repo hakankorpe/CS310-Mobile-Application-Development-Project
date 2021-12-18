@@ -120,7 +120,7 @@ class CommentsTile extends StatelessWidget {
                           direction: Axis.horizontal,
                           allowHalfRating: true,
                           itemCount: 5,
-                          itemSize: 15,
+                          itemSize: MediaQuery.of(context).size.width / 27,
                           itemBuilder: (context, _) => const Icon(
                             Icons.star,
                             color: Colors.amber,

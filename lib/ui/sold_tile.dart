@@ -7,17 +7,9 @@ import 'package:flutter/material.dart';
 class  SoldTile extends StatelessWidget {
 
   final FootWearItem product;
-  final VoidCallback remove;
-  final VoidCallback applyDiscount;
-  final VoidCallback stockUpdate;
-  final VoidCallback priceUpdate;
 
   const SoldTile({
     required this.product,
-    required this.remove,
-    required this.applyDiscount,
-    required this.stockUpdate,
-    required this.priceUpdate,
   });
 
   @override

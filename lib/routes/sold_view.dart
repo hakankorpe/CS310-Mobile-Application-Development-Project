@@ -151,7 +151,6 @@ class _SoldViewState extends State<SoldView> {
 
                 ],
               ),
-              const Divider(thickness: Dimen.divider_2,),
               Column(
                 //mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -170,13 +169,12 @@ class _SoldViewState extends State<SoldView> {
                       : SingleChildScrollView(
                     child: Wrap(
                       children: [
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        SoldTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-
+                        const Divider(thickness: Dimen.divider_2,),
+                        SoldTile(product: dummyItem,),
+                        SoldTile(product: dummyItem,),
+                        SoldTile(product: dummyItem,),
+                        SoldTile(product: dummyItem,),
+                        SoldTile(product: dummyItem,),
                       ],
                     ),
                   ),

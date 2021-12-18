@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 
 class CommentApproveTile extends StatelessWidget {
   final FootWearItem product;
-  final VoidCallback remove;
-  final VoidCallback applyDiscount;
-  final VoidCallback stockUpdate;
-  final VoidCallback priceUpdate;
+  final String username;
+  final String comment;
+  final VoidCallback approveComment;
+  final VoidCallback denyComment;
 
   const CommentApproveTile({
     required this.product,
-    required this.remove,
-    required this.applyDiscount,
-    required this.stockUpdate,
-    required this.priceUpdate,
+    required this.username,
+    required this.comment,
+    required this.approveComment,
+    required this.denyComment,
   });
 
   @override
@@ -57,17 +57,17 @@ class CommentApproveTile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.person_pin_rounded,
                             ),
                             Expanded(
                               flex: 1,
                               child: Text(
-                                "test_sayanarmasdadadadsddsadsddsaadn",
+                                username,
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -77,11 +77,11 @@ class CommentApproveTile extends StatelessWidget {
                         const SizedBox(
                           height: Dimen.sizedBox_5,
                         ),
-                        const Expanded(
+                        Expanded(
                           flex: 1,
                           child: Text(
-                            "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                            style: TextStyle(
+                            comment,
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                             ),
                             softWrap: false,
@@ -99,12 +99,12 @@ class CommentApproveTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: approveComment,
                           icon: const Icon(Icons.check_box_rounded),
                           iconSize: 30,
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: denyComment,
                           icon:
                               const Icon(Icons.indeterminate_check_box_rounded),
                           iconSize: 30,
