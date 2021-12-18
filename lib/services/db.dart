@@ -40,9 +40,7 @@ class DBService {
   }
 
   Future updateUserPassword(String token, String newPassword) async {
-      userCollection
-        .doc(token)
-        .update({'password': newPassword});
+    userCollection.doc(token).update({'password': newPassword});
   }
 
   Future getUserInfo(String token) async {
@@ -55,67 +53,68 @@ class DBService {
     });
   }
 
-  Future addProductAuto(String productName, String brandName, String category,
-      double price, int stockCount, double footSize, String productDetails, String sellerID, File image) async {
-    productCollection
-      .add({
-        'product-id': "",
-        'product-name': productName,
-        'brand-name': brandName,
-        'category': category,
-        'initial-price': price,
-        'current-price': price,
-        'discount': 0,
-        'initial-stock-count': stockCount,
-        'remaining-stock-count': stockCount,
-        'sold-count': 0,
-        'foot-size': footSize,
-        'details': productDetails,
-        'seller-id': sellerID,
-        'rating': 0,
-        'comment-count': 0,
-      })
-        .then((value) {
-          productCollection
-              .doc(value.id)
-              .update({"product-id" : value.id});
+  Future addProductAuto(
+      String productName,
+      String brandName,
+      String category,
+      double price,
+      int stockCount,
+      double footSize,
+      String productDetails,
+      String sellerID,
+      File image) async {
+    productCollection.add({
+      'product-id': "",
+      'product-name': productName,
+      'brand-name': brandName,
+      'category': category,
+      'initial-price': price,
+      'current-price': price,
+      'discount': 0,
+      'initial-stock-count': stockCount,
+      'remaining-stock-count': stockCount,
+      'sold-count': 0,
+      'foot-size': footSize,
+      'details': productDetails,
+      'seller-id': sellerID,
+      'rating': 0,
+      'comment-count': 0,
+    }).then((value) {
+      productCollection.doc(value.id).update({"product-id": value.id});
 
-          // Uplaod the new image to Firebase
-          storage.uploadProductPict(image, value.id);
-      })
-        .catchError((error) {
-          print('Error: ${error.toString()}');
+      // Uplaod the new image to Firebase
+      storage.uploadProductPict(image, value.id);
+    }).catchError((error) {
+      print('Error: ${error.toString()}');
 
-          return error.toString();
-        });
+      return error.toString();
+    });
   }
 
   Future getProductsOnSale(String sellerID) async {
-
     return productCollection
-      .where('seller-id', isEqualTo: sellerID)
-      //.where('remaining-stock-count', isGreaterThan: 0)
-      .get()
-      .then((value) {
-        var result = value.docs;
-        List<Map<String, dynamic>> allProducts = [];
-        for (var doc in result) {
-          if (doc.data() != null) {
-            var data = doc.data() as Map<String, dynamic>;
+        .where('seller-id', isEqualTo: sellerID)
+        //.where('remaining-stock-count', isGreaterThan: 0)
+        .get()
+        .then((value) {
+      var result = value.docs;
+      List<Map<String, dynamic>> allProducts = [];
+      for (var doc in result) {
+        if (doc.data() != null) {
+          var data = doc.data() as Map<String, dynamic>;
 
-            if (data['remaining-stock-count'] > 0) allProducts.add(data);
-          }
+          if (data['remaining-stock-count'] > 0) allProducts.add(data);
         }
-        print(allProducts);
-        return allProducts;
+      }
+      print(allProducts);
+      return allProducts;
     });
   }
 
   Future getProductsSold(String sellerID) async {
-
     return productCollection
         .where('seller-id', isEqualTo: sellerID)
-    //.where('remaining-stock-count', isGreaterThan: 0)
+        //.where('remaining-stock-count', isGreaterThan: 0)
         .get()
         .then((value) {
       var result = value.docs;
@@ -143,7 +142,7 @@ class DBService {
         .doc(userID)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-          return documentSnapshot.data();
+      return documentSnapshot.data();
     });
   }
 }

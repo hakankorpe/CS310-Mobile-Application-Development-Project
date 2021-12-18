@@ -526,34 +526,40 @@ class _EditProfileViewState extends State<EditProfileView> {
               const SizedBox(
                 height: 20,
               ),
-              OutlinedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
+              _userInfo?["sign-in-type"] == "mailAndPass"
+                  ? OutlinedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Updating password...')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Updating password...')));
 
-                    db.updateUserPassword(user.uid, newPass).then((value) {
-                      if (value is String) {
-                        return ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("${value}")));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Password updated!')));
-                      }
-                    });
-                  }
-                },
-                child: const Text(
-                  "Change password",
-                  style: TextStyle(color: Colors.black),
-                ),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.lightGreenAccent),
-                ),
-              ),
+                          db
+                              .updateUserPassword(user.uid, newPass)
+                              .then((value) {
+                            if (value is String) {
+                              return ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("${value}")));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Password updated!')));
+                            }
+                          });
+                        }
+                      },
+                      child: const Text(
+                        "Change password",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.lightGreenAccent),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

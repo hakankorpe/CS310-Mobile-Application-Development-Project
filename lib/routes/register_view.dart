@@ -14,12 +14,17 @@ import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
-  RegisterView({Key? key, required this.analytics, required this.observer})
+  RegisterView(
+      {Key? key,
+      required this.analytics,
+      required this.observer,
+      this.credentials})
       : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
-  String? mailAddress;
+  dynamic credentials;
+  String? get mailAddress => credentials?[1];
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -269,9 +274,10 @@ class _RegisterViewState extends State<RegisterView> {
                           enabled: widget.mailAddress == null,
                           keyboardType: TextInputType.emailAddress,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "Email",
-                            border: OutlineInputBorder(
+                          initialValue: widget.mailAddress ?? "",
+                          decoration: InputDecoration(
+                            hintText: widget.mailAddress ?? "Email",
+                            border: const OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.lightBlueAccent,
                               ),
@@ -314,48 +320,50 @@ class _RegisterViewState extends State<RegisterView> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: TextFormField(
-                          enabled: widget.mailAddress == null,
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "Password",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                        child: widget.mailAddress != null
+                            ? Container()
+                            : TextFormField(
+                                obscureText: true,
+                                keyboardType: TextInputType.text,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                decoration: const InputDecoration(
+                                  hintText: "Password",
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.lightBlueAccent,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Password field cannot be empty!';
+                                  } else {
+                                    String trimmedValue = value.trim();
+                                    if (trimmedValue.isEmpty) {
+                                      return 'Password field cannot be empty!';
+                                    }
+                                    if (trimmedValue.length < 8) {
+                                      return 'Your password must contain at least 8 characters!';
+                                    }
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  if (value != null) {
+                                    pass = value;
+                                  }
+                                },
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    pass = value;
+                                  }
+                                },
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Password field cannot be empty!';
-                            } else {
-                              String trimmedValue = value.trim();
-                              if (trimmedValue.isEmpty) {
-                                return 'Password field cannot be empty!';
-                              }
-                              if (trimmedValue.length < 8) {
-                                return 'Your password must contain at least 8 characters!';
-                              }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              pass = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            if (value != null) {
-                              pass = value;
-                            }
-                          },
-                        ),
                       ),
                     ],
                   ),
@@ -366,48 +374,51 @@ class _RegisterViewState extends State<RegisterView> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: TextFormField(
-                          enabled: widget.mailAddress == null,
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: const InputDecoration(
-                            hintText: "Password again",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                        child: widget.mailAddress != null
+                            ? Container()
+                            : TextFormField(
+                                enabled: widget.mailAddress == null,
+                                obscureText: true,
+                                keyboardType: TextInputType.text,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                decoration: const InputDecoration(
+                                  hintText: "Password again",
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.lightBlueAccent,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Password field cannot be empty!';
+                                  } else {
+                                    String trimmedValue = value.trim();
+                                    if (trimmedValue.isEmpty) {
+                                      return 'Password field cannot be empty!';
+                                    }
+                                    if (value != pass) {
+                                      return 'Please enter the same password!';
+                                    }
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  if (value != null) {
+                                    pass2 = value;
+                                  }
+                                },
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    pass2 = value;
+                                  }
+                                },
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Password field cannot be empty!';
-                            } else {
-                              String trimmedValue = value.trim();
-                              if (trimmedValue.isEmpty) {
-                                return 'Password field cannot be empty!';
-                              }
-                              if (value != pass) {
-                                return 'Please enter the same password!';
-                              }
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              pass2 = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            if (value != null) {
-                              pass2 = value;
-                            }
-                          },
-                        ),
                       ),
                     ],
                   ),
@@ -431,8 +442,16 @@ class _RegisterViewState extends State<RegisterView> {
                                       content: Text('Registering......')));
 
                               auth
-                                  .signupWithMailAndPass(
-                                      email, pass, name, surname, username, "mailAndPass")
+                                  .signUp(
+                                      email,
+                                      pass,
+                                      name,
+                                      surname,
+                                      username,
+                                      widget.mailAddress != null
+                                          ? "google-sign-in"
+                                          : "mailAndPass",
+                                      widget.credentials?[0])
                                   .then((value) {
                                 if (value is String) {
                                   return ScaffoldMessenger.of(context)

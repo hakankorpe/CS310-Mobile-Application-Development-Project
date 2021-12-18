@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cs310_footwear_project/routes/register_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -55,19 +58,24 @@ class AuthService {
     }
   }
 
+  Future signUpWithCredentials() async {}
+
   Future signInWithGoogle() async {
     try {
       // Trigger the authentication flow
       final credential = await getUserCredentials();
 
-      print(credential);
+      var sameEmail = await db.userCollection
+          .where('email', isEqualTo: credential[1])
+          .get();
+
+      if (sameEmail.docs.isEmpty) {
+        googleSignIn.signOut();
+        return credential;
+      }
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential[0])
-        .then((value) {
-          User user = value.user!;
-          db.addUser(user.displayName!, "", user.email!, user.uid, "", "", "google-sign-in");
-      });
+      return await FirebaseAuth.instance.signInWithCredential(credential[0]);
     } on FirebaseAuthException catch (e) {
       await FirebaseCrashlytics.instance.recordError(
         e,
@@ -88,17 +96,20 @@ class AuthService {
     }
   }
 
-  Future signupWithMailAndPass(String mail, String pass, String name,
-      String surname, String username, String signInType) async {
+  Future signUp(String mail, String pass, String name, String surname,
+      String username, String signInType, dynamic credentials) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: mail, password: pass);
+      UserCredential result = signInType == "mailAndPass"
+          ? await _auth.createUserWithEmailAndPassword(
+              email: mail, password: pass)
+          : await _auth.signInWithCredential(credentials);
       User user = result.user!;
 
       // Add user to database before returning to profile
       DBService dbService = DBService();
       String userToken = await user.uid;
-      dbService.addUser(name, surname, mail, userToken, username, pass, signInType);
+      dbService.addUser(
+          name, surname, mail, userToken, username, pass, signInType);
 
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {
@@ -180,8 +191,9 @@ class AuthService {
 
   Future updatePassword(String oldPassword, String newPassword) async {
     final User currentUser = _auth.currentUser!;
-    final cred = EmailAuthProvider.credential(email: currentUser.email!, password: oldPassword);
-    
+    final cred = EmailAuthProvider.credential(
+        email: currentUser.email!, password: oldPassword);
+
     currentUser.reauthenticateWithCredential(cred).then((value) {
       currentUser.updatePassword(newPassword).then((value) {
         db.updateUserPassword(currentUser.uid, newPassword);

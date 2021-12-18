@@ -267,9 +267,12 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   SignInButton(Buttons.Google, onPressed: () {
                     auth.signInWithGoogle().then((value) {
-                      if (value is String) {
-                        return ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("${value}")));
+                      if (value?[1] is String) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => RegisterView(
+                                analytics: analytics,
+                                observer: observer,
+                                credentials: value)));
                       }
                     });
                   }),
