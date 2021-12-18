@@ -7,7 +7,7 @@
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.15652284638-9pqdg167427vbgih6rp72sgahv7kp7ft</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>15652284638-ukr9033ahmrg0qhq8bgkbc81726st90b.apps.googleusercontent.com</string>
+	<string>15652284638-0cghcgk8bllufg2p71pio92bb48hrqp4.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBVtEWUzPbPHI2xldTt3KJ73TBoF90KmsA</string>
 	<key>GCM_SENDER_ID</key>
@@ -21,16 +21,16 @@
 	<key>STORAGE_BUCKET</key>
 	<string>cs310-footwear.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:15652284638:ios:d621bd02b8c4f9e672ba4f</string>
+	<string>1:15652284638:ios:b32cc7b48f74057572ba4f</string>
 </dict>
 </plist>
