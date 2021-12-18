@@ -4,8 +4,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 
-class  CommentApproveTile extends StatelessWidget {
-
+class CommentApproveTile extends StatelessWidget {
   final FootWearItem product;
   final VoidCallback remove;
   final VoidCallback applyDiscount;
@@ -22,80 +21,105 @@ class  CommentApproveTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: Dimen.appBarElevation,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Image.network(
-                      product.imageUrl,
-                      width: MediaQuery.of(context).size.width /5.5,
-                      height: MediaQuery.of(context).size.width /5.5,
-                    ),
-                    Text(
-                      product.brandName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //const SizedBox(width: Dimen.sizedBox_15,),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.person_pin_rounded,),
+    return Container(
+      height: MediaQuery.of(context).size.height / 6.5,
+      child: Card(
+        elevation: Dimen.appBarElevation,
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          product.imageUrl,
+                          width: MediaQuery.of(context).size.width / 5.5,
+                          height: MediaQuery.of(context).size.width / 5.5,
+                        ),
                         Text(
-                          "test_sayanarman",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
+                          product.brandName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
                           ),
-                          overflow: TextOverflow.clip,
                         ),
                       ],
                     ),
-                    const SizedBox(height: Dimen.sizedBox_5,),
-                    const Text(
-                        "kdhsfbksdfsbdguhakdfjbkjdfgvufgdau",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
+                  ),
+                  //const SizedBox(width: Dimen.sizedBox_15,),
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(
+                              Icons.person_pin_rounded,
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                "test_sayanarmasdadadadsddsadsddsaadn",
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      maxLines: 15,
-                      ),
-                  ],
-                ),
-              ),
-              //const SizedBox(width: Dimen.sizedBox_15,),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.check_box_rounded),
-                      iconSize: 30,
+                        const SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
+                        const Expanded(
+                          flex: 1,
+                          child: Text(
+                            "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                            ),
+                            softWrap: false,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.indeterminate_check_box_rounded),
-                      iconSize: 30,
+                  ),
+                  //const SizedBox(width: Dimen.sizedBox_15,),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.check_box_rounded),
+                          iconSize: 30,
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon:
+                              const Icon(Icons.indeterminate_check_box_rounded),
+                          iconSize: 30,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const Divider(thickness: Dimen.divider_2,),
-        ],
+            ),
+            const Divider(
+              thickness: Dimen.divider_2,
+            ),
+          ],
+        ),
       ),
     );
   }
