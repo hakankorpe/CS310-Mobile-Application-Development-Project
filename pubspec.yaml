@@ -51,6 +51,8 @@ dependencies:
   dots_indicator: ^2.0.0
   string_validator: ^0.3.0
   flutter_rating_bar: ^4.0.0
+  flutter_material_pickers: ^3.1.2
+  credit_card_validator: ^2.0.1
 
 
   image_picker: ^0.8.4+4
