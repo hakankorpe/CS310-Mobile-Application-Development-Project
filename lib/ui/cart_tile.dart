@@ -58,7 +58,8 @@ class _CartTileState extends State<CartTile> {
                       ),
                     ]
                 ),
-              )),
+              ),
+              ),
               const Expanded(flex: 2, child: Text("370" //TODO: datadan birim fiyati alinacak
                   +
                   "₺",
