@@ -1,7 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'dart:io';
 
 class StorageService {
@@ -32,17 +32,26 @@ class StorageService {
     File downloadToFile = File('${appDocDir.path}/${imageID}.png');
 
     try {
-      await storage
-          .ref('${imageID}.png')
-          .writeToFile(downloadToFile);
+      await storage.ref('${imageID}.png').writeToFile(downloadToFile);
 
       print("Image has downloaded!");
     } on FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print(e.code);
-      await storage
-        .ref('avatar.png')
-        .writeToFile(downloadToFile);
+      await storage.ref('avatar.png').writeToFile(downloadToFile);
     }
+  }
+
+  Future<Image> returnImage(String imageId) async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    File downloadToFile = File('${appDocDir.path}/${imageId}.png');
+
+    if (!await downloadToFile.exists()) {
+      await downloadImage(imageId);
+      imageCache!.clear();
+      imageCache!.clearLiveImages();
+    }
+
+    return Image.file(downloadToFile);
   }
 }

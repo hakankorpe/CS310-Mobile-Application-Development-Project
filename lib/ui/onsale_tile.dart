@@ -4,8 +4,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 
-class  OnSaleTile extends StatelessWidget {
-
+class OnSaleTile extends StatelessWidget {
   final FootWearItem product;
   final VoidCallback remove;
   final VoidCallback applyDiscount;
@@ -31,26 +30,28 @@ class  OnSaleTile extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Image.network(
-                    product.imageUrl,
-                    width: MediaQuery.of(context).size.width /5.5,
-                    height: MediaQuery.of(context).size.width /5.5,
+                  Container(
+                    child: product.image,
+                    width: MediaQuery.of(context).size.width / 5.5,
+                    height: MediaQuery.of(context).size.width / 5.5,
                   ),
                   Text(
-                      product.brandName,
+                    product.brandName,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: Dimen.sizedBox_15,),
+              const SizedBox(
+                width: Dimen.sizedBox_15,
+              ),
               Column(
                 children: [
                   Row(
                     children: [
                       const Text(
-                          "Price: ",
+                        "Price: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                         ),
@@ -65,14 +66,14 @@ class  OnSaleTile extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Text(
-                              "${product.price * (1 - product.discount!)}"
-                          ),
+                          Text("${product.price * (1 - product.discount!)}"),
                         ],
                       ),
                       IconButton(
                         onPressed: priceUpdate,
-                        icon: const Icon(Icons.edit_sharp,),
+                        icon: const Icon(
+                          Icons.edit_sharp,
+                        ),
                         iconSize: 20,
                       ),
                     ],
@@ -81,20 +82,23 @@ class  OnSaleTile extends StatelessWidget {
                   Row(
                     children: [
                       const Text(
-                          "Stock: ",
+                        "Stock: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Text("x${product.stockCount}",),
+                      Text(
+                        "x${product.stockCount}",
+                      ),
                       IconButton(
                         onPressed: stockUpdate,
-                        icon: const Icon(Icons.edit_sharp,),
+                        icon: const Icon(
+                          Icons.edit_sharp,
+                        ),
                         iconSize: 20,
                       ),
                     ],
                   ),
-
                 ],
               ),
               //const SizedBox(width: Dimen.sizedBox_15,),
@@ -143,7 +147,9 @@ class  OnSaleTile extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(thickness: Dimen.divider_2,),
+          const Divider(
+            thickness: Dimen.divider_2,
+          ),
         ],
       ),
     );

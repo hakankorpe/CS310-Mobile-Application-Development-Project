@@ -4,8 +4,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 
-class  SoldTile extends StatelessWidget {
-
+class SoldTile extends StatelessWidget {
   final FootWearItem product;
 
   const SoldTile({
@@ -21,22 +20,27 @@ class  SoldTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                children: [
-                  Image.network(
-                    product.imageUrl,
-                    width: MediaQuery.of(context).size.width /5.5,
-                    height: MediaQuery.of(context).size.width /5.5,
-                  ),
-                  Text(
-                    product.brandName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      child: product.image,
+                      width: MediaQuery.of(context).size.width / 5.5,
+                      height: MediaQuery.of(context).size.width / 5.5,
                     ),
-                  ),
-                ],
+                    Text(
+                      product.productName,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(width: Dimen.sizedBox_15,),
+              const SizedBox(
+                width: Dimen.sizedBox_15,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,14 +54,16 @@ class  SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                          "${product.price.toString()}₺",
+                        "${product.initialPrice.toString()}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -74,7 +80,9 @@ class  SoldTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -84,7 +92,7 @@ class  SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.stockCount}",
+                        "${product.soldCount}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -113,7 +121,9 @@ class  SoldTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -134,7 +144,9 @@ class  SoldTile extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(thickness: Dimen.divider_2,),
+          const Divider(
+            thickness: Dimen.divider_2,
+          ),
         ],
       ),
     );

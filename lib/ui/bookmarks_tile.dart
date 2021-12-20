@@ -5,8 +5,7 @@ import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class  BookmarksTile extends StatelessWidget {
-
+class BookmarksTile extends StatelessWidget {
   final FootWearItem product;
 
   const BookmarksTile({
@@ -24,10 +23,10 @@ class  BookmarksTile extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Image.network(
-                    product.imageUrl,
-                    width: MediaQuery.of(context).size.width /5.5,
-                    height: MediaQuery.of(context).size.width /5.5,
+                  Container(
+                    child: product.image,
+                    width: MediaQuery.of(context).size.width / 5.5,
+                    height: MediaQuery.of(context).size.width / 5.5,
                   ),
                   Text(
                     product.brandName,
@@ -37,7 +36,9 @@ class  BookmarksTile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: Dimen.sizedBox_15,),
+              const SizedBox(
+                width: Dimen.sizedBox_15,
+              ),
               Column(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +59,9 @@ class  BookmarksTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -75,7 +78,9 @@ class  BookmarksTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -104,7 +109,9 @@ class  BookmarksTile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: Dimen.sizedBox_15,),
+              const SizedBox(
+                width: Dimen.sizedBox_15,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -118,7 +125,9 @@ class  BookmarksTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimen.sizedBox_5,),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       Text(
@@ -133,7 +142,9 @@ class  BookmarksTile extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(thickness: Dimen.divider_2,),
+          const Divider(
+            thickness: Dimen.divider_2,
+          ),
         ],
       ),
     );

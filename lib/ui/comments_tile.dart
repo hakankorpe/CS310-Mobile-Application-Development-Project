@@ -23,10 +23,10 @@ class CommentsTile extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Image.network(
-                    product.imageUrl,
-                    width: MediaQuery.of(context).size.width / 5,
-                    height: MediaQuery.of(context).size.width / 5,
+                  Container(
+                    child: product.image,
+                    width: MediaQuery.of(context).size.width / 5.5,
+                    height: MediaQuery.of(context).size.width / 5.5,
                   ),
                 ],
               ),

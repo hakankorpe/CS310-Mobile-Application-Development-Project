@@ -33,7 +33,7 @@ class _OrdersViewState extends State<OrdersView> {
         "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
     final dummyItem = FootWearItem(
-      imageUrl: dummyImageUrl,
+      productName: "ADSADADSDA",
       brandName: "Nike",
       sellerName: "Melinda",
       price: 3.99,
@@ -59,43 +59,52 @@ class _OrdersViewState extends State<OrdersView> {
         padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: countOrders == 0 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+            mainAxisAlignment: countOrders == 0
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               countOrders == 0
                   ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Text(
-                    "No purchase history!",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: Dimen.sizedBox_15,
-                  ),
-                  Text(
-                    "Check back after your next shopping experience!",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "No purchase history!",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: Dimen.sizedBox_15,
+                        ),
+                        Text(
+                          "Check back after your next shopping experience!",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    )
                   : SingleChildScrollView(
-                child: Wrap(
-                  children: [
-                    const Divider(thickness: Dimen.divider_2,),
-                    OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                  ],
-                ),
-              ),
+                      child: Wrap(
+                        children: [
+                          const Divider(
+                            thickness: Dimen.divider_2,
+                          ),
+                          OnSaleTile(
+                              product: dummyItem,
+                              remove: () {},
+                              applyDiscount: () {},
+                              stockUpdate: () {},
+                              priceUpdate: () {}),
+                        ],
+                      ),
+                    ),
             ],
           ),
         ),

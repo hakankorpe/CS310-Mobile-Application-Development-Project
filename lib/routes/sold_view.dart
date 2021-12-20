@@ -13,9 +13,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class SoldView extends StatefulWidget {
-  const SoldView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const SoldView({Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -25,11 +25,10 @@ class SoldView extends StatefulWidget {
 }
 
 class _SoldViewState extends State<SoldView> {
-
   StorageService storage = StorageService();
   DBService db = DBService();
 
-  List? _soldProducts = [];
+  List<SoldTile> _soldProducts = [];
   int countSold = 0;
 
   @override
@@ -39,25 +38,12 @@ class _SoldViewState extends State<SoldView> {
     setCurrentScreen(widget.analytics, "Sold View", "soldView");
 
     db.getProductsSold(user!.uid).then((value) {
-      _soldProducts = value;
-      if (_soldProducts != null) setState(() {
-        //countSold = _soldProducts!.length;
-      });
+      if (_soldProducts.length == 0)
+        setState(() {
+          _soldProducts = value;
+          countSold = _soldProducts!.length;
+        });
     });
-
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
-
-    final dummyItem = FootWearItem(
-      imageUrl: dummyImageUrl,
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-      discount: 0.25,
-      stockCount: 27,
-    );
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -65,7 +51,7 @@ class _SoldViewState extends State<SoldView> {
         backgroundColor: AppColors.appBarBackgroundColor,
         elevation: Dimen.appBarElevation,
         title: Text(
-            "My Products",
+          "My Products",
           style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
@@ -75,7 +61,9 @@ class _SoldViewState extends State<SoldView> {
         padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: countSold == 0 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+            mainAxisAlignment: countSold == 0
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -148,7 +136,6 @@ class _SoldViewState extends State<SoldView> {
                       ),
                     ),
                   ),
-
                 ],
               ),
               Column(
@@ -158,26 +145,26 @@ class _SoldViewState extends State<SoldView> {
                 children: [
                   countSold == 0
                       ? const Center(
-                      child: Text(
-                        "You have not sold any products yet.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.center,
-                      ))
+                          child: Text(
+                          "You have not sold any products yet.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        ))
                       : SingleChildScrollView(
-                    child: Wrap(
-                      children: [
-                        const Divider(thickness: Dimen.divider_2,),
-                        SoldTile(product: dummyItem,),
-                        SoldTile(product: dummyItem,),
-                        SoldTile(product: dummyItem,),
-                        SoldTile(product: dummyItem,),
-                        SoldTile(product: dummyItem,),
-                      ],
-                    ),
-                  ),
+                          child: Column(
+                            children: [
+                              const Divider(
+                                thickness: Dimen.divider_2,
+                              ),
+                              Wrap(
+                                children: _soldProducts,
+                              ),
+                            ],
+                          ),
+                        ),
                 ],
               ),
               const SizedBox(
@@ -187,7 +174,9 @@ class _SoldViewState extends State<SoldView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 7,),
+      bottomNavigationBar: NavigationBar(
+        index: 7,
+      ),
     );
   }
 }

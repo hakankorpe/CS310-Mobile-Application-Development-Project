@@ -8,9 +8,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
-
 class SizeChartView extends StatefulWidget {
-  const SizeChartView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const SizeChartView(
+      {Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -20,7 +21,6 @@ class SizeChartView extends StatefulWidget {
 }
 
 class _SizeChartViewState extends State<SizeChartView> {
-
   DBService db = DBService();
 
   bool isBookmarked = false;
@@ -48,22 +48,24 @@ class _SizeChartViewState extends State<SizeChartView> {
               setState(() {
                 if (isBookmarked) {
                   db.unBookmarkProduct(
-                      "MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
+                      "MFR2EFaE6AezehbiIRdZGR4AHS82", "MrEIU7loTcanVdRXvkCP");
                 } else {
-                  db.bookmarkProduct("MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
+                  db.bookmarkProduct(
+                      "MFR2EFaE6AezehbiIRdZGR4AHS82", "MrEIU7loTcanVdRXvkCP");
                 }
 
                 isBookmarked = !isBookmarked;
               });
             },
-            icon: isBookmarked ? const Icon(
-              Icons.bookmark,
-              color: AppColors.appBarElementColor,
-            )
+            icon: isBookmarked
+                ? const Icon(
+                    Icons.bookmark,
+                    color: AppColors.appBarElementColor,
+                  )
                 : const Icon(
-              Icons.bookmark_border,
-              color: AppColors.appBarElementColor,
-            ),
+                    Icons.bookmark_border,
+                    color: AppColors.appBarElementColor,
+                  ),
           ),
         ],
       ),
@@ -97,7 +99,9 @@ class _SizeChartViewState extends State<SizeChartView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,8 +119,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                         "900₺",
                         style: TextStyle(
                             fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "30% Off",
@@ -150,9 +153,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                       },
                       child: const Text(
                         "Description",
-                        style: TextStyle(
-                            color: Colors.black
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -172,9 +173,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                       onPressed: () {},
                       child: const Text(
                         "Size Chart",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.black,
@@ -196,9 +195,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                       },
                       child: const Text(
                         "Reviews",
-                        style: TextStyle(
-                            color: Colors.black
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -214,19 +211,23 @@ class _SizeChartViewState extends State<SizeChartView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Expanded(
                     flex: 1,
                     child: Container(
                       margin: const EdgeInsets.all(13.0),
-                      color:  Colors.white,
+                      color: Colors.white,
                       height: 230.0,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 12,),
+                          const SizedBox(
+                            height: 12,
+                          ),
                           const Text(
                             "Size Chart",
                             style: TextStyle(
@@ -238,9 +239,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                             padding: const EdgeInsets.all(12),
                             child: SingleChildScrollView(
                               child: Column(
-                                children: const [
-
-                                ],
+                                children: const [],
                               ),
                             ),
                           ),
@@ -254,7 +253,9 @@ class _SizeChartViewState extends State<SizeChartView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 6,),
+      bottomNavigationBar: NavigationBar(
+        index: 6,
+      ),
     );
   }
 }

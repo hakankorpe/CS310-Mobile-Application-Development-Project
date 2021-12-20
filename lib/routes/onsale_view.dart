@@ -25,14 +25,11 @@ class OnSaleView extends StatefulWidget {
 }
 
 class _OnSaleViewState extends State<OnSaleView> {
-
   StorageService storage = StorageService();
   DBService db = DBService();
 
-  List? _onSaleProducts = [];
+  List<OnSaleTile> _onSaleProducts = [];
   int countOnSale = 0;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -41,25 +38,12 @@ class _OnSaleViewState extends State<OnSaleView> {
     setCurrentScreen(widget.analytics, "Onsale View", "onsaleView");
 
     db.getProductsOnSale(user!.uid).then((value) {
-      _onSaleProducts = value;
-      if (_onSaleProducts != null && countOnSale > 0) setState(() {
-        countOnSale = _onSaleProducts!.length;
-      });
+      if (_onSaleProducts.length == 0)
+        setState(() {
+          _onSaleProducts = value;
+          countOnSale = _onSaleProducts!.length;
+        });
     });
-
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
-
-    final dummyItem = FootWearItem(
-      imageUrl: dummyImageUrl,
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-      discount: 0.25,
-      stockCount: 27,
-    );
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -77,7 +61,9 @@ class _OnSaleViewState extends State<OnSaleView> {
         padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: countOnSale == 0 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+            mainAxisAlignment: countOnSale == 0
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -167,19 +153,8 @@ class _OnSaleViewState extends State<OnSaleView> {
                           textAlign: TextAlign.center,
                         ))
                       : SingleChildScrollView(
-                        child: Wrap(
-                    children: [
-                        const Divider(thickness: Dimen.divider_2,),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                        OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
-                    ],
-                  ),
-                      ),
+                          child: Wrap(children: _onSaleProducts),
+                        ),
                 ],
               ),
               const SizedBox(

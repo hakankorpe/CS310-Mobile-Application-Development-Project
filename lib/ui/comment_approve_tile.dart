@@ -36,8 +36,8 @@ class CommentApproveTile extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Image.network(
-                          product.imageUrl,
+                        Container(
+                          child: product.image,
                           width: MediaQuery.of(context).size.width / 5.5,
                           height: MediaQuery.of(context).size.width / 5.5,
                         ),

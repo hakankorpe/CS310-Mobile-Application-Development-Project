@@ -21,9 +21,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show basename;
 import 'package:provider/provider.dart';
 
-
 class AddProductView extends StatefulWidget {
-  const AddProductView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const AddProductView(
+      {Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -33,12 +34,10 @@ class AddProductView extends StatefulWidget {
 }
 
 class _AddProductViewState extends State<AddProductView> {
-
   StorageService storage = StorageService();
   AuthService auth = AuthService();
   DBService db = DBService();
   dynamic _userInfo;
-
 
   final _formKey = GlobalKey<FormState>();
   double price = 0.0;
@@ -88,78 +87,76 @@ class _AddProductViewState extends State<AddProductView> {
   }
 
   Future<void> _showPicker(context) async {
-    !isIOS ? showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Wrap(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text("Photo Library"),
-                  onTap: () {
-                    _imgFromGallery();
-                    Navigator.of(context).pop();
-                  },
+    !isIOS
+        ? showModalBottomSheet(
+            context: context,
+            builder: (BuildContext bc) {
+              return SafeArea(
+                child: Wrap(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text("Photo Library"),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.photo_camera),
+                      title: const Text("Camera"),
+                      onTap: () {
+                        _imgFromCamera();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
                 ),
-                ListTile(
-                  leading: const Icon(Icons.photo_camera),
-                  title: const Text("Camera"),
-                  onTap: () {
-                    _imgFromCamera();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-    )
+              );
+            })
         : showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: CupertinoActionSheet(
-              actions: <CupertinoActionSheetAction>[
-                CupertinoActionSheetAction(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("Photo Library"),
-                      Icon(CupertinoIcons.photo_on_rectangle),
-                    ],
+            context: context,
+            builder: (BuildContext bc) {
+              return SafeArea(
+                child: CupertinoActionSheet(
+                  actions: <CupertinoActionSheetAction>[
+                    CupertinoActionSheetAction(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("Photo Library"),
+                          Icon(CupertinoIcons.photo_on_rectangle),
+                        ],
+                      ),
+                      onPressed: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoActionSheetAction(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("Camera"),
+                          Icon(CupertinoIcons.photo_camera),
+                        ],
+                      ),
+                      onPressed: () {
+                        _imgFromCamera();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    child: const Text("Cancel"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  onPressed: () {
-                    _imgFromGallery();
-                    Navigator.of(context).pop();
-                  },
                 ),
-                CupertinoActionSheetAction(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("Camera"),
-                      Icon(CupertinoIcons.photo_camera),
-                    ],
-                  ),
-                  onPressed: () {
-                    _imgFromCamera();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          );
-        }
-    );
+              );
+            });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -174,314 +171,331 @@ class _AddProductViewState extends State<AddProductView> {
         backgroundColor: AppColors.appBarBackgroundColor,
         elevation: Dimen.appBarElevation,
         title: Text(
-            "Add Product",
+          "Add Product",
           style: kAppBarTitleTextStyle,
         ),
         centerTitle: true,
         iconTheme: kAppBarIconStyle,
       ),
       body: Padding(
-        padding: Dimen.regularPadding,
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text(
-                            "Product Image",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Container(
-                            child: _image2 != null ? Image.file(
-                                _image2!,
-                              height: 180,
-                              width: 180,
-                            )
-                                : const SizedBox(
-                                child: Center(
-                                    child: Text("No image is selected!")
-                                ),
-                                width: 180,
-                                height: 180,
-                            ),
-                          ),
-                          OutlinedButton(
-                            onPressed: () async {
-                              // Select the new image
-                              await _showPicker(context);
-                              print("Path for image is " + _image2!.path);
-                            },
-                            child: const Text(
-                              "Upload image for product",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                            ),
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Price (₺)",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a price!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a price!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                price = double.parse(value);
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                price = double.parse(value);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Product Name",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a product name!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a product name!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                productName = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                productName = value;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Dimen.sizedBox_15,),
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Brand Name",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a brand name!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a brand name!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                brandName = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                brandName = value;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Dimen.sizedBox_15,),
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Category",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a category for product!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a category for product!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                category = value;
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                category = value;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Dimen.sizedBox_15,),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Stock Count",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a stock count!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a stock count!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                stockCount = int.parse(value);
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                stockCount = int.parse(value);
-                              }
-                            },
-                          ),
-                          const SizedBox(height: Dimen.sizedBox_15,),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            decoration: const InputDecoration(
-                              hintText: "Foot Size",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please enter a foot size!';
-                              } else {
-                                String trimmedValue = value.trim();
-                                if (trimmedValue.isEmpty) {
-                                  return 'Please enter a foot size!';
-                                }
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              if (value != null) {
-                                footSize = double.parse(value);
-                              }
-                            },
-                            onChanged: (value) {
-                              if (value != null) {
-                                footSize = double.parse(value);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: Dimen.sizedBox_30,),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          padding: Dimen.regularPadding,
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Center(
-                        child: Text(
-                            "Product Details",
-                          style: kButtonDarkTextStyle,
-
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Text(
+                              "Product Image",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Container(
+                              child: _image2 != null
+                                  ? Image.file(
+                                      _image2!,
+                                      height: 180,
+                                      width: 180,
+                                    )
+                                  : const SizedBox(
+                                      child: Center(
+                                          child: Text("No image is selected!")),
+                                      width: 180,
+                                      height: 180,
+                                    ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () async {
+                                // Select the new image
+                                await _showPicker(context);
+                                print("Path for image is " + _image2!.path);
+                              },
+                              child: const Text(
+                                "Upload image for product",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                              ),
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Price (₺)",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a price!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a price!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  price = double.parse(value);
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  price = double.parse(value);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Product Name",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a product name!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a product name!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  productName = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  productName = value;
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Brand Name",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a brand name!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a brand name!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  brandName = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  brandName = value;
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Category",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a category for product!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a category for product!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  category = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  category = value;
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Stock Count",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a stock count!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a stock count!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  stockCount = int.parse(value);
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  stockCount = int.parse(value);
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Foot Size",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please enter a foot size!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Please enter a foot size!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  footSize = double.parse(value);
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  footSize = double.parse(value);
+                                }
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  color: Colors.black,
-                  height: Dimen.sizedBox_20,
-                ),
-                const SizedBox(height: Dimen.sizedBox_15,),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
+                  const SizedBox(
+                    height: Dimen.sizedBox_30,
+                  ),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text(
+                            "Product Details",
+                            style: kButtonDarkTextStyle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    color: Colors.black,
+                    height: Dimen.sizedBox_20,
+                  ),
+                  const SizedBox(
+                    height: Dimen.sizedBox_15,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
                         child: TextFormField(
                           maxLines: 7,
                           keyboardType: TextInputType.text,
@@ -493,7 +507,7 @@ class _AddProductViewState extends State<AddProductView> {
                                 color: Colors.lightBlueAccent,
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(8.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
                           validator: (value) {
@@ -518,54 +532,68 @@ class _AddProductViewState extends State<AddProductView> {
                             }
                           },
                         ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: Dimen.sizedBox_5,),
-                OutlinedButton(
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
+                  OutlinedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
 
                         if (_image2 != null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Adding product...')));
+                              const SnackBar(
+                                  content: Text('Adding product...')));
 
-                          db.addProductAuto(productName, brandName, category, price as double,
-                              stockCount as int, footSize as double, productDetails, user!.uid, _image2!)
+                          db
+                              .addProductAuto(
+                                  productName,
+                                  brandName,
+                                  category,
+                                  price as double,
+                                  stockCount as int,
+                                  footSize as double,
+                                  productDetails,
+                                  user!.uid,
+                                  _image2!)
                               .then((value) {
                             if (value is String) {
-                              return ScaffoldMessenger.of(context)
-                                  .showSnackBar(
+                              return ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text("${value}")));
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Your product is on sale!')));
+                                  const SnackBar(
+                                      content:
+                                          Text('Your product is on sale!')));
 
                               Navigator.popAndPushNamed(context, "/onSale");
                             }
                           });
-                        }
-                        else {
+                        } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Please upload an image!')));
+                              const SnackBar(
+                                  content: Text('Please upload an image!')));
                         }
                       }
                     },
                     child: Text(
-                        "Add Product to Database",
+                      "Add Product to Database",
                       style: kButtonDarkTextStyle,
                     ),
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        )
+          )),
+      bottomNavigationBar: NavigationBar(
+        index: 7,
       ),
-      bottomNavigationBar: NavigationBar(index: 7,),
     );
   }
 }

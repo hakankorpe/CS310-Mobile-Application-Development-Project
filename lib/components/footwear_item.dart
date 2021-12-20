@@ -2,30 +2,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FootWearItem extends StatelessWidget {
-
-  final String imageUrl;
+  Image? image;
+  String? imageUrl;
 
   final String brandName;
   final String sellerName;
+  final String productName;
 
   final double price;
   final double rating;
+  double? initialPrice;
+
   final int reviews;
   int? stockCount;
+  int? soldCount;
   double? discount;
 
-
-  FootWearItem({
-    Key? key,
-    required this.imageUrl,
-    required this.brandName,
-    required this.sellerName,
-    required this.price,
-    required this.rating,
-    required this.reviews,
-    this.stockCount,
-    this.discount,
-  }) : super(key: key);
+  FootWearItem(
+      {Key? key,
+      required this.brandName,
+      required this.productName,
+      required this.sellerName,
+      required this.price,
+      required this.rating,
+      required this.reviews,
+      this.initialPrice,
+      this.stockCount,
+      this.discount,
+      this.soldCount,
+      Image? img})
+      : super(key: key) {
+    image = img ??
+        Image.network(
+            "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +49,8 @@ class FootWearItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image(
-            image: NetworkImage(
-              imageUrl,
-            ),
+          Container(
+            child: image,
             width: MediaQuery.of(context).size.width / 3.5,
             height: MediaQuery.of(context).size.width / 3.5,
           ),

@@ -30,7 +30,7 @@ class _CommentsViewState extends State<CommentsView> {
         "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
     final dummyItem = FootWearItem(
-      imageUrl: dummyImageUrl,
+      productName: "DIJSADODASDSADAODSAKDAKODAODL",
       brandName: "Nikdsadsad012e3e9wqd0qasD0DSA0DAS0DAS0D0AD0AD0D0S0AD0e",
       sellerName: "Melindadsadadadadsadsdsdasdasdsddsadsdsadsddssaddw",
       price: 3.99,
