@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FootWearItem extends StatelessWidget {
+
   final String imageUrl;
 
   final String brandName;

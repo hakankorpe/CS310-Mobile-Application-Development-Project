@@ -1,4 +1,5 @@
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -19,6 +20,8 @@ class ReviewsView extends StatefulWidget {
 }
 
 class _ReviewsViewState extends State<ReviewsView> {
+
+  DBService db = DBService();
 
   bool isBookmarked = false;
 
@@ -43,6 +46,13 @@ class _ReviewsViewState extends State<ReviewsView> {
           IconButton(
             onPressed: () {
               setState(() {
+                if (isBookmarked) {
+                  db.unBookmarkProduct(
+                      "MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
+                } else {
+                  db.bookmarkProduct("MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
+                }
+
                 isBookmarked = !isBookmarked;
               });
             },

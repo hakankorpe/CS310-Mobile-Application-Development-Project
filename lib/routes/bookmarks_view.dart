@@ -22,7 +22,7 @@ class BookmarksView extends StatefulWidget {
 
 class _BookmarksViewState extends State<BookmarksView> {
 
-  int bookmarkCount = 0;
+  int bookmarkCount = 1;
 
   @override
   Widget build(BuildContext context) {

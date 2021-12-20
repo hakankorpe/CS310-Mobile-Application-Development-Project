@@ -30,7 +30,7 @@ class _SoldViewState extends State<SoldView> {
   DBService db = DBService();
 
   List? _soldProducts = [];
-  int countSold = 1;
+  int countSold = 0;
 
   @override
   Widget build(BuildContext context) {

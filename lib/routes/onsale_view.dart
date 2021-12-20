@@ -30,7 +30,7 @@ class _OnSaleViewState extends State<OnSaleView> {
   DBService db = DBService();
 
   List? _onSaleProducts = [];
-  int countOnSale = 1;
+  int countOnSale = 0;
 
 
 
@@ -151,7 +151,6 @@ class _OnSaleViewState extends State<OnSaleView> {
                   ),
                 ],
               ),
-              const Divider(thickness: Dimen.divider_2,),
               Column(
                 //mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -170,6 +169,7 @@ class _OnSaleViewState extends State<OnSaleView> {
                       : SingleChildScrollView(
                         child: Wrap(
                     children: [
+                        const Divider(thickness: Dimen.divider_2,),
                         OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
                         OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),
                         OnSaleTile(product: dummyItem, remove: () {}, applyDiscount: () {}, stockUpdate: () {}, priceUpdate: () {}),

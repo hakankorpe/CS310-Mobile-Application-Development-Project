@@ -11,6 +11,8 @@ class DBService {
       FirebaseFirestore.instance.collection('products');
   final CollectionReference cartCollection =
       FirebaseFirestore.instance.collection('carts');
+  final CollectionReference bookmarkCollection =
+        FirebaseFirestore.instance.collection("bookmarks");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -136,13 +138,36 @@ class DBService {
       productID: 1,
     });
   }
+  
+  Future updateProductQuantityAtCart(String userID, String productID, int newQuantity) async {
+    cartCollection
+      .doc(userID)
+      .update({productID: newQuantity});
+  }
 
   Future getCartOfUser(String userID) async {
     return cartCollection
         .doc(userID)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
+          return documentSnapshot.data();
+        });
+  }
+
+  Future getBookmarksOfUser(String userID,) async {
+    return bookmarkCollection
+        .doc(userID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
       return documentSnapshot.data();
     });
+  }
+
+  Future bookmarkProduct(String userID, String productID) async {
+    bookmarkCollection.doc(userID).update({productID: true});
+  }
+
+  Future unBookmarkProduct(String userID, String productID) async {
+    bookmarkCollection.doc(userID).update({productID: false});
   }
 }

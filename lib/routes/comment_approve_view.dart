@@ -22,7 +22,7 @@ class CommentApproveView extends StatefulWidget {
 
 class _CommentApproveViewState extends State<CommentApproveView> {
 
-  int countToApprove = 1;
+  int countToApprove = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +135,6 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                   ),
                 ],
               ),
-              const Divider(thickness: Dimen.divider_2,),
               Column(
                 //mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -154,6 +153,7 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                       : SingleChildScrollView(
                     child: Wrap(
                       children: [
+                        const Divider(thickness: Dimen.divider_2,),
                         CommentApproveTile(product: dummyItem, username: "test_sayanarman", comment: "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh", approveComment: () {}, denyComment: () {}),
                         CommentApproveTile(product: dummyItem, username: "test_sayanarman", comment: "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh", approveComment: () {}, denyComment: () {}),
                         CommentApproveTile(product: dummyItem, username: "test_sayanarman", comment: "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh", approveComment: () {}, denyComment: () {}),
