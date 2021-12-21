@@ -342,7 +342,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/sizeChart");
+                        Navigator.popAndPushNamed(context, "/sizeChart", arguments: {"productId": productId},);
                       },
                       child: const Text(
                         "Size Chart",
@@ -364,7 +364,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/reviews");
+                        Navigator.popAndPushNamed(context, "/reviews", arguments: {"productId": productId},);
                       },
                       child: const Text(
                         "Reviews",
