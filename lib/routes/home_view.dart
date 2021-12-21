@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_display.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/routes/edit_profile_view.dart';
@@ -40,6 +41,7 @@ class _HomeViewState extends State<HomeView> {
   AuthService auth = AuthService();
   DBService db = DBService();
   dynamic _userInfo;
+  List<FootWearItem> itemList = [];
 
   File? _image2;
 
@@ -94,6 +96,18 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  Future<void> getItemList() async {
+    List<Map<String, dynamic>> allProducts = await DBService().getAllProducts();
+    List<FootWearItem> newList =
+        await Future.wait(allProducts.map((product) async {
+      return await db.returnFootwearItem(product);
+    }));
+
+    setState(() {
+      itemList = newList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("HomeView build is called.");
@@ -101,6 +115,8 @@ class _HomeViewState extends State<HomeView> {
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    if (itemList.isEmpty) getItemList();
 
     if (user != null) {
       if (_userInfo == null) {
@@ -126,7 +142,7 @@ class _HomeViewState extends State<HomeView> {
       reviews: 1000,
     );
 
-    final dummyItemList = [dummyItem, dummyItem, dummyItem, dummyItem];
+    final dummyItemList = itemList ?? [];
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -154,11 +170,14 @@ class _HomeViewState extends State<HomeView> {
         padding: const EdgeInsets.all(Dimen.regularMargin),
         child: Column(
             //mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FootWearDisplay(itemList: dummyItemList, displayName: "Featured"),
               FootWearDisplay(
-                  itemList: dummyItemList, displayName: "Discounts"),
+                  itemList: dummyItemList
+                      .where((element) => (element.discount ?? 0) > 0)
+                      .toList(),
+                  displayName: "Discounts"),
               FootWearDisplay(
                   itemList: dummyItemList, displayName: "Just For You"),
             ]),

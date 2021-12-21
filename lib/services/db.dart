@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
+import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,16 @@ class DBService {
         .then((DocumentSnapshot documentSnapshot) {
       //print(documentSnapshot.data());
       return documentSnapshot.data();
+    });
+  }
+
+  Future getAllProducts() async {
+    return productCollection.get().then((QuerySnapshot querySnapshot) {
+      List<Map<String, dynamic>> result = [];
+      querySnapshot.docs.forEach((element) {
+        result.add(element.data() as Map<String, dynamic>);
+      });
+      return result;
     });
   }
 
@@ -123,19 +134,7 @@ class DBService {
       Image img = await storage.returnImage(product["product-id"]);
 
       return OnSaleTile(
-        product: FootWearItem(
-          img: img,
-          productName: product["product-name"],
-          brandName: product["brand-name"],
-          sellerName: userInfo["username"],
-          price: product["current-price"].toDouble(),
-          rating: product["rating"].toDouble(),
-          reviews: product["comment-count"],
-          stockCount: product["remaining-stock-count"],
-          soldCount: product["sold-count"],
-          discount: product["discount"].toDouble(),
-          initialPrice: product["initial-price"].toDouble(),
-        ),
+        product: await returnFootwearItem(product),
         remove: () => {},
         applyDiscount: () => {},
         stockUpdate: () => {},
@@ -167,20 +166,28 @@ class DBService {
       Image img = await storage.returnImage(product["product-id"]);
 
       return SoldTile(
-          product: FootWearItem(
-        img: img,
-        productName: product["product-name"],
-        brandName: product["brand-name"],
-        sellerName: userInfo["username"],
-        price: product["current-price"].toDouble(),
-        rating: product["rating"].toDouble(),
-        reviews: product["comment-count"],
-        stockCount: product["remaining-stock-count"],
-        soldCount: product["sold-count"],
-        discount: product["discount"].toDouble(),
-        initialPrice: product["initial-price"].toDouble(),
-      ));
+        product: await returnFootwearItem(product),
+      );
     }));
+  }
+
+  Future<FootWearItem> returnFootwearItem(Map<String, dynamic> product) async {
+    Map<String, dynamic> userInfo = await getUserInfo(product["seller-id"]);
+    Image img = await storage.returnImage(product["product-id"]);
+    return FootWearItem(
+      img: img,
+      productToken: product["product-id"],
+      productName: product["product-name"],
+      brandName: product["brand-name"],
+      sellerName: userInfo["username"],
+      price: product["current-price"].toDouble(),
+      rating: product["rating"].toDouble(),
+      reviews: product["comment-count"],
+      stockCount: product["remaining-stock-count"],
+      soldCount: product["sold-count"],
+      discount: product["discount"].toDouble(),
+      initialPrice: product["initial-price"].toDouble(),
+    );
   }
 
   Future addProductToCart(String userID, String productID) async {
@@ -206,17 +213,38 @@ class DBService {
   Future getBookmarksOfUser(
     String userID,
   ) async {
-    return bookmarkCollection
+    var allProducts = await bookmarkCollection
         .doc(userID)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      return documentSnapshot.data();
+      return documentSnapshot.data() as Map<String, dynamic>;
     });
+
+    List<dynamic> productIDs = allProducts["productIDs"];
+
+    return await Future.wait(productIDs.map((productId) async => BookmarksTile(
+        product: await returnFootwearItem(await getProductInfo(productId)))));
+  }
+
+  Future getProductInfo(String productToken) async {
+    return productCollection
+        .doc(productToken)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) => documentSnapshot.data());
   }
 
   Future bookmarkProduct(String userID, String productID) async {
-    bookmarkCollection.doc(userID).update({
-      "productIDs": FieldValue.arrayUnion([productID])
+    var doc = bookmarkCollection.doc(userID);
+    doc.get().then((DocumentSnapshot documentSnapshot) {
+      if (!documentSnapshot.exists) {
+        doc.set({
+          "productIDs": [productID],
+        });
+      } else {
+        doc.update({
+          "productIDs": FieldValue.arrayUnion([productID])
+        });
+      }
     });
   }
 
@@ -224,5 +252,18 @@ class DBService {
     bookmarkCollection.doc(userID).update({
       "productIDs": FieldValue.arrayRemove([productID])
     });
+  }
+
+  Future<bool> isProductBookmarked(String userID, String productID) async {
+    var allProducts = await bookmarkCollection
+        .doc(userID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      return (documentSnapshot.data() ?? {"productIDs": []})
+          as Map<String, dynamic>;
+    });
+
+    List<dynamic> productIds = allProducts["productIDs"];
+    return productIds.contains(productID);
   }
 }

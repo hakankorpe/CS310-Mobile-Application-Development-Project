@@ -65,6 +65,7 @@ class _LoginViewState extends State<LoginView> {
       return Scaffold(
         backgroundColor: AppColors.scaffoldBackgroundColor,
         appBar: AppBar(
+          iconTheme: kAppBarIconStyle,
           title: Text(
             "FootWear",
             style: kAppBarTitleTextStyle,

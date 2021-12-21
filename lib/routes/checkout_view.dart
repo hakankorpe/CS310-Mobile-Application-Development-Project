@@ -12,20 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 
-
 class CheckoutView extends StatefulWidget {
-  const CheckoutView({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  const CheckoutView(
+      {Key? key, required this.analytics, required this.observer})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
-
 
   @override
   _CheckoutViewState createState() => _CheckoutViewState();
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-
   final _formKey = GlobalKey<FormState>();
   bool _value = false;
   int age = 1;
@@ -38,7 +37,7 @@ class _CheckoutViewState extends State<CheckoutView> {
         "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
     final dummyItem = FootWearItem(
-      imageUrl: dummyImageUrl,
+      productName: "aradas",
       brandName: "Nike",
       sellerName: "Melinda",
       price: 3.99,
@@ -98,9 +97,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                               decoration: const InputDecoration(
                                 hintText: "MM/YY",
                               ),
-                            )
+                            )),
+                        const SizedBox(
+                          width: 15,
                         ),
-                        const SizedBox(width: 15,),
                         Expanded(
                             flex: 1,
                             child: TextFormField(
@@ -110,13 +110,14 @@ class _CheckoutViewState extends State<CheckoutView> {
                               decoration: const InputDecoration(
                                 hintText: "CVV",
                               ),
-                            )
-                        ),
+                            )),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 25,),
+                const SizedBox(
+                  height: 25,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -138,41 +139,44 @@ class _CheckoutViewState extends State<CheckoutView> {
                           color: Colors.black,
                         ),
                         label: const Text(
-                            "Enter a new address",
+                          "Enter a new address",
                           style: TextStyle(
                             color: Colors.black,
                           ),
-                        )
+                        )),
+                  ],
+                ),
+                Column(
+                  children: [
+                    AddressTile(),
+                    Card(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          CheckboxListTile(
+                            value: _value,
+                            onChanged: (value) {
+                              setState(() {
+                                _value = value!;
+                              });
+                            },
+                            title: const Text('UTS Tower Building'),
+                            subtitle: const Text('Boardway, Ultimo NSW'),
+                            secondary: const Icon(
+                                IconData(0xe3ab, fontFamily: 'MaterialIcons'),
+                                size: 30),
+                            selected: _value,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-            Column(
-              children: [
-               AddressTile(),
-                Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                       CheckboxListTile(value: _value, onChanged: (value) {
-                        setState(() {
-                          _value = value!;
-                        });
-                      },
-                    title: const Text('UTS Tower Building'),
-                    subtitle: const Text('Boardway, Ultimo NSW'),
-                    secondary: const Icon(IconData(0xe3ab, fontFamily: 'MaterialIcons'), size: 30),
-                    selected: _value,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10
-                    ),
-                  ),
-                      ],
-                  ),
-            ),
-        ],
-      ),
-                const SizedBox(height: 25,),
+                const SizedBox(
+                  height: 25,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
@@ -189,23 +193,24 @@ class _CheckoutViewState extends State<CheckoutView> {
                 const Divider(
                   thickness: 1.5,
                 ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(
-                  height: 20,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CheckoutTile(product: dummyItem, quantity: 1),
+                    CheckoutTile(product: dummyItem, quantity: 1),
+                    const Divider(
+                      thickness: 2,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
-                CheckoutTile(product: dummyItem, quantity: 1),
-                CheckoutTile(product: dummyItem, quantity: 1),
-                const Divider(
-                  thickness: 2,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-                Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Total:",
@@ -216,21 +221,21 @@ class _CheckoutViewState extends State<CheckoutView> {
                     ),
                     Row(
                       children: [
-                        const Text(
-                          "370₺"
+                        const Text("370₺"),
+                        const SizedBox(
+                          width: 10,
                         ),
-                        const SizedBox(width: 10,),
                         ElevatedButton(
-                            onPressed: () {
-                              FirebaseCrashlytics.instance.crash();
-                            },
-                            child: Text(
-                              "Confirm",
-                              style: kButtonDarkTextStyle,
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                            ),
+                          onPressed: () {
+                            FirebaseCrashlytics.instance.crash();
+                          },
+                          child: Text(
+                            "Confirm",
+                            style: kButtonDarkTextStyle,
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                          ),
                         ),
                       ],
                     ),

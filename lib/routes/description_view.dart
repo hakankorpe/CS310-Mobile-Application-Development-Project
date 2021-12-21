@@ -7,13 +7,15 @@ import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
-
-
+import 'package:provider/provider.dart';
 
 class DescriptionView extends StatefulWidget {
-  DescriptionView({Key? key, required this.analytics, required this.observer, this.product}) : super(key: key);
+  DescriptionView(
+      {Key? key, required this.analytics, required this.observer, this.product})
+      : super(key: key);
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -26,13 +28,38 @@ class DescriptionView extends StatefulWidget {
 }
 
 class _DescriptionViewState extends State<DescriptionView> {
-  
   DBService db = DBService();
 
   bool isBookmarked = false;
+  FootWearItem? product;
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    String productId = arguments["productId"] ?? "";
+
+    if (product == null) {
+      db
+          .getProductInfo(productId)
+          .then((value) => db.returnFootwearItem(value))
+          .then((value) {
+        setState(() {
+          product = value;
+        });
+      });
+    }
+
+    if (user != null) {
+      db.isProductBookmarked(user!.uid, productId).then((value) {
+        if ((value == true) && (isBookmarked == false)) {
+          setState(() {
+            isBookmarked = true;
+          });
+        }
+      });
+    }
+
     print("DescriptionView build is called.");
 
     setCurrentScreen(widget.analytics, "Description View", "descriptionView");
@@ -51,25 +78,29 @@ class _DescriptionViewState extends State<DescriptionView> {
         actions: [
           IconButton(
             onPressed: () {
-              setState(() {
-                if (isBookmarked) {
-                  db.unBookmarkProduct(
-                      "MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
-                } else {
-                  db.bookmarkProduct("MFR2EFaE6AezehbiIRdZGR4AHS82", "Ba1PWE2AAcz373xRC2GH");
-                }
-                
-                isBookmarked = !isBookmarked;
-              });
+              if (user == null) {
+                Navigator.pushNamed(context, "/login");
+              } else {
+                setState(() {
+                  if (isBookmarked) {
+                    db.unBookmarkProduct(user!.uid, productId);
+                  } else {
+                    db.bookmarkProduct(user!.uid, productId);
+                  }
+
+                  isBookmarked = !isBookmarked;
+                });
+              }
             },
-            icon: isBookmarked ? const Icon(
-              Icons.bookmark,
-              color: AppColors.appBarElementColor,
-            )
-            : const Icon(
-              Icons.bookmark_border,
-              color: AppColors.appBarElementColor,
-            ),
+            icon: isBookmarked
+                ? const Icon(
+                    Icons.bookmark,
+                    color: AppColors.appBarElementColor,
+                  )
+                : const Icon(
+                    Icons.bookmark_border,
+                    color: AppColors.appBarElementColor,
+                  ),
           ),
         ],
       ),
@@ -82,136 +113,167 @@ class _DescriptionViewState extends State<DescriptionView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Expanded(flex: 15, child: Image(
-                      image: NetworkImage(
-                          "https://images.restocks.net/products/GY3438/adidas-yeezy-boost-350-v2-light-1-1000.png")
-                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.66,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: product?.image,
                   ),
                   Column(
                     children: [
                       Row(
                         children: [
                           Text("Adidas",
-                              textAlign: TextAlign.center,style: TextStyle(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.bold)),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      SizedBox(height: 7,),
+                      SizedBox(
+                        height: 7,
+                      ),
                       Row(
                         children: [
                           Text("6.4/10",
-                              textAlign: TextAlign.center,style: TextStyle(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.w600)),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600)),
                         ],
                       ),
-                      SizedBox(height: 13,),
+                      SizedBox(
+                        height: 13,
+                      ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(flex:6, child:Column(
-                    children: const [
-                      Text(
-                        "Yeezy Boost 350 v2 'Light'",
-                        style: TextStyle(
-                          fontSize: 23,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      Text(
-                        "Sneakers",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          fontStyle: FontStyle.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ),
-                  // Quantity Selector
-                  Expanded(flex: 1, child:Text("RATING BAR"), //TODO: rating bar must be added here.
-                  ),
-                ],
+              const SizedBox(
+                height: 20,
               ),
-              const SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Expanded(flex:2, child: Text(
-                    "1300₺",
-                  textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                  ),
-                  Expanded(flex:2, child:Column(
-                    children: const [
-                      Text(
-                        "900₺",
-                          textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      children: const [
+                        Text(
+                          "Yeezy Boost 350 v2 'Light'",
+                          style: TextStyle(
+                              fontSize: 23,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Text(
-                        "30% Off",
-                          textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ),
-                  Expanded(flex:1, child:Container(color: Colors.black12,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(widget.quantity.toString(), textAlign: TextAlign.center),
-                          IconButton(
-                            constraints: const BoxConstraints(minHeight: 30),
-                            onPressed: (){
-                              showMaterialNumberPicker(
-                                context: context,
-                                title: 'Quantity',
-                                maxNumber: 91,
-                                minNumber: 1,
-                                selectedNumber: widget.quantity,
-                                onChanged: (value) => setState(() => widget.quantity = value),
-                              );
-                            },
-                            icon: const Icon(Icons.arrow_downward_rounded),
-                            iconSize: 17,
+                        Text(
+                          "Sneakers",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
                           ),
-                        ]
+                        ),
+                      ],
                     ),
-                  ),
                   ),
                   // Quantity Selector
-                  Expanded(flex: 2, child:IconButton(
-                    alignment: Alignment.center,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added to cart!')));
-                    },
-                    icon: const Icon(
-                      Icons.add_shopping_cart_rounded,
-                      color: Colors.black,
-                    ),
-                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                        "RATING BAR"), //TODO: rating bar must be added here.
                   ),
                 ],
               ),
-              const Divider(height: 15,
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Expanded(
+                    flex: 2,
+                    child: Text(
+                      "1300₺",
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: const [
+                        Text(
+                          "900₺",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "30% Off",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.redAccent,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      color: Colors.black12,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(widget.quantity.toString(),
+                                textAlign: TextAlign.center),
+                            IconButton(
+                              constraints: const BoxConstraints(minHeight: 30),
+                              onPressed: () {
+                                showMaterialNumberPicker(
+                                  context: context,
+                                  title: 'Quantity',
+                                  maxNumber: 91,
+                                  minNumber: 1,
+                                  selectedNumber: widget.quantity,
+                                  onChanged: (value) =>
+                                      setState(() => widget.quantity = value),
+                                );
+                              },
+                              icon: const Icon(Icons.arrow_downward_rounded),
+                              iconSize: 17,
+                            ),
+                          ]),
+                    ),
+                  ),
+                  // Quantity Selector
+                  Expanded(
+                    flex: 2,
+                    child: IconButton(
+                      alignment: Alignment.center,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Added to cart!')));
+                      },
+                      icon: const Icon(
+                        Icons.add_shopping_cart_rounded,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(
+                height: 15,
               ),
               Row(
                 children: [
@@ -242,13 +304,11 @@ class _DescriptionViewState extends State<DescriptionView> {
                   Expanded(
                     flex: 1,
                     child: OutlinedButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Description",
-                          style: TextStyle(
-                            color: Colors.white
-                          ),
-                        ),
+                      onPressed: () {},
+                      child: const Text(
+                        "Description",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
@@ -269,9 +329,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                       },
                       child: const Text(
                         "Size Chart",
-                        style: TextStyle(
-                            color: Colors.black
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -293,9 +351,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                       },
                       child: const Text(
                         "Reviews",
-                        style: TextStyle(
-                            color: Colors.black
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -311,44 +367,48 @@ class _DescriptionViewState extends State<DescriptionView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Expanded(
-                      flex: 1,
-                      child: Container(
-                        margin: const EdgeInsets.all(13.0),
-                        color:  Colors.white,
-                        height: 230.0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 12,),
-                            const Text(
-                              "Product Details",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                    flex: 1,
+                    child: Container(
+                      margin: const EdgeInsets.all(13.0),
+                      color: Colors.white,
+                      height: 230.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          const Text(
+                            "Product Details",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: const [
-                                    Text(
-                                      "lkhvabdfalkvhjablkvjhsdbjhalkfblhjıvbfdjlkdsvlkjdlkjhvskvuvuıgvdlıuvaglvıugdlıuvlıudgvlaısugdlıuagdlıagldsvugalıuagdvlaugdlıvuglıudgvalıvglavkudlvaglıvuglaıugdlaıudglvıakugdlıugdlıaugdlıuvgdlıuvaglvug",
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                      ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: const [
+                                  Text(
+                                    "lkhvabdfalkvhjablkvjhsdbjhalkfblhjıvbfdjlkdsvlkjdlkjhvskvuvuıgvdlıuvaglvıugdlıuvlıudgvlaısugdlıuagdlıagldsvugalıuagdvlaugdlıvuglıudgvalıvglavkudlvaglıvuglaıugdlaıudglvıakugdlıugdlıaugdlıuvgdlıuvaglvug",
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
                   ),
                 ],
               ),
@@ -356,7 +416,9 @@ class _DescriptionViewState extends State<DescriptionView> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(index: 6,),
+      bottomNavigationBar: NavigationBar(
+        index: 6,
+      ),
     );
   }
 }

@@ -1,16 +1,22 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/cupertino.dart';
 
-class FootWearDisplay extends StatelessWidget {
-  final List<FootWearItem> itemList;
+class FootWearDisplay extends StatefulWidget {
+  List<FootWearItem> itemList;
   final String displayName;
-  const FootWearDisplay({
+  FootWearDisplay({
     Key? key,
     required this.itemList,
     required this.displayName,
   }) : super(key: key);
 
+  @override
+  State<FootWearDisplay> createState() => _FootWearDisplayState();
+}
+
+class _FootWearDisplayState extends State<FootWearDisplay> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -19,7 +25,7 @@ class FootWearDisplay extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            displayName,
+            widget.displayName,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -29,7 +35,7 @@ class FootWearDisplay extends StatelessWidget {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Wrap(spacing: 15.0, children: itemList),
+            child: Wrap(spacing: 15.0, children: widget.itemList),
           ),
         ],
       ),

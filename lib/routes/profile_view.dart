@@ -198,6 +198,7 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                               //TODO: find a BETTER star rating bar
                               RatingBar.builder(
+                                ignoreGestures: true,
                                 initialRating:
                                     _userInfo?["rating"].toDouble() ?? 0.0,
                                 minRating: 0,

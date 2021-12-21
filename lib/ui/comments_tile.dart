@@ -115,6 +115,7 @@ class CommentsTile extends StatelessWidget {
                           ),
                         ),
                         RatingBar.builder(
+                          ignoreGestures: true,
                           initialRating: product.rating,
                           minRating: 0,
                           direction: Axis.horizontal,

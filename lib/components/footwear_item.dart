@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class FootWearItem extends StatelessWidget {
   Image? image;
   String? imageUrl;
+  String? productToken;
 
   final String brandName;
   final String sellerName;
@@ -29,6 +30,7 @@ class FootWearItem extends StatelessWidget {
       this.initialPrice,
       this.stockCount,
       this.discount,
+      this.productToken,
       this.soldCount,
       Image? img})
       : super(key: key) {
@@ -44,7 +46,8 @@ class FootWearItem extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all(Colors.white),
       ),
       onPressed: () {
-        Navigator.pushNamed(context, "/description");
+        Navigator.pushNamed(context, "/description",
+            arguments: {"productId": productToken});
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
