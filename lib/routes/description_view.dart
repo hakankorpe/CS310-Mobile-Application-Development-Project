@@ -10,6 +10,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 class DescriptionView extends StatefulWidget {
@@ -122,19 +123,19 @@ class _DescriptionViewState extends State<DescriptionView> {
                     children: [
                       Row(
                         children: [
-                          Text("Adidas",
+                          Text(product != null ? product!.sellerName : "",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black87,
-                                  fontSize: 17,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 7,
                       ),
                       Row(
-                        children: [
+                        children: const [
                           Text("6.4/10",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -143,7 +144,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   fontWeight: FontWeight.w600)),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 13,
                       ),
                     ],
@@ -154,23 +155,24 @@ class _DescriptionViewState extends State<DescriptionView> {
                 height: 20,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 6,
+                    flex: 5,
                     child: Column(
-                      children: const [
+                      children: [
                         Text(
-                          "Yeezy Boost 350 v2 'Light'",
-                          style: TextStyle(
+                          product != null ? product!.productName :  "",
+                          style: const TextStyle(
                               fontSize: 23,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
                         Text(
-                          "Sneakers",
-                          style: TextStyle(
+                          product != null ? product!.category! :  "",
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                             fontStyle: FontStyle.normal,
@@ -181,9 +183,24 @@ class _DescriptionViewState extends State<DescriptionView> {
                   ),
                   // Quantity Selector
                   Expanded(
-                    flex: 1,
-                    child: Text(
-                        "RATING BAR"), //TODO: rating bar must be added here.
+                    flex: 2,
+                    child: RatingBar.builder(
+                      ignoreGestures: true,
+                      initialRating: product != null ? product!.rating!.toDouble() : 0.0,
+                      minRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemSize: 20,
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 5,
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -194,12 +211,12 @@ class _DescriptionViewState extends State<DescriptionView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Expanded(
+                  Expanded(
                     flex: 2,
                     child: Text(
-                      "1300₺",
+                      product != null ? "${product!.price!.toString()}₺" :  "",
                       textAlign: TextAlign.right,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontStyle: FontStyle.italic,
                         decoration: TextDecoration.lineThrough,
                       ),
@@ -208,18 +225,18 @@ class _DescriptionViewState extends State<DescriptionView> {
                   Expanded(
                     flex: 2,
                     child: Column(
-                      children: const [
+                      children: [
                         Text(
-                          "900₺",
+                          product != null ? "${product!.price! * (1 - product!.discount!)}₺" :  "",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "30% Off",
+                          product != null ? "${product!.discount! * 100}% Off" :  "",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.redAccent,
                             fontStyle: FontStyle.italic,
                           ),
@@ -395,10 +412,10 @@ class _DescriptionViewState extends State<DescriptionView> {
                             padding: const EdgeInsets.all(12),
                             child: SingleChildScrollView(
                               child: Column(
-                                children: const [
+                                children: [
                                   Text(
-                                    "lkhvabdfalkvhjablkvjhsdbjhalkfblhjıvbfdjlkdsvlkjdlkjhvskvuvuıgvdlıuvaglvıugdlıuvlıudgvlaısugdlıuagdlıagldsvugalıuagdvlaugdlıvuglıudgvalıvglavkudlvaglıvuglaıugdlaıudglvıakugdlıugdlıaugdlıuvgdlıuvaglvug",
-                                    style: TextStyle(
+                                      product != null ? product!.description! :  "",
+                                    style: const TextStyle(
                                       fontStyle: FontStyle.italic,
                                     ),
                                   ),

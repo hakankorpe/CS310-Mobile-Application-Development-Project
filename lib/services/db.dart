@@ -187,6 +187,8 @@ class DBService {
       soldCount: product["sold-count"],
       discount: product["discount"].toDouble(),
       initialPrice: product["initial-price"].toDouble(),
+      category: product["category"],
+      description: product["details"],
     );
   }
 

@@ -5,6 +5,8 @@ class FootWearItem extends StatelessWidget {
   Image? image;
   String? imageUrl;
   String? productToken;
+  String? category;
+  String? description;
 
   final String brandName;
   final String sellerName;
@@ -32,6 +34,8 @@ class FootWearItem extends StatelessWidget {
       this.discount,
       this.productToken,
       this.soldCount,
+        this.category,
+        this.description,
       Image? img})
       : super(key: key) {
     image = img ??
@@ -50,7 +54,8 @@ class FootWearItem extends StatelessWidget {
             arguments: {"productId": productToken});
       },
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             child: image,
@@ -58,15 +63,18 @@ class FootWearItem extends StatelessWidget {
             height: MediaQuery.of(context).size.width / 3.5,
           ),
           Text(
-            sellerName,
+            productName,
             style: const TextStyle(color: Colors.black),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
           Text(
-            brandName,
+            sellerName,
             style: const TextStyle(color: Colors.black),
           ),
           IntrinsicWidth(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "$price₺",
@@ -76,6 +84,7 @@ class FootWearItem extends StatelessWidget {
                   width: 10,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "$rating",
@@ -85,8 +94,12 @@ class FootWearItem extends StatelessWidget {
                       Icons.star,
                       color: Colors.orangeAccent,
                     ),
-                    Text(
-                      reviews > 999 ? "999+" : "$reviews",
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    if (reviews > 0) Text(
+                      "$reviews+",
+                      //reviews > 999 ? "999+" : "$reviews",
                       style: const TextStyle(color: Colors.black),
                     ),
                   ],
