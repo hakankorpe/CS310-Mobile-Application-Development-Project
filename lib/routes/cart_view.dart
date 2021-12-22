@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
@@ -32,20 +33,23 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-
   StorageService storage = StorageService();
   DBService db = DBService();
+  CollectionReference reference = DBService().cartCollection;
+  User? user;
 
   List<CartTile> _cartProducts = [];
   int countCartItem = 1;
   double cartTotal = 0;
   //int age = 1;
 
-  Future<double> calculateCartTotal(List<CartTile> cartProducts) async {
+  double calculateCartTotal() {
     double total = 0;
 
     for (int i = 0; i < _cartProducts.length; i++)
-      total += (_cartProducts[i].product.price * (1 - _cartProducts[i].product.discount!) * _cartProducts[i].quantity!);
+      total += (_cartProducts[i].product.price *
+          (1 - _cartProducts[i].product.discount!) *
+          _cartProducts[i].quantity!);
 
     return total;
   }
@@ -53,25 +57,35 @@ class _CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     print("CartView build is called.");
-    final user = Provider.of<User?>(context);
+    user = Provider.of<User?>(context);
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
-
-
 
     setCurrentScreen(widget.analytics, "Cart View", "cartView");
 
     if (user != null) {
-
-      db.getCartOfUser(user!.uid).then((value) {
-        if (_cartProducts.length == 0)
-          setState(() {
-            _cartProducts = value;
-            calculateCartTotal(_cartProducts).then((value) => cartTotal = value);
-            countCartItem = _cartProducts!.length;
+      if (_cartProducts.isEmpty) {
+        db.cartCollection
+            .doc(user!.uid)
+            .snapshots()
+            .listen((DocumentSnapshot documentSnapshot) {
+          print(documentSnapshot.data());
+          db
+              .getCartItemsFromProductIDs(
+                  documentSnapshot.data() as Map<String, dynamic>, user!.uid)
+              .then((value) {
+            if (value.isNotEmpty || _cartProducts.isNotEmpty) {
+              if (mounted) {
+                setState(() {
+                  _cartProducts = value;
+                  countCartItem = value.length;
+                  cartTotal = calculateCartTotal();
+                });
+              }
+            }
           });
-      });
-
+        });
+      }
 
       return Scaffold(
         backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -173,8 +187,14 @@ class _CartViewState extends State<CartView> {
                       ),
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, "/checkout",
-                            arguments: {"cart-products": _cartProducts, "cart-total": cartTotal},);
+                          Navigator.pushNamed(
+                            context,
+                            "/checkout",
+                            arguments: {
+                              "cart-products": _cartProducts,
+                              "cart-total": cartTotal
+                            },
+                          );
                         },
                         child: Text(
                           "Continue",

@@ -163,7 +163,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? product!.productName :  "",
+                          product != null ? product!.productName : "",
                           style: const TextStyle(
                               fontSize: 23,
                               fontStyle: FontStyle.normal,
@@ -171,7 +171,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          product != null ? product!.category! :  "",
+                          product != null ? product!.category! : "",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -186,7 +186,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 2,
                     child: RatingBar.builder(
                       ignoreGestures: true,
-                      initialRating: product != null ? product!.rating!.toDouble() : 0.0,
+                      initialRating:
+                          product != null ? product!.rating!.toDouble() : 0.0,
                       minRating: 0,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -214,7 +215,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      product != null ? "${product!.price!.toString()}₺" :  "",
+                      product != null ? "${product!.price!.toString()}₺" : "",
                       textAlign: TextAlign.right,
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
@@ -227,14 +228,18 @@ class _DescriptionViewState extends State<DescriptionView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? "${product!.price! * (1 - product!.discount!)}₺" :  "",
+                          product != null
+                              ? "${product!.price! * (1 - product!.discount!)}₺"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          product != null ? "${product!.discount! * 100}% Off" :  "",
+                          product != null
+                              ? "${product!.discount! * 100}% Off"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                             color: Colors.redAccent,
@@ -281,9 +286,13 @@ class _DescriptionViewState extends State<DescriptionView> {
                         if (user == null) {
                           Navigator.pushNamed(context, "/login");
                         } else {
-                          db.addProductToCart(user.uid, productId, widget.quantity!).then((value) {
+                          db
+                              .addProductToCart(
+                                  user.uid, productId, widget.quantity!)
+                              .then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Added to cart!')));
+                                const SnackBar(
+                                    content: Text('Added to cart!')));
                             Navigator.popAndPushNamed(context, "/cart");
                           });
                         }
@@ -349,7 +358,11 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/sizeChart", arguments: {"productId": productId},);
+                        Navigator.popAndPushNamed(
+                          context,
+                          "/sizeChart",
+                          arguments: {"productId": productId},
+                        );
                       },
                       child: const Text(
                         "Size Chart",
@@ -371,7 +384,11 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/reviews", arguments: {"productId": productId},);
+                        Navigator.popAndPushNamed(
+                          context,
+                          "/reviews",
+                          arguments: {"productId": productId},
+                        );
                       },
                       child: const Text(
                         "Reviews",
@@ -421,7 +438,9 @@ class _DescriptionViewState extends State<DescriptionView> {
                               child: Column(
                                 children: [
                                   Text(
-                                      product != null ? product!.description! :  "",
+                                    product != null
+                                        ? product!.description!
+                                        : "",
                                     style: const TextStyle(
                                       fontStyle: FontStyle.italic,
                                     ),

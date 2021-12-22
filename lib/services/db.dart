@@ -194,9 +194,12 @@ class DBService {
   }
 
   Future addProductToCart(String userID, String productID, int quantity) async {
-    cartCollection.doc(userID).set({
-      productID: FieldValue.increment(quantity),
-    }, SetOptions(merge: true),);
+    cartCollection.doc(userID).set(
+      {
+        productID: FieldValue.increment(quantity),
+      },
+      SetOptions(merge: true),
+    );
   }
 
   Future updateProductQuantityAtCart(
@@ -209,9 +212,14 @@ class DBService {
         .doc(userID)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-          return documentSnapshot.data() as Map<String, dynamic>;
+      return documentSnapshot.data() as Map<String, dynamic>;
     });
 
+    return await getCartItemsFromProductIDs(allProducts, userID);
+  }
+
+  Future<List<CartTile>> getCartItemsFromProductIDs(
+      Map<String, dynamic> allProducts, String userID) async {
     List<dynamic> productIDs = [];
     allProducts.keys.forEach((key) {
       productIDs.add(key);
@@ -228,7 +236,9 @@ class DBService {
     }));
   }
 
-  Future getBookmarksOfUser(String userID,) async {
+  Future getBookmarksOfUser(
+    String userID,
+  ) async {
     var allProducts = await bookmarkCollection
         .doc(userID)
         .get()
