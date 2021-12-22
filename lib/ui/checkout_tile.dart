@@ -28,16 +28,17 @@ class _CheckoutTileState extends State<CheckoutTile> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            const Expanded(flex: 2, child: Image(
-                image: NetworkImage(
-                    "https://www.pinclipart.com/picdir/big/338-3385006_download-shoe-png-hd-clipart.png")
-            ),
+            Expanded(
+                flex: 2,
+                child: Container(
+                  child: widget.product.image,
+                ),
             ),
             Expanded(flex: 4, child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(8.0,12.0,0.0,5.0),
-                  child: Text("Shoe B",textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0,12.0,0.0,5.0),
+                  child: Text(widget.product.productName! ,textAlign: TextAlign.center, style:const TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 OutlinedButton.icon(
                     onPressed: () {},
@@ -45,9 +46,19 @@ class _CheckoutTileState extends State<CheckoutTile> {
                       IconData(0xebbf, fontFamily: 'MaterialIcons'),
                       color: Colors.black,
                     ),
-                    label: const Text(
-                      "Esenler",
-                      style: TextStyle(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      side: const BorderSide(
+                        color: Colors.white,
+                        width: 0,
+                      ),
+                    ),
+                    label: Text(
+                      widget.product.sellerName,
+                      style: const TextStyle(
                         color: Colors.black,
                       ),
                     )
@@ -55,8 +66,8 @@ class _CheckoutTileState extends State<CheckoutTile> {
               ],
             ),
             ),
-            const Expanded(flex: 2, child:Text("100" + "₺",
-                textAlign: TextAlign.center,style: TextStyle(color: Colors.green, fontSize: 15, fontWeight: FontWeight.bold)
+            Expanded(flex: 2, child:Text("${widget.product.price! * (1 - widget.product.discount!) * widget.quantity!}₺",
+                textAlign: TextAlign.center,style: const TextStyle(color: Colors.green, fontSize: 15, fontWeight: FontWeight.bold)
             ),
             ),
           ],

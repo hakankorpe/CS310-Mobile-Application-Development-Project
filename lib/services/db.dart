@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
+import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
 import 'package:flutter/material.dart';
@@ -192,10 +193,10 @@ class DBService {
     );
   }
 
-  Future addProductToCart(String userID, String productID) async {
+  Future addProductToCart(String userID, String productID, int quantity) async {
     cartCollection.doc(userID).set({
-      productID: 1,
-    });
+      productID: FieldValue.increment(quantity),
+    }, SetOptions(merge: true),);
   }
 
   Future updateProductQuantityAtCart(
@@ -204,17 +205,30 @@ class DBService {
   }
 
   Future getCartOfUser(String userID) async {
-    return cartCollection
+    var allProducts = await cartCollection
         .doc(userID)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      return documentSnapshot.data();
+          return documentSnapshot.data() as Map<String, dynamic>;
     });
+
+    List<dynamic> productIDs = [];
+    allProducts.keys.forEach((key) {
+      productIDs.add(key);
+    });
+
+    return await Future.wait(productIDs.map((productId) async {
+      var tempCartTile = CartTile(
+          product: await returnFootwearItem(await getProductInfo(productId)));
+
+      tempCartTile.quantity = allProducts[productId];
+      tempCartTile.userID = userID;
+
+      return tempCartTile;
+    }));
   }
 
-  Future getBookmarksOfUser(
-    String userID,
-  ) async {
+  Future getBookmarksOfUser(String userID,) async {
     var allProducts = await bookmarkCollection
         .doc(userID)
         .get()

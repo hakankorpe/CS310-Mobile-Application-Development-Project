@@ -21,20 +21,24 @@ class BookmarksTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Column(
-                children: [
-                  Container(
-                    child: product.image,
-                    width: MediaQuery.of(context).size.width / 5.5,
-                    height: MediaQuery.of(context).size.width / 5.5,
-                  ),
-                  Text(
-                    product.brandName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      child: product.image,
+                      width: MediaQuery.of(context).size.width / 5.5,
+                      height: MediaQuery.of(context).size.width / 5.5,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: Dimen.sizedBox_5,),
+                    Text(
+                      product.productName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 width: Dimen.sizedBox_15,
@@ -71,7 +75,7 @@ class BookmarksTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.price.toString()}₺",
+                        "${product.price * (1 - product.discount!.toDouble())}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -132,7 +136,7 @@ class BookmarksTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "${product.sellerName}",
+                        product.sellerName,
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),

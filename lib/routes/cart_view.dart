@@ -1,5 +1,7 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
+import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -30,8 +32,23 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
+
+  StorageService storage = StorageService();
+  DBService db = DBService();
+
+  List<CartTile> _cartProducts = [];
   int countCartItem = 1;
-  int age = 1;
+  double cartTotal = 0;
+  //int age = 1;
+
+  Future<double> calculateCartTotal(List<CartTile> cartProducts) async {
+    double total = 0;
+
+    for (int i = 0; i < _cartProducts.length; i++)
+      total += (_cartProducts[i].product.price * (1 - _cartProducts[i].product.discount!) * _cartProducts[i].quantity!);
+
+    return total;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +57,21 @@ class _CartViewState extends State<CartView> {
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
 
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
-    final dummyItem = FootWearItem(
-      productName: "wadösldad",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-    );
+
+    setCurrentScreen(widget.analytics, "Cart View", "cartView");
 
     if (user != null) {
-      setCurrentScreen(widget.analytics, "Cart View", "cartView");
+
+      db.getCartOfUser(user!.uid).then((value) {
+        if (_cartProducts.length == 0)
+          setState(() {
+            _cartProducts = value;
+            calculateCartTotal(_cartProducts).then((value) => cartTotal = value);
+            countCartItem = _cartProducts!.length;
+          });
+      });
+
 
       return Scaffold(
         backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -113,34 +131,38 @@ class _CartViewState extends State<CartView> {
                       const Divider(
                         thickness: 1.5,
                       ),
-                      CartTile(product: dummyItem, quantity: 1),
-                      CartTile(product: dummyItem, quantity: 2),
-                      CartTile(product: dummyItem, quantity: 3),
-                      CartTile(product: dummyItem, quantity: 4),
-                      CartTile(product: dummyItem, quantity: 5),
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Wrap(
+                              children: _cartProducts,
+                            ),
+                          ],
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Expanded(
+                        children: [
+                          const Expanded(
                               flex: 3,
                               child: Text("Total Payment:",
                                   textAlign: TextAlign.center,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
-                          Expanded(
+                          const Expanded(
+                              flex: 2,
+                              child: Text("", textAlign: TextAlign.center)),
+                          const Expanded(
+                              flex: 2,
+                              child: Text("", textAlign: TextAlign.center)),
+                          const Expanded(
                               flex: 2,
                               child: Text("", textAlign: TextAlign.center)),
                           Expanded(
                               flex: 2,
-                              child: Text("", textAlign: TextAlign.center)),
-                          Expanded(
-                              flex: 2,
-                              child: Text("", textAlign: TextAlign.center)),
-                          Expanded(
-                              flex: 2,
-                              child: Text("570" + "₺",
+                              child: Text("$cartTotal₺",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.green,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold))),
@@ -151,7 +173,8 @@ class _CartViewState extends State<CartView> {
                       ),
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, "/checkout");
+                          Navigator.pushNamed(context, "/checkout",
+                            arguments: {"cart-products": _cartProducts, "cart-total": cartTotal},);
                         },
                         child: Text(
                           "Continue",

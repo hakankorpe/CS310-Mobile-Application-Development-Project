@@ -159,9 +159,7 @@ class _SoldViewState extends State<SoldView> {
                               const Divider(
                                 thickness: Dimen.divider_2,
                               ),
-                              Wrap(
-                                children: _soldProducts,
-                              ),
+                              Wrap(children: _soldProducts,),
                             ],
                           ),
                         ),

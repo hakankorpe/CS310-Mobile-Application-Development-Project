@@ -48,7 +48,7 @@ class CommentsTile extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            product.brandName,
+                            product.productName,
                             style: const TextStyle(
                               fontWeight: FontWeight.w400,
                             ),

@@ -153,7 +153,14 @@ class _OnSaleViewState extends State<OnSaleView> {
                           textAlign: TextAlign.center,
                         ))
                       : SingleChildScrollView(
-                          child: Wrap(children: _onSaleProducts),
+                          child: Column(
+                            children: [
+                              const Divider(
+                                thickness: Dimen.divider_2,
+                              ),
+                              Wrap(children: _onSaleProducts),
+                            ],
+                          ),
                         ),
                 ],
               ),

@@ -1,16 +1,19 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/ui/address_tile.dart';
+import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/checkout_tile.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
   const CheckoutView(
@@ -27,14 +30,21 @@ class CheckoutView extends StatefulWidget {
 class _CheckoutViewState extends State<CheckoutView> {
   final _formKey = GlobalKey<FormState>();
   bool _value = false;
-  int age = 1;
+
+  double? cartTotal;
+  List<CheckoutTile>? _allCheckoutTiles;
 
   @override
   Widget build(BuildContext context) {
     print("CheckoutView build is called.");
+    final user = Provider.of<User?>(context);
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    double cartTotal = arguments["cart-total"];
+    List<CartTile> _cartProducts = arguments["cart-products"];
+    _allCheckoutTiles = _cartProducts.map((CartTile cartTile) {
+      return CheckoutTile(product: cartTile.product, quantity: cartTile.quantity,);
+    }).toList();
 
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
     final dummyItem = FootWearItem(
       productName: "aradas",
@@ -199,8 +209,15 @@ class _CheckoutViewState extends State<CheckoutView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    CheckoutTile(product: dummyItem, quantity: 1),
-                    CheckoutTile(product: dummyItem, quantity: 1),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Wrap(
+                            children: _allCheckoutTiles!,
+                          ),
+                        ],
+                      ),
+                    ),
                     const Divider(
                       thickness: 2,
                     ),
@@ -221,13 +238,15 @@ class _CheckoutViewState extends State<CheckoutView> {
                     ),
                     Row(
                       children: [
-                        const Text("370₺"),
+                        Text("$cartTotal₺", style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),),
                         const SizedBox(
                           width: 10,
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            FirebaseCrashlytics.instance.crash();
+                            //FirebaseCrashlytics.instance.crash();
                           },
                           child: Text(
                             "Confirm",

@@ -94,7 +94,14 @@ class _BookmarksViewState extends State<BookmarksView> {
                       ],
                     )
                   : SingleChildScrollView(
-                      child: Wrap(children: _bookmarkProducts),
+                      child: Column(
+                        children: [
+                          const Divider(
+                            thickness: Dimen.divider_2,
+                          ),
+                          Wrap(children: _bookmarkProducts),
+                        ],
+                      ),
                     ),
             ],
           ),

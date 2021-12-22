@@ -278,8 +278,15 @@ class _DescriptionViewState extends State<DescriptionView> {
                     child: IconButton(
                       alignment: Alignment.center,
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Added to cart!')));
+                        if (user == null) {
+                          Navigator.pushNamed(context, "/login");
+                        } else {
+                          db.addProductToCart(user.uid, productId, widget.quantity!).then((value) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Added to cart!')));
+                            Navigator.popAndPushNamed(context, "/cart");
+                          });
+                        }
                       },
                       icon: const Icon(
                         Icons.add_shopping_cart_rounded,
