@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
@@ -36,7 +38,9 @@ class _CartViewState extends State<CartView> {
   StorageService storage = StorageService();
   DBService db = DBService();
   CollectionReference reference = DBService().cartCollection;
+  StreamSubscription<DocumentSnapshot>? streamSub;
   User? user;
+  bool firstTime = true;
 
   List<CartTile> _cartProducts = [];
   int countCartItem = 1;
@@ -55,6 +59,13 @@ class _CartViewState extends State<CartView> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (streamSub != null) streamSub!.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("CartView build is called.");
     user = Provider.of<User?>(context);
@@ -64,8 +75,9 @@ class _CartViewState extends State<CartView> {
     setCurrentScreen(widget.analytics, "Cart View", "cartView");
 
     if (user != null) {
-      if (_cartProducts.isEmpty) {
-        db.cartCollection
+      if (_cartProducts.isEmpty && firstTime) {
+        firstTime = false;
+        streamSub = db.cartCollection
             .doc(user!.uid)
             .snapshots()
             .listen((DocumentSnapshot documentSnapshot) {
