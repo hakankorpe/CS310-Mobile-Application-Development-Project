@@ -43,7 +43,7 @@ class _CartViewState extends State<CartView> {
   bool firstTime = true;
 
   List<CartTile> _cartProducts = [];
-  int countCartItem = 1;
+  int get countCartItem => _cartProducts.length;
   double cartTotal = 0;
   //int age = 1;
 
@@ -90,7 +90,6 @@ class _CartViewState extends State<CartView> {
               if (mounted) {
                 setState(() {
                   _cartProducts = value;
-                  countCartItem = value.length;
                   cartTotal = calculateCartTotal();
                 });
               }
