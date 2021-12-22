@@ -122,6 +122,10 @@ class _CartViewState extends State<CartView> {
                       ),
                       const Divider(
                         thickness: 1.5,
+                        height: 0,
+                      ),
+                      const SizedBox(
+                        height: 16,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -153,17 +157,18 @@ class _CartViewState extends State<CartView> {
                               )),
                         ],
                       ),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       const Divider(
                         thickness: 1.5,
+                        height: 0,
                       ),
-                      SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Wrap(
-                              children: _cartProducts,
-                            ),
-                          ],
-                        ),
+                      Wrap(
+                        children: _cartProducts,
+                      ),
+                      const SizedBox(
+                        height: 16,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
