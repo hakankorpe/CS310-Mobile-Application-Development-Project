@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
@@ -5,9 +7,10 @@ import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Directory, File, Platform;
-
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class DBService {
@@ -50,6 +53,26 @@ class DBService {
   }
 
   Future updateUserPassword(String token, String newPassword) async {
+    const String API_Key = "AIzaSyB_4bOnWLoNpMeZbk-grs3LqqdZZUDImT0";
+    const String changePasswordUrl =
+        'https://identitytoolkit.googleapis.com/v1/accounts:update?key=$API_Key';
+
+    final Map<String, dynamic> payload = {
+      'idToken': token,
+      'password': newPassword,
+      'returnSecureToken': false,
+    };
+
+    var url = Uri.parse(changePasswordUrl);
+
+    await http.post(url,
+      body: json.encode(payload),
+      headers: {'Content-Type': 'application/json'},
+    ).then((value) {
+      print(value.statusCode);
+      print(value.body);
+    });
+
     userCollection.doc(token).update({'password': newPassword});
   }
 
@@ -291,5 +314,21 @@ class DBService {
 
     List<dynamic> productIds = allProducts["productIDs"];
     return productIds.contains(productID);
+  }
+
+  Future<void> updatePriceOfProduct(String productToken, double newCurrentPrice) async {
+    productCollection.doc(productToken).update({"current-price": newCurrentPrice});
+  }
+
+  Future<void> updateStockOfProduct(String productToken, int newStockCount) async {
+    productCollection.doc(productToken).update({"remaining-stock-count": newStockCount});
+  }
+
+  Future<void> updateDiscountOfProduct(String productToken, double newDiscount) async {
+    productCollection.doc(productToken).update({"discount": newDiscount});
+  }
+
+  Future<void> deleteProductOnSale(String productToken) async {
+    productCollection.doc(productToken).delete();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
+import 'dart:io' show Directory, File, Platform;
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
@@ -30,6 +31,7 @@ class _OnSaleViewState extends State<OnSaleView> {
 
   List<OnSaleTile> _onSaleProducts = [];
   int countOnSale = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +157,14 @@ class _OnSaleViewState extends State<OnSaleView> {
                       : SingleChildScrollView(
                           child: Column(
                             children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
                               const Divider(
                                 thickness: Dimen.divider_2,
+                                height: 0,
                               ),
+
                               Wrap(children: _onSaleProducts),
                             ],
                           ),
