@@ -4,11 +4,13 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/ui/user_tile.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SearchView extends StatefulWidget {
@@ -28,6 +30,15 @@ class _SearchViewState extends State<SearchView> {
   bool get isSearched => searchValue.isNotEmpty;
 
   List<FootWearItem> foundItems = [];
+  List<UserTile> foundUsers = [
+    UserTile(
+      displayName: "Deneme",
+      rating: 4.3,
+      username: "deneme",
+      userID: "7BnDwbxk85Svj2yw9I1vjfVDgfT2",
+    )
+  ];
+
   Map<String, dynamic> filters = {};
   dynamic sorter;
 
@@ -46,8 +57,9 @@ class _SearchViewState extends State<SearchView> {
 
   //SorterHelpers
   dynamic sorterHelper(String property, [bool reverse = false]) {
-    return (a, b) =>
-        reverse ? (b[property] - a[property]) : (a[property] - b[property]);
+    return (Map<String, dynamic> a, Map<String, dynamic> b) {
+      return (reverse != (a[property] < b[property])) ? 1 : -1;
+    };
   }
 
   @override
@@ -94,15 +106,19 @@ class _SearchViewState extends State<SearchView> {
                           });
                         }
                         if (_formKey.currentState!.validate()) {
+                          sorter = sorterHelper("rating");
                           filters = {
                             "current-price": priceFilter(10, 25),
                             "rating": ratingFilter(2, 4)
                           };
                           () async {
-                            final result = await DBService()
-                                .advancedSearchProduct(searchValue, filters);
+                            final resultProduct = await DBService()
+                                .advancedSearchProduct(searchValue, {}, sorter);
+                            final resultUsers =
+                                await DBService().basicSearchUser(searchValue);
                             setState(() {
-                              foundItems = result;
+                              foundItems = resultProduct;
+                              foundUsers = resultUsers;
                             });
                           }();
                         }
@@ -162,13 +178,11 @@ class _SearchViewState extends State<SearchView> {
                   height: 10,
                 ),
               if (isSearched != false)
-                IntrinsicWidth(
-                  child: Wrap(
-                    spacing: 25.0,
-                    runSpacing: 25.0,
-                    alignment: WrapAlignment.center,
-                    children: foundItems,
-                  ),
+                Wrap(
+                  spacing: 25.0,
+                  runSpacing: 25.0,
+                  alignment: WrapAlignment.center,
+                  children: foundItems,
                 ),
               if (isSearched != false)
                 const SizedBox(
@@ -185,12 +199,23 @@ class _SearchViewState extends State<SearchView> {
                 ),
               if (isSearched != false)
                 Text(
-                  "${foundItems.length} Results for \"Nike\" in sellers",
+                  "${foundUsers.length} Results for \"Nike\" in sellers",
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
+                ),
+              if (isSearched != false)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (isSearched != false)
+                Wrap(
+                  spacing: 25.0,
+                  runSpacing: 25.0,
+                  alignment: WrapAlignment.center,
+                  children: foundUsers,
                 ),
             ]),
           ),

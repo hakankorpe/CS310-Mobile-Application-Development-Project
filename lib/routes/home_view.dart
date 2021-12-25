@@ -96,9 +96,11 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  Future<void> getItemList() async {
-    List<Map<String, dynamic>> allProducts =
-        await DBService().getAllCollectionItems(DBService().productCollection);
+  Future<void> getItemList([String? userID]) async {
+    List<Map<String, dynamic>> allProducts = userID!.isNotEmpty
+        ? await DBService().getProductsOnSale(userID)
+        : await DBService()
+            .getAllCollectionItems(DBService().productCollection);
     List<FootWearItem> newList =
         await Future.wait(allProducts.map((product) async {
       return await db.returnFootwearItem(product);
@@ -113,11 +115,15 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     print("HomeView build is called.");
     final user = Provider.of<User?>(context);
+    final arguments = (ModalRoute.of(context)!.settings.arguments ?? {}) as Map;
+
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-    if (itemList.isEmpty) getItemList();
+    if (itemList.isEmpty) {
+      getItemList(arguments.isNotEmpty ? arguments["userID"] : "");
+    }
 
     if (user != null) {
       if (_userInfo == null) {
@@ -131,25 +137,15 @@ class _HomeViewState extends State<HomeView> {
 
     setCurrentScreen(widget.analytics, "Home View", "homeView");
 
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
-
-    final dummyItem = FootWearItem(
-      productName: "abndasdada",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-    );
-
     final dummyItemList = itemList ?? [];
+
+    String? username = arguments?["username"];
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          "Welcome to FootWear",
+          username != null ? 'Market of $username' : 'Welcome To Footwear',
           style: kAppBarTitleTextStyle,
         ),
         actions: [

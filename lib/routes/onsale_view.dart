@@ -32,14 +32,16 @@ class _OnSaleViewState extends State<OnSaleView> {
   List<OnSaleTile> _onSaleProducts = [];
   int countOnSale = 0;
 
-
   @override
   Widget build(BuildContext context) {
     print("OnSaleView build is called.");
     final user = Provider.of<User?>(context);
     setCurrentScreen(widget.analytics, "Onsale View", "onsaleView");
 
-    db.getProductsOnSale(user!.uid).then((value) {
+    db
+        .getProductsOnSale(user!.uid)
+        .then((value) => db.returnOnSaleTileFromMap(value))
+        .then((value) {
       if (_onSaleProducts.length == 0)
         setState(() {
           _onSaleProducts = value;
@@ -164,7 +166,6 @@ class _OnSaleViewState extends State<OnSaleView> {
                                 thickness: Dimen.divider_2,
                                 height: 0,
                               ),
-
                               Wrap(children: _onSaleProducts),
                             ],
                           ),

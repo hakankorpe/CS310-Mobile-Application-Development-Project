@@ -7,8 +7,10 @@ import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
+import 'package:cs310_footwear_project/ui/user_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io' show Directory, File, Platform;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -140,8 +142,19 @@ class DBService {
     return await advancedSearchProduct(productName, {});
   }
 
+  Future<List<UserTile>> basicSearchUser(String userName) async {
+    Iterable<Map<String, dynamic>> allUsers =
+        await getAllCollectionItems(userCollection);
+
+    return await Future.wait(allUsers
+        .where((element) =>
+            element["username"].toString().toLowerCase().contains(userName))
+        .map((e) async => await returnUserTile(e)));
+  }
+
   Future<List<FootWearItem>> advancedSearchProduct(
-      String productName, Map<String, dynamic> filters) async {
+      String productName, Map<String, dynamic> filters,
+      [dynamic sortFunc]) async {
     filters["product-name"] = (value) =>
         value.toString().toLowerCase().contains(productName.toLowerCase());
 
@@ -152,8 +165,14 @@ class DBService {
       allProducts = allProducts.where((element) => value(element[key]) as bool);
     });
 
+    final allProductsList = allProducts.toList();
+
+    if (sortFunc != null) {
+      allProductsList.sort(sortFunc);
+    }
+
     return await Future.wait(
-        allProducts.map((e) async => await returnFootwearItem(e)));
+        allProductsList.map((e) async => await returnFootwearItem(e)));
   }
 
   Future getProductsOnSale(String sellerID) async {
@@ -171,14 +190,14 @@ class DBService {
           if (data['remaining-stock-count'] > 0) allProducts.add(data);
         }
       }
-      print(allProducts);
       return allProducts;
     });
 
-    return await Future.wait(productList.map((product) async {
-      Map<String, dynamic> userInfo = await getUserInfo(product["seller-id"]);
-      Image img = await storage.returnImage(product["product-id"]);
+    return productList;
+  }
 
+  Future returnOnSaleTileFromMap(List<Map<String, dynamic>> productList) async {
+    return await Future.wait(productList.map((product) async {
       return OnSaleTile(
         product: await returnFootwearItem(product),
         remove: () => {},
@@ -215,6 +234,17 @@ class DBService {
         product: await returnFootwearItem(product),
       );
     }));
+  }
+
+  Future<UserTile> returnUserTile(Map<String, dynamic> userInfo) async {
+    Image img = await storage.returnImage(userInfo["userToken"]);
+    return UserTile(
+      img: img,
+      displayName: '${userInfo["name"]} ${userInfo["surname"]}',
+      rating: userInfo["rating"].toDouble(),
+      username: userInfo["username"],
+      userID: userInfo["userToken"],
+    );
   }
 
   Future<FootWearItem> returnFootwearItem(Map<String, dynamic> product) async {
