@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -21,36 +24,37 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   final _formKey = GlobalKey<FormState>();
-  bool isSearched = false;
+  String searchValue = "";
+  bool get isSearched => searchValue.isNotEmpty;
+
+  List<FootWearItem> foundItems = [];
+  Map<String, dynamic> filters = {};
+  dynamic sorter;
+
+  //FilterHelpers
+  dynamic brandCategoryFilter(List<String> brandCategoryNames) {
+    return (value) => brandCategoryNames.contains(value);
+  }
+
+  dynamic priceFilter([double minimum = 0, double maximum = double.infinity]) {
+    return (value) => (value >= minimum) && (value <= maximum);
+  }
+
+  dynamic ratingFilter([double minimum = 0, double maximum = double.infinity]) {
+    return priceFilter(minimum, min(maximum, 5));
+  }
+
+  //SorterHelpers
+  dynamic sorterHelper(String property, [bool reverse = false]) {
+    return (a, b) =>
+        reverse ? (b[property] - a[property]) : (a[property] - b[property]);
+  }
 
   @override
   Widget build(BuildContext context) {
     print("SearchView build is called.");
 
     setCurrentScreen(widget.analytics, "Search View", "searchView");
-
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
-
-    final dummyItem = FootWearItem(
-      productName: "dsoadkldada",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-    );
-
-    final foundItems = <FootWearItem>[
-      dummyItem,
-      dummyItem,
-      dummyItem,
-      dummyItem,
-      dummyItem,
-      dummyItem,
-      dummyItem,
-      dummyItem,
-    ];
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -84,9 +88,24 @@ class _SearchViewState extends State<SearchView> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        setState(() {
-                          isSearched = !isSearched;
-                        });
+                        if (!isSearched) {
+                          setState(() {
+                            foundItems = [];
+                          });
+                        }
+                        if (_formKey.currentState!.validate()) {
+                          filters = {
+                            "current-price": priceFilter(10, 25),
+                            "rating": ratingFilter(2, 4)
+                          };
+                          () async {
+                            final result = await DBService()
+                                .advancedSearchProduct(searchValue, filters);
+                            setState(() {
+                              foundItems = result;
+                            });
+                          }();
+                        }
                       },
                       icon: const Icon(
                         Icons.search,
@@ -95,6 +114,9 @@ class _SearchViewState extends State<SearchView> {
                   Expanded(
                     flex: 1,
                     child: TextFormField(
+                      validator: (value) => (value?.isEmpty ?? false)
+                          ? "Please enter some text"
+                          : null,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -103,6 +125,7 @@ class _SearchViewState extends State<SearchView> {
                       style: const TextStyle(
                         color: Colors.black,
                       ),
+                      onChanged: (value) => searchValue = value,
                     ),
                   ),
                 ],

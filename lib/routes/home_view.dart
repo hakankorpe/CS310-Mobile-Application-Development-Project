@@ -97,7 +97,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> getItemList() async {
-    List<Map<String, dynamic>> allProducts = await DBService().getAllProducts();
+    List<Map<String, dynamic>> allProducts =
+        await DBService().getAllCollectionItems(DBService().productCollection);
     List<FootWearItem> newList =
         await Future.wait(allProducts.map((product) async {
       return await db.returnFootwearItem(product);

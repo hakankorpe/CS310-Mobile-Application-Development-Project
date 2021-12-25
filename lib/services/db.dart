@@ -65,7 +65,8 @@ class DBService {
 
     var url = Uri.parse(changePasswordUrl);
 
-    await http.post(url,
+    await http.post(
+      url,
       body: json.encode(payload),
       headers: {'Content-Type': 'application/json'},
     ).then((value) {
@@ -86,8 +87,9 @@ class DBService {
     });
   }
 
-  Future getAllProducts() async {
-    return productCollection.get().then((QuerySnapshot querySnapshot) {
+  Future<List<Map<String, dynamic>>> getAllCollectionItems(
+      Query<Object?> query) {
+    return query.get().then((QuerySnapshot querySnapshot) {
       List<Map<String, dynamic>> result = [];
       querySnapshot.docs.forEach((element) {
         result.add(element.data() as Map<String, dynamic>);
@@ -132,6 +134,26 @@ class DBService {
 
       return error.toString();
     });
+  }
+
+  Future<List<FootWearItem>> basicSearchProduct(String productName) async {
+    return await advancedSearchProduct(productName, {});
+  }
+
+  Future<List<FootWearItem>> advancedSearchProduct(
+      String productName, Map<String, dynamic> filters) async {
+    filters["product-name"] = (value) =>
+        value.toString().toLowerCase().contains(productName.toLowerCase());
+
+    Iterable<Map<String, dynamic>> allProducts =
+        await getAllCollectionItems(productCollection);
+
+    filters.forEach((key, value) {
+      allProducts = allProducts.where((element) => value(element[key]) as bool);
+    });
+
+    return await Future.wait(
+        allProducts.map((e) async => await returnFootwearItem(e)));
   }
 
   Future getProductsOnSale(String sellerID) async {
@@ -316,15 +338,22 @@ class DBService {
     return productIds.contains(productID);
   }
 
-  Future<void> updatePriceOfProduct(String productToken, double newCurrentPrice) async {
-    productCollection.doc(productToken).update({"current-price": newCurrentPrice});
+  Future<void> updatePriceOfProduct(
+      String productToken, double newCurrentPrice) async {
+    productCollection
+        .doc(productToken)
+        .update({"current-price": newCurrentPrice});
   }
 
-  Future<void> updateStockOfProduct(String productToken, int newStockCount) async {
-    productCollection.doc(productToken).update({"remaining-stock-count": newStockCount});
+  Future<void> updateStockOfProduct(
+      String productToken, int newStockCount) async {
+    productCollection
+        .doc(productToken)
+        .update({"remaining-stock-count": newStockCount});
   }
 
-  Future<void> updateDiscountOfProduct(String productToken, double newDiscount) async {
+  Future<void> updateDiscountOfProduct(
+      String productToken, double newDiscount) async {
     productCollection.doc(productToken).update({"discount": newDiscount});
   }
 
