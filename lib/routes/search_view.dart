@@ -37,6 +37,7 @@ class _SearchViewState extends State<SearchView> {
   bool fsFilterSelected = false;
 
   List selectedFootSize = [];
+  double selectedRating = 0.0;
 
   List<FootWearItem> foundItems = [];
   List<UserTile> foundUsers = [
@@ -60,7 +61,7 @@ class _SearchViewState extends State<SearchView> {
     return (value) => (value >= minimum) && (value <= maximum);
   }
 
-  dynamic ratingFilter([double minimum = 0, double maximum = double.infinity]) {
+  dynamic ratingFilter([double minimum = 0, double maximum = 5.0]) {
     return priceFilter(minimum, min(maximum, 5));
   }
 
@@ -260,6 +261,16 @@ class _SearchViewState extends State<SearchView> {
                     selected: ratingFilterSelected,
                     showCheckmark: false,
                     onSelected: (bool selected) {
+                      showMaterialRadioPicker(
+                          context: context,
+                          items: [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0],
+                        title: 'Foot Size',
+                        onChanged: (value) {
+                          selectedRating = value as double;
+                          print(value);
+                          filters["rating"] = ratingFilter(selectedRating);
+                        },
+                      );
                       setState(() {
                         ratingFilterSelected = selected;
                       });
@@ -288,12 +299,12 @@ class _SearchViewState extends State<SearchView> {
                       showMaterialCheckboxPicker(
                         context: context,
                         title: 'Foot Size',
-                        onChanged: (value) =>
-                            setState(() {
+                        onChanged: (value) {
                               selectedFootSize = value;
-                            print(value);}
-                            ),
-                        items: [36, 37, 38, 39, 40, 41, 42, 43, 44, 45],
+                            print(value);
+                            filters["rating"] = ratingFilter(value as double);
+                            },
+                        items: [36, 37, 38, 39, 40, 41, 42, 43, 44],
                         selectedItems: selectedFootSize,
                       );
                       print(selectedFootSize);
