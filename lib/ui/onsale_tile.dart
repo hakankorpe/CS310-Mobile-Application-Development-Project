@@ -24,7 +24,8 @@ class OnSaleTile extends StatelessWidget {
     required this.priceUpdate,
   });
 
-  Future<void> showTextInputDialog(BuildContext context, String title, String hintText,) async {
+
+  Future<void> showTextInputDialog(BuildContext context, String title, String hintText, String updateType) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -63,6 +64,12 @@ class OnSaleTile extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Updating......')));
+
+                          DBService db = DBService();
+
+                          if (updateType == "price") db.updatePriceOfProduct(product.productToken!, 890);
+                          else if (updateType == "quantity") db.updateStockOfProduct(product.productToken!, 567);
+                          else db.updateDiscountOfProduct(product.productToken!, 0.78);
 
                           Navigator.of(context).pop();
 
@@ -116,7 +123,25 @@ class OnSaleTile extends StatelessWidget {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Updating......')));
+
+                          DBService db = DBService();
+
+                          if (updateType == "price") db.updatePriceOfProduct(product.productToken!, 890);
+                          else if (updateType == "quantity") db.updateStockOfProduct(product.productToken!, 567);
+                          else db.updateDiscountOfProduct(product.productToken!, 0.78);
+
+                          Navigator.of(context).pop();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Updated!')));
+                        }
                       },
                       child: const Text("Update")),
                   TextButton(
@@ -203,7 +228,7 @@ class OnSaleTile extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: () {
-                                showTextInputDialog(context, "Update Price", "Enter new price (₺)",);
+                                showTextInputDialog(context, "Update Price", "Enter new price (₺)", "price");
                               },
                               icon: const Icon(
                                 Icons.edit_sharp,
@@ -226,7 +251,7 @@ class OnSaleTile extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: () {
-                                showTextInputDialog(context, "Update Stock Quantity", "Enter new quantity",);
+                                showTextInputDialog(context, "Update Stock Quantity", "Enter new quantity", "quantity");
                               },
                               icon: const Icon(
                                 Icons.edit_sharp,
@@ -249,7 +274,7 @@ class OnSaleTile extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            showTextInputDialog(context, "Apply Discount", "Enter new discount rate (0.0 - 1.0)",);
+                            showTextInputDialog(context, "Apply Discount", "Enter new discount rate (0.0 - 1.0)", "discount");
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.amberAccent,
