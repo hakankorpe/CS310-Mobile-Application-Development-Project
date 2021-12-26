@@ -89,6 +89,17 @@ class _ProfileViewState extends State<ProfileView> {
             style: kAppBarTitleTextStyle,
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "/notification");
+              },
+              icon: const Icon(
+                Icons.notifications,
+                color: AppColors.appBarElementColor,
+              ),
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(
