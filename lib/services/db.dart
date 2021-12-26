@@ -146,10 +146,14 @@ class DBService {
     Iterable<Map<String, dynamic>> allUsers =
         await getAllCollectionItems(userCollection);
 
-    return await Future.wait(allUsers
-        .where((element) =>
-            element["username"].toString().toLowerCase().contains(userName))
-        .map((e) async => await returnUserTile(e)));
+    final wantedUsers = allUsers.where((element) =>
+        element["username"].toString().toLowerCase().contains(userName));
+
+    final result =
+        await Future.wait(wantedUsers.map((e) async => returnUserTile(e)));
+
+    result.forEach((element) => print(element));
+    return result;
   }
 
   Future<List<FootWearItem>> advancedSearchProduct(
@@ -237,9 +241,9 @@ class DBService {
   }
 
   Future<UserTile> returnUserTile(Map<String, dynamic> userInfo) async {
-    Image img = await storage.returnImage(userInfo["userToken"]);
+    //Image img = await storage.returnImage(userInfo["userToken"]);
     return UserTile(
-      img: img,
+      img: null,
       displayName: '${userInfo["name"]} ${userInfo["surname"]}',
       rating: userInfo["rating"].toDouble(),
       username: userInfo["username"],

@@ -58,7 +58,8 @@ class _SearchViewState extends State<SearchView> {
   //SorterHelpers
   dynamic sorterHelper(String property, [bool reverse = false]) {
     return (Map<String, dynamic> a, Map<String, dynamic> b) {
-      return (reverse != (a[property] < b[property])) ? 1 : -1;
+      int result = a[property].compareTo(b[property]);
+      return result;
     };
   }
 
@@ -106,7 +107,7 @@ class _SearchViewState extends State<SearchView> {
                           });
                         }
                         if (_formKey.currentState!.validate()) {
-                          sorter = sorterHelper("rating");
+                          sorter = sorterHelper("brand-name");
                           filters = {
                             "current-price": priceFilter(10, 25),
                             "rating": ratingFilter(2, 4)

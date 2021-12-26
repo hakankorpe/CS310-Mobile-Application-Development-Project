@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';

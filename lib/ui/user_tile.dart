@@ -30,7 +30,7 @@ class UserTile extends StatelessWidget {
       onPressed: () => Navigator.of(context).pushNamed("/home",
           arguments: {"userID": userID, "username": username}),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Column(
             children: [
@@ -66,26 +66,34 @@ class UserTile extends StatelessWidget {
               )
             ],
           ),
-          Column(
-            children: [
-              Text(
-                displayName,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Text(
+                    displayName,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
+                  Text(
+                    username,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: Dimen.sizedBox_5,
-              ),
-              Text(
-                username,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ],
+            ),
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Row(
@@ -113,7 +121,7 @@ class UserTile extends StatelessWidget {
                   },
                 ),
               ],
-            )
+            ),
           ]),
         ],
       ),
