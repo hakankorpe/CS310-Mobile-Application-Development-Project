@@ -261,6 +261,7 @@ class DBService {
       category: product["category"],
       description: product["details"],
       sellerToken: product["seller-id"],
+      gender: product["gender"],
     );
   }
 
@@ -440,7 +441,7 @@ class DBService {
       "user-id": userToken,
       "seller-id": sellerToken,
       "product-id": productToken,
-      "review-date": dateOnly,
+      "review-date": Timestamp.now(),
     })
         .then((value) {
       reviewCollection.doc(value.id).update({"review-id": value.id});
@@ -457,5 +458,19 @@ class DBService {
 
   Future<void> denyReview(String reviewID) async {
     reviewCollection.doc(reviewID).update({"status": "Denied"});
+  }
+
+  Future<List<String>> getBrandNames() async {
+    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+
+    Set<String> distinctBrandNames =  {...allProducts.map((productInfo) => productInfo["brand-name"].toString())};
+    return distinctBrandNames.toList() as List<String>;
+  }
+
+  Future<List<double>> getFootSizes() async {
+    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+
+    Set<double> distinctFootSizes =  {...allProducts.map((productInfo) => productInfo["foot-size"])};
+    return distinctFootSizes.toList() as List<double>;
   }
 }
