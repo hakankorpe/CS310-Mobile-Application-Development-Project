@@ -6,10 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class CommentsTile extends StatelessWidget {
+
   final FootWearItem product;
+  final String reviewDate;
+  final String comment;
+  final String status;
+  final double rating;
 
   const CommentsTile({
     required this.product,
+    required this.reviewDate,
+    required this.comment,
+    required this.status,
+    required this.rating,
   });
 
   @override
@@ -116,7 +125,7 @@ class CommentsTile extends StatelessWidget {
                         ),
                         RatingBar.builder(
                           ignoreGestures: true,
-                          initialRating: product.rating,
+                          initialRating: rating.toDouble(),
                           minRating: 0,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
@@ -137,16 +146,16 @@ class CommentsTile extends StatelessWidget {
                       height: Dimen.sizedBox_5,
                     ),
                     Row(
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           "Review Status: ",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          "Pending",
-                          style: TextStyle(
+                          status,
+                          style: const TextStyle(
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -160,7 +169,7 @@ class CommentsTile extends StatelessWidget {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [Text("02/11/2021")],
+                children: [Text(reviewDate)],
               ),
             ],
           ),
@@ -168,8 +177,8 @@ class CommentsTile extends StatelessWidget {
             height: Dimen.sizedBox_5,
           ),
           Row(
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Your Comment: ",
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -177,8 +186,8 @@ class CommentsTile extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  "jsdflsfkjbflsjkbsnflkjbsfljdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasgljsblgjsbblfjbslfjbslbjfslfdbslbjlsdfjbsflbjhvabflkjfbvskjbfskjfbsk",
-                  style: TextStyle(
+                  comment,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w400,
                   ),
                   //textAlign: TextAlign.justify,

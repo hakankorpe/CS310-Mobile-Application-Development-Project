@@ -6,6 +6,7 @@ import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
+import 'package:cs310_footwear_project/ui/order_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
 import 'package:cs310_footwear_project/ui/user_tile.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,8 @@ class DBService {
       FirebaseFirestore.instance.collection("bookmarks");
   final CollectionReference orderCollection =
         FirebaseFirestore.instance.collection("orders");
+  final CollectionReference reviewCollection =
+        FirebaseFirestore.instance.collection("reviews");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -257,6 +260,7 @@ class DBService {
       initialPrice: product["initial-price"].toDouble(),
       category: product["category"],
       description: product["details"],
+      sellerToken: product["seller-id"],
     );
   }
 
@@ -414,5 +418,44 @@ class DBService {
     });
 
     // Empty the cart of user
+    // Update the remaining product count of sold products
+  }
+
+  Future<List<OrderTile>> getOrderHistory(String userToken) async {
+    List<OrderTile> dummy = [];
+    return dummy;
+  }
+
+  Future<void> addReview(String userToken, String productToken,
+      String sellerToken, String comment, double rating) async {
+
+    DateTime now = DateTime.now();
+    String dateOnly = DateTime(now.year, now.month, now.day).toString();
+
+    reviewCollection.add({
+      "review-id": "",
+      "status": "Pending",
+      "comment": comment,
+      "rating": rating,
+      "user-id": userToken,
+      "seller-id": sellerToken,
+      "product-id": productToken,
+      "review-date": dateOnly,
+    })
+        .then((value) {
+      reviewCollection.doc(value.id).update({"review-id": value.id});
+    });
+
+    // UPDATE THE PRODUCT RATING
+    // UPDATE THE USER RATING
+    // UPDATE REVIEW COUNT
+  }
+
+  Future<void> approveReview(String reviewID) async {
+    reviewCollection.doc(reviewID).update({"status": "Approved"});
+  }
+
+  Future<void> denyReview(String reviewID) async {
+    reviewCollection.doc(reviewID).update({"status": "Denied"});
   }
 }

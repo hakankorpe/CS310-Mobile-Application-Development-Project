@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cs310_footwear_project/components/footwear_item.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class CommentApproveTile extends StatelessWidget {
   final String comment;
   final VoidCallback approveComment;
   final VoidCallback denyComment;
+  final String reviewID;
 
   const CommentApproveTile({
     required this.product,
@@ -17,10 +19,14 @@ class CommentApproveTile extends StatelessWidget {
     required this.comment,
     required this.approveComment,
     required this.denyComment,
+    required this.reviewID,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    DBService db = DBService();
+
     return Container(
       height: MediaQuery.of(context).size.height / 6.5,
       child: Card(
@@ -42,7 +48,7 @@ class CommentApproveTile extends StatelessWidget {
                           height: MediaQuery.of(context).size.width / 5.5,
                         ),
                         Text(
-                          product.brandName,
+                          product.productName,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
@@ -99,12 +105,24 @@ class CommentApproveTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         IconButton(
-                          onPressed: approveComment,
+                          onPressed: () {
+                            db.approveReview(reviewID).then((value) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Approved Review!')));
+                            });
+                          },
                           icon: const Icon(Icons.check_box_rounded),
                           iconSize: 30,
                         ),
                         IconButton(
-                          onPressed: denyComment,
+                          onPressed: () {
+                            db.denyReview(reviewID).then((value) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Denied Review!')));
+                            });
+                          },
                           icon:
                               const Icon(Icons.indeterminate_check_box_rounded),
                           iconSize: 30,

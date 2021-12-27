@@ -159,48 +159,6 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                               const Divider(
                                 thickness: Dimen.divider_2,
                               ),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
-                              CommentApproveTile(
-                                  product: dummyItem,
-                                  username: "test_sayanarman",
-                                  comment:
-                                      "abcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcddefghdefghabcdefghabcdefghabcdefghabcdefgh",
-                                  approveComment: () {},
-                                  denyComment: () {}),
                             ],
                           ),
                         ),
