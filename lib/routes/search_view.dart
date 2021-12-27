@@ -12,6 +12,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key, required this.analytics, required this.observer})
@@ -28,6 +30,14 @@ class _SearchViewState extends State<SearchView> {
   final _formKey = GlobalKey<FormState>();
   String searchValue = "";
   bool get isSearched => searchValue.isNotEmpty;
+  bool genderFilterSelected = false;
+  bool prFilterSelected = false;
+  bool brandFilterSelected = false;
+  bool ratingFilterSelected = false;
+  bool fsFilterSelected = false;
+
+  List selectedFootSize = [];
+  double selectedRating = 0.0;
 
   List<FootWearItem> allItems = [];
   List<String> wantedProducts = [];
@@ -51,7 +61,7 @@ class _SearchViewState extends State<SearchView> {
     return (value) => (value >= minimum) && (value <= maximum);
   }
 
-  dynamic ratingFilter([double minimum = 0, double maximum = double.infinity]) {
+  dynamic ratingFilter([double minimum = 0, double maximum = 5.0]) {
     return priceFilter(minimum, min(maximum, 5));
   }
 
@@ -167,6 +177,160 @@ class _SearchViewState extends State<SearchView> {
               const Divider(
                 thickness: 1.5,
                 color: Colors.black38,
+              ),
+              Wrap(
+                alignment: WrapAlignment.start,
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  prFilterSelected
+                      ? InputChip(
+                    avatar: Icon(Icons.money),
+                    label: Text('Price Range'),
+                    selected: prFilterSelected,
+                    deleteIcon: Icon(Icons.cancel),
+                    deleteIconColor: Colors.white70,
+                    showCheckmark: false,
+                    onDeleted: () {
+                      setState(() {
+                        prFilterSelected = !prFilterSelected;
+                      });
+                    },
+                  )
+                      : InputChip(
+                    avatar: Icon(Icons.money),
+                    label: Text('Price Range'),
+                    selected: prFilterSelected,
+                    showCheckmark: false,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        prFilterSelected = selected;
+                      });
+                    },
+                  ),
+                  genderFilterSelected
+                      ? InputChip(
+                    avatar: Icon(Icons.transgender),
+                    label: Text('Gender'),
+                    selected: genderFilterSelected,
+                    deleteIcon: Icon(Icons.cancel),
+                    deleteIconColor: Colors.white70,
+                    showCheckmark: false,
+                    onDeleted: () {
+                      setState(() {
+                        genderFilterSelected = !genderFilterSelected;
+                      });
+                    },
+                  )
+                      : InputChip(
+                    avatar: Icon(Icons.transgender),
+                    label: Text('Gender'),
+                    selected: genderFilterSelected,
+                    showCheckmark: false,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        genderFilterSelected = selected;
+                      });
+                    },
+                  ),
+                  brandFilterSelected
+                      ? InputChip(
+                          avatar: Icon(Icons.label),
+                          label: Text('Brand'),
+                          selected: brandFilterSelected,
+                          deleteIcon: Icon(Icons.cancel),
+                          deleteIconColor: Colors.white70,
+                          showCheckmark: false,
+                          onDeleted: () {
+                            setState(() {
+                              brandFilterSelected = !brandFilterSelected;
+                            });
+                          },
+                        )
+                      : InputChip(
+                          avatar: Icon(Icons.label),
+                          label: Text('Brand'),
+                          selected: brandFilterSelected,
+                          showCheckmark: false,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              brandFilterSelected = selected;
+                            });
+                          },
+                        ),
+                  ratingFilterSelected
+                      ? InputChip(
+                    avatar: Icon(Icons.stars),
+                    label: Text('Rating'),
+                    selected: ratingFilterSelected,
+                    deleteIcon: Icon(Icons.cancel),
+                    deleteIconColor: Colors.white70,
+                    showCheckmark: false,
+                    onDeleted: () {
+                      setState(() {
+                        ratingFilterSelected = !ratingFilterSelected;
+                      });
+                    },
+                  )
+                      : InputChip(
+                    avatar: Icon(Icons.stars),
+                    label: Text('Rating'),
+                    selected: ratingFilterSelected,
+                    showCheckmark: false,
+                    onSelected: (bool selected) {
+                      showMaterialRadioPicker(
+                          context: context,
+                          items: [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0],
+                        title: 'Foot Size',
+                        onChanged: (value) {
+                          selectedRating = value as double;
+                          print(value);
+                          filters["rating"] = ratingFilter(selectedRating);
+                        },
+                      );
+                      setState(() {
+                        ratingFilterSelected = selected;
+                      });
+                    },
+                  ),
+                  fsFilterSelected
+                      ? InputChip(
+                    avatar: Icon(Icons.coffee),
+                    label: Text('Foot Size'),
+                    selected: fsFilterSelected,
+                    deleteIcon: Icon(Icons.cancel),
+                    deleteIconColor: Colors.white70,
+                    showCheckmark: false,
+                    onDeleted: () {
+                      setState(() {
+                        fsFilterSelected = !fsFilterSelected;
+                      });
+                    },
+                  )
+                      : InputChip(
+                    avatar: Icon(Icons.coffee),
+                    label: Text('Foot Size'),
+                    selected: fsFilterSelected,
+                    showCheckmark: false,
+                    onSelected: (bool selected) {
+                      showMaterialCheckboxPicker(
+                        context: context,
+                        title: 'Foot Size',
+                        onChanged: (value) {
+                              selectedFootSize = value;
+                            print(value);
+                            filters["rating"] = ratingFilter(value as double);
+                            },
+                        items: [36, 37, 38, 39, 40, 41, 42, 43, 44],
+                        selectedItems: selectedFootSize,
+                      );
+                      print(selectedFootSize);
+                      setState(() {
+                        fsFilterSelected = selected;
+                      });
+                    },
+                  ),
+                ],
               ),
               if (isSearched != false)
                 const SizedBox(

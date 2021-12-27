@@ -9,7 +9,7 @@ import 'dart:io' show Directory, File, Platform;
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class OnSaleTile extends StatelessWidget {
+class OnSaleTile extends StatefulWidget {
   final FootWearItem product;
   final VoidCallback remove;
   final VoidCallback applyDiscount;
@@ -24,7 +24,12 @@ class OnSaleTile extends StatelessWidget {
     required this.priceUpdate,
   });
 
-  Future<void> showTextInputDialog(BuildContext context, String title, String hintText,) async {
+  @override
+  State<OnSaleTile> createState() => _OnSaleTileState();
+}
+
+class _OnSaleTileState extends State<OnSaleTile> {
+  Future<void> showTextInputDialog(BuildContext context, String title, String hintText, String updateType) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -63,6 +68,12 @@ class OnSaleTile extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Updating......')));
+
+                          DBService db = DBService();
+
+                          if (updateType == "price") db.updatePriceOfProduct(widget.product.productToken!, 890);
+                          else if (updateType == "quantity") db.updateStockOfProduct(widget.product.productToken!, 567);
+                          else db.updateDiscountOfProduct(widget.product.productToken!, 0.78);
 
                           Navigator.of(context).pop();
 
@@ -116,7 +127,25 @@ class OnSaleTile extends StatelessWidget {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Updating......')));
+
+                          DBService db = DBService();
+
+                          if (updateType == "price") db.updatePriceOfProduct(widget.product.productToken!, 890);
+                          else if (updateType == "quantity") db.updateStockOfProduct(widget.product.productToken!, 567);
+                          else db.updateDiscountOfProduct(widget.product.productToken!, 0.78);
+
+                          Navigator.of(context).pop();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Updated!')));
+                        }
                       },
                       child: const Text("Update")),
                   TextButton(
@@ -144,7 +173,7 @@ class OnSaleTile extends StatelessWidget {
                 onPressed: (context) {
                   //DBService().cartCollection.doc(widget.userID).update(
                    //   {widget.product.productToken!: FieldValue.delete()});
-                  DBService().deleteProductOnSale(product.productToken!);
+                  DBService().deleteProductOnSale(widget.product.productToken!);
                 },
                 icon: Icons.delete,
                 label: "Delete",
@@ -163,12 +192,12 @@ class OnSaleTile extends StatelessWidget {
                     Column(
                       children: [
                         Container(
-                          child: product.image,
+                          child: widget.product.image,
                           width: MediaQuery.of(context).size.width / 5.5,
                           height: MediaQuery.of(context).size.width / 5.5,
                         ),
                         Text(
-                          product.brandName,
+                          widget.product.brandName,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
@@ -191,19 +220,19 @@ class OnSaleTile extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  product.price.toString() + "₺",
+                                  widget.product.price.toString() + "₺",
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     decoration: TextDecoration.lineThrough,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                Text("${product.price * (1 - product.discount!)}"),
+                                Text("${widget.product.price * (1 - widget.product.discount!)}"),
                               ],
                             ),
                             IconButton(
                               onPressed: () {
-                                showTextInputDialog(context, "Update Price", "Enter new price (₺)",);
+                                showTextInputDialog(context, "Update Price", "Enter new price (₺)", "price");
                               },
                               icon: const Icon(
                                 Icons.edit_sharp,
@@ -222,11 +251,11 @@ class OnSaleTile extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "x${product.stockCount}",
+                              "x${widget.product.stockCount}",
                             ),
                             IconButton(
                               onPressed: () {
-                                showTextInputDialog(context, "Update Stock Quantity", "Enter new quantity",);
+                                showTextInputDialog(context, "Update Stock Quantity", "Enter new quantity", "quantity");
                               },
                               icon: const Icon(
                                 Icons.edit_sharp,
@@ -249,7 +278,7 @@ class OnSaleTile extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            showTextInputDialog(context, "Apply Discount", "Enter new discount rate (0.0 - 1.0)",);
+                            showTextInputDialog(context, "Apply Discount", "Enter new discount rate (0.0 - 1.0)", "discount");
                           },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.amberAccent,

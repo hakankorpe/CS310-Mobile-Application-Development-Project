@@ -10,6 +10,7 @@ import 'package:cs310_footwear_project/routes/description_view.dart';
 import 'package:cs310_footwear_project/routes/edit_profile_view.dart';
 import 'package:cs310_footwear_project/routes/home_view.dart';
 import 'package:cs310_footwear_project/routes/login_view.dart';
+import 'package:cs310_footwear_project/routes/notifications_view.dart';
 import 'package:cs310_footwear_project/routes/onsale_view.dart';
 import 'package:cs310_footwear_project/routes/orders_view.dart';
 import 'package:cs310_footwear_project/routes/profile_view.dart';
@@ -198,6 +199,10 @@ class _AppBaseState extends State<AppBase> {
                       analytics: analytics,
                       observer: observer,
                     ),
+                '/notification': (context) => NotificationView(
+                  analytics: analytics,
+                  observer: observer,
+                ),
               },
             );
           } else {

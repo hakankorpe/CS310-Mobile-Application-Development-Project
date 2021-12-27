@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/address_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
 import 'package:cs310_footwear_project/ui/checkout_tile.dart';
@@ -10,6 +13,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
@@ -28,11 +32,66 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
+
+  DBService db = DBService();
+
   final _formKey = GlobalKey<FormState>();
   bool _value = false;
 
   double? cartTotal;
   List<CheckoutTile>? _allCheckoutTiles;
+
+  Future<void> showOrderCompleteDialog(BuildContext context,) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          final _formKey = GlobalKey<FormState>();
+          bool isIOS = Platform.isIOS;
+          if (!isIOS) {
+            return AlertDialog(
+              title: const Text(
+                  "Order Completed!",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: const Text("Your order is going to be prepared in a short time.\n\n"
+                  "You can check your status from your profile if you are curious.",
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, "/home");
+                    },
+                    child: const Text("Continue"))
+              ],
+            );
+          }
+          else {
+            return CupertinoAlertDialog(
+              title: const Text(
+                "Order Completed!",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: const Text("Your order is going to be prepared in a short time.\n\n"
+                  "You can check your status from your profile if you are curious.",
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, "/home");
+                    },
+                    child: const Text("Continue"))
+              ],
+            );
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +306,14 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ElevatedButton(
                           onPressed: () {
                             //FirebaseCrashlytics.instance.crash();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Processing Order...')));
+
+                            db.createOrder(user!.uid).then((value) {
+                              showOrderCompleteDialog(context);
+                            });
                           },
                           child: Text(
                             "Confirm",
