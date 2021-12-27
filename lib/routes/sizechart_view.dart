@@ -14,8 +14,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 class SizeChartView extends StatefulWidget {
-  SizeChartView(
-      {Key? key, required this.analytics, required this.observer})
+  SizeChartView({Key? key, required this.analytics, required this.observer})
       : super(key: key);
 
   final FirebaseAnalytics analytics;
@@ -52,7 +51,7 @@ class _SizeChartViewState extends State<SizeChartView> {
     }
 
     if (user != null) {
-      db.isProductBookmarked(user!.uid, productId).then((value) {
+      db.isProductBookmarked(user.uid, productId).then((value) {
         if ((value == true) && (isBookmarked == false)) {
           setState(() {
             isBookmarked = true;
@@ -84,9 +83,9 @@ class _SizeChartViewState extends State<SizeChartView> {
               } else {
                 setState(() {
                   if (isBookmarked) {
-                    db.unBookmarkProduct(user!.uid, productId);
+                    db.unBookmarkProduct(user.uid, productId);
                   } else {
-                    db.bookmarkProduct(user!.uid, productId);
+                    db.bookmarkProduct(user.uid, productId);
                   }
 
                   isBookmarked = !isBookmarked;
@@ -95,13 +94,13 @@ class _SizeChartViewState extends State<SizeChartView> {
             },
             icon: isBookmarked
                 ? const Icon(
-              Icons.bookmark,
-              color: AppColors.appBarElementColor,
-            )
+                    Icons.bookmark,
+                    color: AppColors.appBarElementColor,
+                  )
                 : const Icon(
-              Icons.bookmark_border,
-              color: AppColors.appBarElementColor,
-            ),
+                    Icons.bookmark_border,
+                    color: AppColors.appBarElementColor,
+                  ),
           ),
         ],
       ),
@@ -163,7 +162,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? product!.productName :  "",
+                          product != null ? product!.productName : "",
                           style: const TextStyle(
                               fontSize: 23,
                               fontStyle: FontStyle.normal,
@@ -171,7 +170,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          product != null ? product!.category! :  "",
+                          product != null ? product!.category! : "",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -186,7 +185,8 @@ class _SizeChartViewState extends State<SizeChartView> {
                     flex: 2,
                     child: RatingBar.builder(
                       ignoreGestures: true,
-                      initialRating: product != null ? product!.rating!.toDouble() : 0.0,
+                      initialRating:
+                          product != null ? product!.rating!.toDouble() : 0.0,
                       minRating: 0,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -214,7 +214,7 @@ class _SizeChartViewState extends State<SizeChartView> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      product != null ? "${product!.price!.toString()}₺" :  "",
+                      product != null ? "${product!.price!.toString()}₺" : "",
                       textAlign: TextAlign.right,
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
@@ -227,14 +227,18 @@ class _SizeChartViewState extends State<SizeChartView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? "${product!.price! * (1 - product!.discount!)}₺" :  "",
+                          product != null
+                              ? "${product!.price! * (1 - product!.discount!)}₺"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          product != null ? "${product!.discount! * 100}% Off" :  "",
+                          product != null
+                              ? "${product!.discount! * 100}% Off"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                             color: Colors.redAccent,
@@ -281,9 +285,13 @@ class _SizeChartViewState extends State<SizeChartView> {
                         if (user == null) {
                           Navigator.pushNamed(context, "/login");
                         } else {
-                          db.addProductToCart(user.uid, productId, widget.quantity!).then((value) {
+                          db
+                              .addProductToCart(
+                                  user.uid, productId, widget.quantity!)
+                              .then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Added to cart!')));
+                                const SnackBar(
+                                    content: Text('Added to cart!')));
                             Navigator.popAndPushNamed(context, "/cart");
                           });
                         }
@@ -329,7 +337,11 @@ class _SizeChartViewState extends State<SizeChartView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/description", arguments: {"productId": productId},);
+                        Navigator.popAndPushNamed(
+                          context,
+                          "/description",
+                          arguments: {"productId": productId},
+                        );
                       },
                       child: const Text(
                         "Description",
@@ -371,7 +383,11 @@ class _SizeChartViewState extends State<SizeChartView> {
                     flex: 1,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/reviews", arguments: {"productId": productId},);
+                        Navigator.popAndPushNamed(
+                          context,
+                          "/reviews",
+                          arguments: {"productId": productId},
+                        );
                       },
                       child: const Text(
                         "Reviews",

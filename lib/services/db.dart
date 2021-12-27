@@ -138,8 +138,17 @@ class DBService {
     });
   }
 
-  Future<List<FootWearItem>> basicSearchProduct(String productName) async {
-    return await advancedSearchProduct(productName, {});
+  Future<List<Map<String, dynamic>>> basicSearchProduct(
+      String productName) async {
+    Iterable<Map<String, dynamic>> allProducts =
+        await getAllCollectionItems(productCollection);
+
+    return allProducts
+        .where((element) => element["product-name"]
+            .toString()
+            .toLowerCase()
+            .contains(productName.toLowerCase()))
+        .toList();
   }
 
   Future<List<UserTile>> basicSearchUser(String userName) async {
@@ -154,29 +163,6 @@ class DBService {
 
     result.forEach((element) => print(element));
     return result;
-  }
-
-  Future<List<FootWearItem>> advancedSearchProduct(
-      String productName, Map<String, dynamic> filters,
-      [dynamic sortFunc]) async {
-    filters["product-name"] = (value) =>
-        value.toString().toLowerCase().contains(productName.toLowerCase());
-
-    Iterable<Map<String, dynamic>> allProducts =
-        await getAllCollectionItems(productCollection);
-
-    filters.forEach((key, value) {
-      allProducts = allProducts.where((element) => value(element[key]) as bool);
-    });
-
-    final allProductsList = allProducts.toList();
-
-    if (sortFunc != null) {
-      allProductsList.sort(sortFunc);
-    }
-
-    return await Future.wait(
-        allProductsList.map((e) async => await returnFootwearItem(e)));
   }
 
   Future getProductsOnSale(String sellerID) async {
@@ -241,9 +227,9 @@ class DBService {
   }
 
   Future<UserTile> returnUserTile(Map<String, dynamic> userInfo) async {
-    //Image img = await storage.returnImage(userInfo["userToken"]);
+    Image img = await storage.returnImage(userInfo["userToken"]);
     return UserTile(
-      img: null,
+      img: img,
       displayName: '${userInfo["name"]} ${userInfo["surname"]}',
       rating: userInfo["rating"].toDouble(),
       username: userInfo["username"],

@@ -64,7 +64,7 @@ class _AddProductViewState extends State<AddProductView> {
     if (image == null) return;
 
     // Store the image permanently
-    final imagePermanent = await saveImagePermanently(image!.path);
+    final imagePermanent = await saveImagePermanently(image.path);
 
     setState(() {
       _image2 = imagePermanent;
@@ -77,7 +77,7 @@ class _AddProductViewState extends State<AddProductView> {
     if (image == null) return;
 
     // Store the image permanently
-    final imagePermanent = await saveImagePermanently(image!.path);
+    final imagePermanent = await saveImagePermanently(image.path);
 
     setState(() {
       _image2 = imagePermanent;

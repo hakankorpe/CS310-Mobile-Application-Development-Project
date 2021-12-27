@@ -63,7 +63,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     if (image == null) return;
 
     // Store the image permanently
-    final imagePermanent = await saveImagePermanently(image!.path);
+    final imagePermanent = await saveImagePermanently(image.path);
 
     setState(() {
       imageCache!.clear();
@@ -80,7 +80,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     if (image == null) return;
 
     // Store the image permanently
-    final imagePermanent = await saveImagePermanently(image!.path);
+    final imagePermanent = await saveImagePermanently(image.path);
 
     setState(() {
       widget.image2 = imagePermanent;
@@ -185,8 +185,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     child: const Text("Cancel"))
               ],
             );
-          }
-          else {
+          } else {
             return CupertinoAlertDialog(
               title: Text(title),
               content: SingleChildScrollView(

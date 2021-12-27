@@ -29,15 +29,15 @@ class _SearchViewState extends State<SearchView> {
   String searchValue = "";
   bool get isSearched => searchValue.isNotEmpty;
 
-  List<FootWearItem> foundItems = [];
-  List<UserTile> foundUsers = [
-    UserTile(
-      displayName: "Deneme",
-      rating: 4.3,
-      username: "deneme",
-      userID: "7BnDwbxk85Svj2yw9I1vjfVDgfT2",
-    )
-  ];
+  List<FootWearItem> allItems = [];
+  List<String> wantedProducts = [];
+
+  List<FootWearItem> get foundItems => wantedProducts
+      .map((productToken) => allItems
+          .firstWhere((element) => element.productToken == productToken))
+      .toList();
+
+  List<UserTile> foundUsers = [];
 
   Map<String, dynamic> filters = {};
   dynamic sorter;
@@ -55,11 +55,24 @@ class _SearchViewState extends State<SearchView> {
     return priceFilter(minimum, min(maximum, 5));
   }
 
+  List<String> applyFilterSort(Iterable<Map<String, dynamic>> original) {
+    Iterable<Map<String, dynamic>>? newIterable;
+
+    filters.forEach((key, value) {
+      newIterable =
+          (newIterable ?? original).where((element) => value(element[key]));
+    });
+
+    var newList = (newIterable ?? original)!.toList();
+    newList.sort(sorter);
+    return newList.map((e) => e["product-id"] as String).toList();
+  }
+
   //SorterHelpers
   dynamic sorterHelper(String property, [bool reverse = false]) {
     return (Map<String, dynamic> a, Map<String, dynamic> b) {
       int result = a[property].compareTo(b[property]);
-      return result;
+      return (reverse == false) ? result : -result;
     };
   }
 
@@ -103,22 +116,26 @@ class _SearchViewState extends State<SearchView> {
                       onPressed: () {
                         if (!isSearched) {
                           setState(() {
-                            foundItems = [];
+                            allItems = [];
                           });
                         }
                         if (_formKey.currentState!.validate()) {
-                          sorter = sorterHelper("brand-name");
-                          filters = {
-                            "current-price": priceFilter(10, 25),
-                            "rating": ratingFilter(2, 4)
-                          };
+                          sorter = sorterHelper("product-name");
+                          filters = {};
                           () async {
-                            final resultProduct = await DBService()
-                                .advancedSearchProduct(searchValue, {}, sorter);
+                            final resultProducts = await DBService()
+                                .basicSearchProduct(searchValue);
+
                             final resultUsers =
                                 await DBService().basicSearchUser(searchValue);
+
+                            final resultFootwearList = await Future.wait(
+                                resultProducts.map((e) async =>
+                                    await DBService().returnFootwearItem(e)));
+
                             setState(() {
-                              foundItems = resultProduct;
+                              wantedProducts = applyFilterSort(resultProducts);
+                              allItems = resultFootwearList;
                               foundUsers = resultUsers;
                             });
                           }();
@@ -167,7 +184,7 @@ class _SearchViewState extends State<SearchView> {
                 ),
               if (isSearched != false)
                 Text(
-                  "${foundItems.length} Results for \"Nike\" in products",
+                  "${foundItems.length} Results for $searchValue in products",
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -200,7 +217,7 @@ class _SearchViewState extends State<SearchView> {
                 ),
               if (isSearched != false)
                 Text(
-                  "${foundUsers.length} Results for \"Nike\" in sellers",
+                  "${foundUsers.length} Results for $searchValue in sellers",
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
