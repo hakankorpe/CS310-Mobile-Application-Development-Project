@@ -26,6 +26,8 @@ class DBService {
       FirebaseFirestore.instance.collection('carts');
   final CollectionReference bookmarkCollection =
       FirebaseFirestore.instance.collection("bookmarks");
+  final CollectionReference orderCollection =
+        FirebaseFirestore.instance.collection("orders");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -393,5 +395,38 @@ class DBService {
 
   Future<void> deleteProductOnSale(String productToken) async {
     productCollection.doc(productToken).delete();
+  }
+
+  Future<void> createOrder(String userToken) async {
+    var cart = await cartCollection
+        .doc(userToken)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      return documentSnapshot.data() as Map<String, dynamic>;
+    });
+
+    Map<String, Map<String, dynamic>> orderProductInfo = {};
+    cart.forEach((key, value) {
+      Map<String, dynamic> singleProductInfo = {};
+      singleProductInfo["quantity"] = value;
+      singleProductInfo["status"] = "Order Received";
+
+      orderProductInfo[key] = singleProductInfo;
+    });
+
+    DateTime now = DateTime.now();
+    String dateOnly = DateTime(now.year, now.month, now.day).toString();
+
+    orderCollection.add({
+      "order-id": "",
+      "order-date": dateOnly,
+      "buyer": userToken,
+      "products": orderProductInfo,
+    })
+        .then((value) {
+      orderCollection.doc(value.id).update({"order-id": value.id});
+    });
+
+    // Empty the cart of user
   }
 }
