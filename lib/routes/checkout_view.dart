@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
@@ -38,9 +40,13 @@ class _CheckoutViewState extends State<CheckoutView> {
   bool _value = false;
   String mainAddress = "";
   String detailedAddress = "";
+  bool firstTime = true;
+
+  StreamSubscription<DocumentSnapshot>? streamSub;
 
   double? cartTotal;
   List<CheckoutTile>? _allCheckoutTiles;
+  List<AddressTile>? allAddresses;
 
   Future<void> showOrderCompleteDialog(
     BuildContext context,
@@ -108,6 +114,24 @@ class _CheckoutViewState extends State<CheckoutView> {
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
     double cartTotal = arguments["cart-total"];
     List<CartTile> _cartProducts = arguments["cart-products"];
+
+    if (firstTime) {
+      firstTime = false;
+      streamSub = db.addressCollection
+          .doc(user!.uid)
+          .snapshots()
+          .listen((DocumentSnapshot documentSnapshot) {
+        Map<String, dynamic> deneme =
+            documentSnapshot.data() as Map<String, dynamic>;
+        setState(() {
+          allAddresses = deneme.entries
+              .map((e) =>
+                  AddressTile(mainAddress: e.key, detailedAddress: e.value))
+              .toList();
+        });
+      });
+    }
+
     _allCheckoutTiles = _cartProducts.map((CartTile cartTile) {
       return CheckoutTile(
         product: cartTile.product,
@@ -317,15 +341,6 @@ class _CheckoutViewState extends State<CheckoutView> {
           });
     }
 
-    final dummyItem = FootWearItem(
-      productName: "aradas",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-    );
-
     setCurrentScreen(widget.analytics, "Checkout View", "checkoutView");
 
     return Scaffold(
@@ -430,33 +445,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                         )),
                   ],
                 ),
-                Column(
-                  children: [
-                    AddressTile(),
-                    Card(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          CheckboxListTile(
-                            value: _value,
-                            onChanged: (value) {
-                              setState(() {
-                                _value = value!;
-                              });
-                            },
-                            title: const Text('UTS Tower Building'),
-                            subtitle: const Text('Boardway, Ultimo NSW'),
-                            secondary: const Icon(
-                                IconData(0xe3ab, fontFamily: 'MaterialIcons'),
-                                size: 30),
-                            selected: _value,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                Wrap(
+                  children: allAddresses ?? [],
                 ),
                 const SizedBox(
                   height: 25,

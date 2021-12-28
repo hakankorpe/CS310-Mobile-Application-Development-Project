@@ -7,6 +7,11 @@ import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 
 class AddressTile extends StatefulWidget {
   bool _value = false;
+  final String mainAddress;
+  final String detailedAddress;
+
+  AddressTile(
+      {Key? key, required this.mainAddress, required this.detailedAddress});
 
   @override
   _AddressTileState createState() => _AddressTileState();
@@ -19,23 +24,23 @@ class _AddressTileState extends State<AddressTile> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          CheckboxListTile(value: widget._value, onChanged: (value) {
-            setState(() {
-              widget._value = value!;
-            });
-          },
-            title: const Text('Central Station Grand Course'),
-            subtitle: const Text('Address detailed'),
-            secondary: const Icon(IconData(0xe3ab, fontFamily: 'MaterialIcons'), size: 30),
+          CheckboxListTile(
+            value: widget._value,
+            onChanged: (value) {
+              setState(() {
+                widget._value = value!;
+              });
+            },
+            title: Text(widget.mainAddress),
+            subtitle: Text(widget.detailedAddress),
+            secondary: const Icon(IconData(0xe3ab, fontFamily: 'MaterialIcons'),
+                size: 30),
             selected: widget._value,
-            contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10
-            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           ),
         ],
       ),
     );
   }
 }
-

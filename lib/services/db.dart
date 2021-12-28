@@ -28,13 +28,13 @@ class DBService {
   final CollectionReference bookmarkCollection =
       FirebaseFirestore.instance.collection("bookmarks");
   final CollectionReference orderCollection =
-        FirebaseFirestore.instance.collection("orders");
+      FirebaseFirestore.instance.collection("orders");
   final CollectionReference reviewCollection =
-        FirebaseFirestore.instance.collection("reviews");
+      FirebaseFirestore.instance.collection("reviews");
   final CollectionReference soldCollection =
-        FirebaseFirestore.instance.collection("solds");
+      FirebaseFirestore.instance.collection("solds");
   final CollectionReference addressCollection =
-        FirebaseFirestore.instance.collection("address");
+      FirebaseFirestore.instance.collection("address");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -423,18 +423,16 @@ class DBService {
       "order-date": dateOnly,
       "buyer": userToken,
       "products": orderProductInfo,
-    })
-        .then((value) {
+    }).then((value) {
       orderCollection.doc(value.id).update({"order-id": value.id});
     });
 
     // TODO Empty the cart of user
     cart.keys.forEach((productToken) {
       cartCollection.doc(userToken).update({
-        productToken : FieldValue.delete(),
+        productToken: FieldValue.delete(),
       });
     });
-
 
     // TODO CREATE A SOLD ENTRY IN THE TABLE FOR SELLER
     cart.forEach((key, value) {
@@ -442,10 +440,10 @@ class DBService {
         "product-id": key,
         "sold-date": Timestamp.now(),
         "quantity": value,
-        "selling-price": "", // TODO HOW TO REACH THE current-price * (1 - discount) value?
+        "selling-price":
+            "", // TODO HOW TO REACH THE current-price * (1 - discount) value?
       });
     });
-
 
     // TODO CHECK THIS FUNCTION FOR CORRECTNESS ISSUES
     // Update the remaining product count of sold products
@@ -465,7 +463,6 @@ class DBService {
 
   Future<void> addReview(String userToken, String productToken,
       String sellerToken, String comment, double rating) async {
-
     //DateTime now = DateTime.now();
     //String dateOnly = DateTime(now.year, now.month, now.day).toString();
 
@@ -478,15 +475,14 @@ class DBService {
       "seller-id": sellerToken,
       "product-id": productToken,
       "review-date": Timestamp.now(),
-    })
-        .then((value) {
+    }).then((value) {
       reviewCollection.doc(value.id).update({"review-id": value.id});
     });
 
     // UPDATE THE PRODUCT RATING
-    
+
     // UPDATE THE USER RATING
-    
+
     // UPDATE REVIEW COUNT
   }
 
@@ -499,16 +495,22 @@ class DBService {
   }
 
   Future<List<String>> getBrandNames() async {
-    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+    List<Map<String, dynamic>> allProducts =
+        await getAllCollectionItems(productCollection);
 
-    Set<String> distinctBrandNames =  {...allProducts.map((productInfo) => productInfo["brand-name"].toString())};
+    Set<String> distinctBrandNames = {
+      ...allProducts.map((productInfo) => productInfo["brand-name"].toString())
+    };
     return distinctBrandNames.toList() as List<String>;
   }
 
   Future<List<double>> getFootSizes() async {
-    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+    List<Map<String, dynamic>> allProducts =
+        await getAllCollectionItems(productCollection);
 
-    Set<double> distinctFootSizes =  {...allProducts.map((productInfo) => productInfo["foot-size"])};
+    Set<double> distinctFootSizes = {
+      ...allProducts.map((productInfo) => productInfo["foot-size"])
+    };
     return distinctFootSizes.toList() as List<double>;
   }
 
@@ -529,13 +531,16 @@ class DBService {
       return allProducts;
     });
 
-
-    return await Future.wait(productList.map((productInfos) => returnFootwearItem(productInfos)).toList());
+    return await Future.wait(productList
+        .map((productInfos) => returnFootwearItem(productInfos))
+        .toList());
   }
 
-  Future<void> addAddress(String userToken, String mainAddress, String detailedAddress) async {
-    addressCollection.doc(userToken).update({
-      mainAddress: detailedAddress,
-    });
+  Future<void> addAddress(
+      String userToken, String mainAddress, String detailedAddress) async {
+    addressCollection.doc(userToken).set(
+      {mainAddress: detailedAddress},
+      SetOptions(merge: true),
+    );
   }
 }
