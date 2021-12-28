@@ -63,7 +63,8 @@ class _CheckoutViewState extends State<CheckoutView> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, "/home");
+                      Navigator.of(context).pop();
+                      //Navigator.popAndPushNamed(context, "/home");
                     },
                     child: const Text("Continue"))
               ],
@@ -84,13 +85,16 @@ class _CheckoutViewState extends State<CheckoutView> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, "/home");
+                      Navigator.of(context).pop();
+                      //Navigator.popAndPushNamed(context, "/home");
                     },
                     child: const Text("Continue"))
               ],
             );
           }
-        });
+        }).then((value) {
+      //Navigator.popAndPushNamed(context, "/home");
+    });
   }
 
   @override
@@ -297,7 +301,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                     ),
                     Row(
                       children: [
-                        Text("$cartTotal₺", style: const TextStyle(
+                        Text("${cartTotal.toStringAsFixed(2)}₺", style: const TextStyle(
                           fontWeight: FontWeight.w600,
                         ),),
                         const SizedBox(
@@ -312,7 +316,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                                     content: Text('Processing Order...')));
 
                             db.createOrder(user!.uid).then((value) {
-                              showOrderCompleteDialog(context);
+                              showOrderCompleteDialog(context).then((value) {
+
+                              });
                             });
                           },
                           child: Text(

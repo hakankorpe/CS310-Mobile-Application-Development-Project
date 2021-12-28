@@ -190,7 +190,7 @@ class _CartViewState extends State<CartView> {
                               child: Text("", textAlign: TextAlign.center)),
                           Expanded(
                               flex: 2,
-                              child: Text("$cartTotal₺",
+                              child: Text("${cartTotal.toStringAsFixed(2)}₺",
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       color: Colors.green,

@@ -215,7 +215,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      product != null ? "${product!.price!.toString()}₺" : "",
+                      product != null ? "${(product!.price!).toStringAsFixed(2)}₺" : "",
                       textAlign: TextAlign.right,
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
@@ -229,7 +229,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                       children: [
                         Text(
                           product != null
-                              ? "${product!.price! * (1 - product!.discount!)}₺"
+                              ? "${(product!.price! * (1 - product!.discount!)).toStringAsFixed(2)}₺"
                               : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
@@ -238,7 +238,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                         ),
                         Text(
                           product != null
-                              ? "${product!.discount! * 100}% Off"
+                              ? "${(product!.discount! * 100).toStringAsFixed(2)}% Off"
                               : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(

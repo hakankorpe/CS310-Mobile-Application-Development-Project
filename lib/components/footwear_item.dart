@@ -82,7 +82,7 @@ class FootWearItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "$price₺",
+                  "${price.toStringAsFixed(2)}₺",
                   style: const TextStyle(color: Colors.black),
                 ),
                 const SizedBox(

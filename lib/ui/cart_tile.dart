@@ -70,7 +70,7 @@ class _CartTileState extends State<CartTile> {
                     Expanded(
                         flex: 2,
                         child: Text(
-                            "${widget.product.price * (1 - widget.product.discount!)}₺",
+                            "${(widget.product.price * (1 - widget.product.discount!)).toStringAsFixed(2)}₺",
                             textAlign: TextAlign.center)),
                     Expanded(
                       flex: 2,
@@ -110,7 +110,7 @@ class _CartTileState extends State<CartTile> {
                     Expanded(
                         flex: 2,
                         child: Text(
-                            "${widget.product.price * (1 - widget.product.discount!) * widget.quantity!}₺",
+                            "${(widget.product.price * (1 - widget.product.discount!) * widget.quantity!).toStringAsFixed(2)}₺",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 color: Colors.green,

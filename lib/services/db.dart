@@ -225,8 +225,13 @@ class DBService {
       Map<String, dynamic> userInfo = await getUserInfo(product["seller-id"]);
       Image img = await storage.returnImage(product["product-id"]);
 
+      // TODO UPDATE HERE BY CREATING SOLD COLLECTION AFTER ORDER CREATED
       return SoldTile(
         product: await returnFootwearItem(product),
+        sellingPrice: 890,
+        soldCount: 227,
+        profit: 890,
+        netGain: 890,
       );
     }));
   }

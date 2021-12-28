@@ -73,7 +73,7 @@ class _CheckoutTileState extends State<CheckoutTile> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                      "${widget.product.price * (1 - widget.product.discount!) * widget.quantity!}₺",
+                      "${(widget.product.price * (1 - widget.product.discount!) * widget.quantity!).toStringAsFixed(2)}₺",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           color: Colors.green,

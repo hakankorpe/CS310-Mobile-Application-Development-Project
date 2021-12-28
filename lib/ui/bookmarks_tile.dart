@@ -75,7 +75,7 @@ class BookmarksTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.price * (1 - product.discount!.toDouble())}₺",
+                        "${(product.price * (1 - product.discount!)).toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),

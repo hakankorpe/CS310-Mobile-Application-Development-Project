@@ -220,14 +220,14 @@ class _OnSaleTileState extends State<OnSaleTile> {
                             Column(
                               children: [
                                 Text(
-                                  widget.product.price.toString() + "₺",
+                                  widget.product.price.toStringAsFixed(2) + "₺",
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     decoration: TextDecoration.lineThrough,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                Text("${widget.product.price * (1 - widget.product.discount!)}"),
+                                Text("${(widget.product.price * (1 - widget.product.discount!)).toStringAsFixed(2)}"),
                               ],
                             ),
                             IconButton(

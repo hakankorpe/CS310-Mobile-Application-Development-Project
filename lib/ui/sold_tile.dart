@@ -6,9 +6,17 @@ import 'package:flutter/material.dart';
 
 class SoldTile extends StatelessWidget {
   final FootWearItem product;
+  final double sellingPrice;
+  final int soldCount;
+  final double profit;
+  final double netGain;
 
   const SoldTile({
     required this.product,
+    required this.sellingPrice,
+    required this.soldCount,
+    required this.profit,
+    required this.netGain,
   });
 
   @override
@@ -54,7 +62,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.initialPrice.toString()}₺",
+                        "${product.initialPrice!.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -73,7 +81,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.price}₺",
+                        "${sellingPrice.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -92,7 +100,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.soldCount}",
+                        "${soldCount}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -103,6 +111,7 @@ class SoldTile extends StatelessWidget {
               ),
               //const SizedBox(width: Dimen.sizedBox_15,),
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Row(
@@ -114,7 +123,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.price}₺",
+                        "${profit.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -133,7 +142,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product.price}₺",
+                        "${netGain.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
