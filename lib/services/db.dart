@@ -36,6 +36,7 @@ class DBService {
   final CollectionReference addressCollection =
       FirebaseFirestore.instance.collection("address");
 
+
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
     userCollection
@@ -207,38 +208,25 @@ class DBService {
     }));
   }
 
-  // TODO UPDATE THE FUNTION WITH SOLD COLLECTION ACCORDINGLY
-  Future getProductsSold(String sellerID) async {
-    var allProducts = await productCollection
-        .where('seller-id', isEqualTo: sellerID)
-        //.where('remaining-stock-count', isGreaterThan: 0)
-        .get()
-        .then((value) {
-      var result = value.docs;
-      List<Map<String, dynamic>> allProducts = [];
-      for (var doc in result) {
-        if (doc.data() != null) {
-          var data = doc.data() as Map<String, dynamic>;
+  Future<List<SoldTile>> getProductsSold(String sellerID) async {
+    List<Map<String, dynamic>> allSold = await getAllCollectionItems(
+        await soldCollection.where('seller', isEqualTo: sellerID));
 
-          if (data['sold-count'] > 0) allProducts.add(data);
-        }
-      }
-      return allProducts;
-    });
-
-    return await Future.wait(allProducts.map((product) async {
-      Map<String, dynamic> userInfo = await getUserInfo(product["seller-id"]);
-      Image img = await storage.returnImage(product["product-id"]);
-
-      // TODO UPDATE HERE BY CREATING SOLD COLLECTION AFTER ORDER CREATED
+    return Future.wait(allSold.map((e) async {
+      var productInfo = await getProductInfo(e["product-id"]);
+      var userInfo = await getUserInfo(e["buyer"]);
       return SoldTile(
-        product: await returnFootwearItem(product),
-        sellingPrice: 890,
-        soldCount: 227,
-        profit: 890,
-        netGain: 890,
+        product: await returnFootwearItem(productInfo),
+        sellingPrice: e["selling-price"],
+        soldCount: e["quantity"],
+        profit: e["quantity"] * e["selling-price"],
+        netGain:
+            (e["selling-price"] - productInfo["initial-price"]) * e["quantity"],
+        status: e["status"],
+        buyer: userInfo["username"],
+        soldID: e["sold-id"],
       );
-    }));
+    }).toList());
   }
 
   Future<UserTile> returnUserTile(Map<String, dynamic> userInfo) async {
@@ -271,7 +259,7 @@ class DBService {
       category: product["category"],
       description: product["details"],
       sellerToken: product["seller-id"],
-      gender: product["gender"] ?? "", // TODO CHECK WHETHER IT IS TRUE OR NOT
+      gender: product["gender"] ?? "Unisex",
     );
   }
 
@@ -406,12 +394,20 @@ class DBService {
       return documentSnapshot.data() as Map<String, dynamic>;
     });
 
+    var deneme = Map.fromEntries(await Future.wait(cart.entries.map(
+        (entry) async =>
+            MapEntry(entry.key, await getProductInfo(entry.key)))));
+
     Map<String, Map<String, dynamic>> orderProductInfo = {};
     cart.forEach((key, value) {
       Map<String, dynamic> singleProductInfo = {};
       singleProductInfo["quantity"] = value;
       singleProductInfo["status"] = "Order Received";
 
+      Map<String, dynamic> productInfo = deneme[key];
+
+      singleProductInfo["selling-price"] =
+          productInfo["current-price"] * (1 - productInfo["discount"]);
       orderProductInfo[key] = singleProductInfo;
     });
 
@@ -427,25 +423,27 @@ class DBService {
       orderCollection.doc(value.id).update({"order-id": value.id});
     });
 
-    // TODO Empty the cart of user
-    cart.keys.forEach((productToken) {
-      cartCollection.doc(userToken).update({
-        productToken: FieldValue.delete(),
-      });
-    });
 
-    // TODO CREATE A SOLD ENTRY IN THE TABLE FOR SELLER
+    // empty cart
+    await emptyCart(userToken, cart);
+
     cart.forEach((key, value) {
+      Map<String, dynamic> productInfo = deneme[key];
       soldCollection.add({
+        "sold-id": "",
         "product-id": key,
         "sold-date": Timestamp.now(),
         "quantity": value,
+        "buyer": userToken,
+        "seller": productInfo["seller-id"],
         "selling-price":
-            "", // TODO HOW TO REACH THE current-price * (1 - discount) value?
+            productInfo["current-price"] * (1 - productInfo["discount"]),
+        "status": "Order Received",
+      }).then((value) {
+        soldCollection.doc(value.id).update({"sold-id": value.id});
       });
     });
 
-    // TODO CHECK THIS FUNCTION FOR CORRECTNESS ISSUES
     // Update the remaining product count of sold products
     // Update the sold count of a product
     cart.forEach((key, value) {
@@ -454,6 +452,24 @@ class DBService {
         "sold-count": FieldValue.increment(value),
       });
     });
+  }
+
+  Future<void> emptyCart(String userToken, Map<String, dynamic> cart) async {
+    cart.keys.forEach((productToken) {
+      cartCollection.doc(userToken).update({
+        productToken: FieldValue.delete(),
+      });
+    });
+  }
+
+  Future<void> updateOrderStatus(String soldID, String newUpdate) async {
+
+    //  UPDATE SOLDS COLLECTION
+    soldCollection.doc(soldID).update({
+      "status": newUpdate,
+    });
+
+    // ADD NOTIFICATION FOR THAT USER
   }
 
   Future<List<OrderTile>> getOrderHistory(String userToken) async {
@@ -514,7 +530,6 @@ class DBService {
     return distinctFootSizes.toList() as List<double>;
   }
 
-  // TODO CHECK WHETHER IMPLEMENTATION IS CORRECT OR NOT
   Future<List<FootWearItem>> getCategoryProducts(String category) async {
     var productList = await productCollection
         .where('category', isEqualTo: category)

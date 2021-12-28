@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'dart:io' show Directory, File, Platform;
 import 'package:cs310_footwear_project/services/analytics.dart';
@@ -28,15 +31,44 @@ class OnSaleView extends StatefulWidget {
 class _OnSaleViewState extends State<OnSaleView> {
   StorageService storage = StorageService();
   DBService db = DBService();
+  StreamSubscription<QuerySnapshot>? streamSub;
 
   List<OnSaleTile> _onSaleProducts = [];
   int countOnSale = 0;
+
+  bool firstTime = true;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (streamSub != null) streamSub!.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
     print("OnSaleView build is called.");
     final user = Provider.of<User?>(context);
     setCurrentScreen(widget.analytics, "Onsale View", "onsaleView");
+
+    if (firstTime) {
+      firstTime = false;
+      streamSub = db.productCollection
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        print(querySnapshot.docChanges);
+        db
+            .getProductsOnSale(user!.uid)
+            .then((value) => db.returnOnSaleTileFromMap(value))
+            .then((value) {
+          if (_onSaleProducts.length == 0)
+            setState(() {
+              _onSaleProducts = value;
+              countOnSale = _onSaleProducts!.length;
+            });
+        });
+      });
+    }
 
     db
         .getProductsOnSale(user!.uid)

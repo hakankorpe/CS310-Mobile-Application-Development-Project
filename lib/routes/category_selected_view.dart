@@ -38,6 +38,9 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     if (categoryName != null) {
       db.getCategoryProducts(categoryName!).then((value) {
         allProducts = value;
+        setState(() {
+
+        });
       });
     }
 
@@ -69,9 +72,14 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
         padding: Dimen.regularPadding,
         child: SingleChildScrollView(
           child: allProducts.isNotEmpty ? Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // TODO ADD FILTER BUTTONS
               Wrap(
                 children: allProducts,
+                spacing: 15.0,
+                runSpacing: 25.0,
+                alignment: WrapAlignment.center,
               ),
             ],
           ) : Column(

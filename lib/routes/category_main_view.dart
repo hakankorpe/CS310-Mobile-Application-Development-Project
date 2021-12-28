@@ -57,7 +57,7 @@ class _CategoryMainViewState extends State<CategoryMainView> {
       "Sandals",
       "Slippers",
       "Sneakers",
-      "Fitness & Sport",
+      "Fitness & Sports",
     ];
 
     final categoryItems =  List.generate(categoryNames.length, (index) =>

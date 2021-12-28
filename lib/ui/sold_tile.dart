@@ -1,24 +1,38 @@
 import 'dart:ui';
 
 import 'package:cs310_footwear_project/components/footwear_item.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 
-class SoldTile extends StatelessWidget {
+class SoldTile extends StatefulWidget {
   final FootWearItem product;
+  final String soldID;
   final double sellingPrice;
   final int soldCount;
   final double profit;
   final double netGain;
+  String? status;
+  final String buyer;
 
-  const SoldTile({
+  SoldTile({
     required this.product,
     required this.sellingPrice,
     required this.soldCount,
     required this.profit,
     required this.netGain,
+    this.status,
+    required this.buyer,
+    required this.soldID,
   });
 
+  @override
+  State<SoldTile> createState() => _SoldTileState();
+}
+
+class _SoldTileState extends State<SoldTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -32,12 +46,12 @@ class SoldTile extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      child: product.image,
+                      child: widget.product.image,
                       width: MediaQuery.of(context).size.width / 5.5,
                       height: MediaQuery.of(context).size.width / 5.5,
                     ),
                     Text(
-                      product.productName,
+                      widget.product.productName,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
@@ -56,13 +70,32 @@ class SoldTile extends StatelessWidget {
                   Row(
                     children: [
                       const Text(
+                        "Buyer: ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        widget.buyer,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
+                  Row(
+                    children: [
+                      const Text(
                         "Initial Price: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       Text(
-                        "${product.initialPrice!.toStringAsFixed(2)}₺",
+                        "${widget.product.initialPrice!.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -81,7 +114,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${sellingPrice.toStringAsFixed(2)}₺",
+                        "${widget.sellingPrice.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -100,20 +133,16 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${soldCount}",
+                        "${widget.soldCount}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-              //const SizedBox(width: Dimen.sizedBox_15,),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                  const SizedBox(
+                    height: Dimen.sizedBox_5,
+                  ),
                   Row(
                     children: [
                       const Text(
@@ -123,7 +152,7 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${profit.toStringAsFixed(2)}₺",
+                        "${widget.profit.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
@@ -142,12 +171,67 @@ class SoldTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${netGain.toStringAsFixed(2)}₺",
+                        "${widget.netGain.toStringAsFixed(2)}₺",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
+                  ),
+                ],
+              ),
+              //const SizedBox(width: Dimen.sizedBox_15,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Status: ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: Dimen.sizedBox_15,
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Center(
+                            child: Text(widget.status!,
+                                textAlign: TextAlign.center),
+                          ),
+                          IconButton(
+                            constraints:
+                            const BoxConstraints(minHeight: 30),
+                            onPressed: () {
+                              showMaterialScrollPicker(
+                                  context: context,
+                                  title: "Choose a status update",
+                                  items: ["Order Received", "Preparing Order", "On Delivery", "Delivered"],
+                                  selectedItem: 1,
+                                  onChanged: (value) {
+                                    widget.status = value.toString();
+                                    //sorter = sorterHelper(value.toString(),);
+                                  }
+                              ).then((value) {
+                                DBService().updateOrderStatus(widget.soldID, widget.status!).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Order Status Updated!')));
+                                });
+                                setState(() {
+                                  //sortSelected = selected;
+                                });
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_downward_rounded),
+                            iconSize: 17,
+                          ),
+                        ]),
                   ),
                 ],
               ),
