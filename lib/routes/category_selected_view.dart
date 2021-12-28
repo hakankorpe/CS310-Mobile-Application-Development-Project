@@ -1,4 +1,6 @@
+import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -21,7 +23,9 @@ class CategorySelectedView extends StatefulWidget {
 
 class _CategorySelectedViewState extends State<CategorySelectedView> {
 
+  DBService db = DBService();
   String? categoryName;
+  List<FootWearItem> allProducts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,11 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     if (arguments != null) categoryName = arguments["categoryName"];
+    if (categoryName != null) {
+      db.getCategoryProducts(categoryName!).then((value) {
+        allProducts = value;
+      });
+    }
 
     setCurrentScreen(widget.analytics, "Category Selected View", "categorySelectedView");
 
@@ -55,6 +64,44 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
           ),
         ],
         iconTheme: kAppBarIconStyle,
+      ),
+      body: Padding(
+        padding: Dimen.regularPadding,
+        child: SingleChildScrollView(
+          child: allProducts.isNotEmpty ? Column(
+            children: [
+              Wrap(
+                children: allProducts,
+              ),
+            ],
+          ) : Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  "No Products for ${categoryName!}!",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 22,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(
+                height: Dimen.sizedBox_15,
+              ),
+              const Text(
+                "Try your chance later on.",
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         index: 2,

@@ -31,6 +31,8 @@ class DBService {
         FirebaseFirestore.instance.collection("orders");
   final CollectionReference reviewCollection =
         FirebaseFirestore.instance.collection("reviews");
+  final CollectionReference soldCollection =
+        FirebaseFirestore.instance.collection("solds");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -203,6 +205,7 @@ class DBService {
     }));
   }
 
+  // TODO UPDATE THE FUNTION WITH SOLD COLLECTION ACCORDINGLY
   Future getProductsSold(String sellerID) async {
     var allProducts = await productCollection
         .where('seller-id', isEqualTo: sellerID)
@@ -266,7 +269,7 @@ class DBService {
       category: product["category"],
       description: product["details"],
       sellerToken: product["seller-id"],
-      gender: product["gender"],
+      gender: product["gender"] ?? "", // TODO CHECK WHETHER IT IS TRUE OR NOT
     );
   }
 
@@ -423,8 +426,34 @@ class DBService {
       orderCollection.doc(value.id).update({"order-id": value.id});
     });
 
-    // Empty the cart of user
+    // TODO Empty the cart of user
+    cart.keys.forEach((productToken) {
+      cartCollection.doc(userToken).update({
+        productToken : FieldValue.delete(),
+      });
+    });
+
+
+    // TODO CREATE A SOLD ENTRY IN THE TABLE FOR SELLER
+    cart.forEach((key, value) {
+      soldCollection.add({
+        "product-id": key,
+        "sold-date": Timestamp.now(),
+        "quantity": value,
+        "selling-price": "", // TODO HOW TO REACH THE current-price * (1 - discount) value?
+      });
+    });
+
+
+    // TODO CHECK THIS FUNCTION FOR CORRECTNESS ISSUES
     // Update the remaining product count of sold products
+    // Update the sold count of a product
+    cart.forEach((key, value) {
+      productCollection.doc(key).update({
+        "remaining-stock-count": FieldValue.increment(-1 * value),
+        "sold-count": FieldValue.increment(value),
+      });
+    });
   }
 
   Future<List<OrderTile>> getOrderHistory(String userToken) async {
@@ -435,8 +464,8 @@ class DBService {
   Future<void> addReview(String userToken, String productToken,
       String sellerToken, String comment, double rating) async {
 
-    DateTime now = DateTime.now();
-    String dateOnly = DateTime(now.year, now.month, now.day).toString();
+    //DateTime now = DateTime.now();
+    //String dateOnly = DateTime(now.year, now.month, now.day).toString();
 
     reviewCollection.add({
       "review-id": "",
@@ -453,7 +482,9 @@ class DBService {
     });
 
     // UPDATE THE PRODUCT RATING
+    
     // UPDATE THE USER RATING
+    
     // UPDATE REVIEW COUNT
   }
 
@@ -477,5 +508,26 @@ class DBService {
 
     Set<double> distinctFootSizes =  {...allProducts.map((productInfo) => productInfo["foot-size"])};
     return distinctFootSizes.toList() as List<double>;
+  }
+
+  // TODO CHECK WHETHER IMPLEMENTATION IS CORRECT OR NOT
+  Future<List<FootWearItem>> getCategoryProducts(String category) async {
+    var productList = await productCollection
+        .where('category', isEqualTo: category)
+        .get()
+        .then((value) {
+      var result = value.docs;
+      List<Map<String, dynamic>> allProducts = [];
+      for (var doc in result) {
+        if (doc.data() != null) {
+          var data = doc.data() as Map<String, dynamic>;
+          allProducts.add(data);
+        }
+      }
+      return allProducts;
+    });
+
+
+    return await Future.wait(productList.map((productInfos) => returnFootwearItem(productInfos)).toList());
   }
 }

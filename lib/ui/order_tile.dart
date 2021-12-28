@@ -98,7 +98,6 @@ class _OrderTileState extends State<OrderTile> {
 
                           DBService db = DBService();
 
-                          //TODO IMPLEMENT ADDING REVIEW FUNCTION
                           db.addReview(widget.userID, widget.product.productToken!, widget.product.sellerToken!, comment, rating);
 
                           Navigator.of(context).pop();
@@ -182,7 +181,8 @@ class _OrderTileState extends State<OrderTile> {
 
                           DBService db = DBService();
 
-                          //TODO IMPLEMENT ADDING REVIEW FUNCTION
+
+                          db.addReview(widget.userID, widget.product.productToken!, widget.product.sellerToken!, comment, rating);
 
                           Navigator.of(context).pop();
 

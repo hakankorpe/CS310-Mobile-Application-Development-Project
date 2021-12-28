@@ -102,7 +102,6 @@ class UserTile extends StatelessWidget {
                   "Rating:",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                //TODO: find a BETTER star rating bar
                 RatingBar.builder(
                   ignoreGestures: true,
                   initialRating: rating,

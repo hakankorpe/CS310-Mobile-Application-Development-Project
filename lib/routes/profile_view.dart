@@ -207,7 +207,6 @@ class _ProfileViewState extends State<ProfileView> {
                                 "Rating:",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              //TODO: find a BETTER star rating bar
                               RatingBar.builder(
                                 ignoreGestures: true,
                                 initialRating:

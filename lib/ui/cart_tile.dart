@@ -88,8 +88,8 @@ class _CartTileState extends State<CartTile> {
                                   showMaterialNumberPicker(
                                     context: context,
                                     title:
-                                        'Quantity', //TODO: daha iyi ifade edilebilir
-                                    maxNumber: 91, // TODO: maximum item number
+                                        'Update Quantity',
+                                    maxNumber: widget.product.stockCount!,
                                     minNumber: 1,
                                     selectedNumber: widget.quantity,
                                     onChanged: (value) => setState(() {
