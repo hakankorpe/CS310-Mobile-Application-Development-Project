@@ -73,6 +73,10 @@ class _SearchViewState extends State<SearchView> {
     return priceFilter(minimum, min(maximum, 5));
   }
 
+  dynamic genderFilter(List<String> genderType){
+    return (value) => genderType.contains(value);
+  }
+
   List<String> applyFilterSort(Iterable<Map<String, dynamic>> original) {
     Iterable<Map<String, dynamic>>? newIterable;
 
@@ -111,6 +115,7 @@ class _SearchViewState extends State<SearchView> {
 
   List<String> brandNames = [];
   List<double> footSizes = [];
+  List<String> genders = ["Male","Female","Unisex"];
 
   @override
   void initState() {
@@ -330,6 +335,7 @@ class _SearchViewState extends State<SearchView> {
                     deleteIconColor: Colors.white70,
                     showCheckmark: false,
                     onDeleted: () {
+                      filters.remove("gender");
                       setState(() {
                         genderFilterSelected = !genderFilterSelected;
                       });
@@ -341,8 +347,17 @@ class _SearchViewState extends State<SearchView> {
                     selected: genderFilterSelected,
                     showCheckmark: false,
                     onSelected: (bool selected) {
-                      setState(() {
-                        genderFilterSelected = selected;
+                      showMaterialCheckboxPicker(
+                          context: context,
+                          items: genders,
+                          title: "Select Gender Type To Filter",
+                          onChanged: (List<String> value) {
+                            filters["gender"] = genderFilter(value);
+                          }
+                      ).then((value) {
+                        setState(() {
+                          genderFilterSelected = selected;
+                        });
                       });
                     },
                   ),

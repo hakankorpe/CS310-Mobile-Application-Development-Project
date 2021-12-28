@@ -32,16 +32,19 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-
   DBService db = DBService();
 
   final _formKey = GlobalKey<FormState>();
   bool _value = false;
+  String mainAddress = "";
+  String detailedAddress = "";
 
   double? cartTotal;
   List<CheckoutTile>? _allCheckoutTiles;
 
-  Future<void> showOrderCompleteDialog(BuildContext context,) async {
+  Future<void> showOrderCompleteDialog(
+    BuildContext context,
+  ) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -51,13 +54,14 @@ class _CheckoutViewState extends State<CheckoutView> {
           if (!isIOS) {
             return AlertDialog(
               title: const Text(
-                  "Order Completed!",
+                "Order Completed!",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              content: const Text("Your order is going to be prepared in a short time.\n\n"
-                  "You can check your status from your profile if you are curious.",
+              content: const Text(
+                "Your order is going to be prepared in a short time.\n\n"
+                "You can check your status from your profile if you are curious.",
                 textAlign: TextAlign.center,
               ),
               actions: [
@@ -69,8 +73,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                     child: const Text("Continue"))
               ],
             );
-          }
-          else {
+          } else {
             return CupertinoAlertDialog(
               title: const Text(
                 "Order Completed!",
@@ -78,8 +81,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              content: const Text("Your order is going to be prepared in a short time.\n\n"
-                  "You can check your status from your profile if you are curious.",
+              content: const Text(
+                "Your order is going to be prepared in a short time.\n\n"
+                "You can check your status from your profile if you are curious.",
                 textAlign: TextAlign.center,
               ),
               actions: [
@@ -105,9 +109,213 @@ class _CheckoutViewState extends State<CheckoutView> {
     double cartTotal = arguments["cart-total"];
     List<CartTile> _cartProducts = arguments["cart-products"];
     _allCheckoutTiles = _cartProducts.map((CartTile cartTile) {
-      return CheckoutTile(product: cartTile.product, quantity: cartTile.quantity,);
+      return CheckoutTile(
+        product: cartTile.product,
+        quantity: cartTile.quantity,
+      );
     }).toList();
 
+    Future<void> showTextInputDialog(BuildContext context, String title,
+        String hintText1, String hintText2) async {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            final _formKey = GlobalKey<FormState>();
+            bool isIOS = Platform.isIOS;
+            if (!isIOS) {
+              return Form(
+                key: _formKey,
+                child: AlertDialog(
+                  title: Text(title),
+                  content: Column(
+                    children: [
+                      TextFormField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.number,
+                        maxLines: 2,
+                        validator: (value) {
+                          return null;
+                        },
+                        onSaved: (value) {
+                          if (value != null) {
+                            print('saved $value');
+                            mainAddress = value;
+                          }
+                        },
+                        onChanged: (value) {
+                          mainAddress = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: hintText1,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.lightBlueAccent,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: Dimen.sizedBox_5),
+                      TextFormField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.number,
+                        maxLines: 2,
+                        validator: (value) {
+                          return null;
+                        },
+                        onSaved: (value) {
+                          if (value != null) {
+                            print('saved $value');
+                            detailedAddress = value;
+                          }
+                        },
+                        onChanged: (value) {
+                          detailedAddress = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: hintText2,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.lightBlueAccent,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          print(mainAddress);
+
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+
+                            print(detailedAddress);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Adding Address......')));
+
+                            DBService db = DBService();
+
+                            db.addAddress(
+                                user!.uid, mainAddress, detailedAddress);
+
+                            Navigator.of(context).pop();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Added Address!')));
+                          }
+                        },
+                        child: const Text("Enter an Address")),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel"))
+                  ],
+                ),
+              );
+            } else {
+              return Form(
+                key: _formKey,
+                child: CupertinoAlertDialog(
+                  title: Text(title),
+                  content: Card(
+                    color: Colors.transparent,
+                    elevation: 0.0,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            hintText: hintText1,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: Dimen.sizedBox_5),
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            hintText: hintText2,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Adding The Address......')));
+
+                            DBService db = DBService();
+
+                            db.addAddress(
+                                user!.uid, mainAddress, detailedAddress);
+
+                            Navigator.of(context).pop();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Address Review!')));
+                          }
+                        },
+                        child: const Text("Enter An Address")),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel"))
+                  ],
+                ),
+              );
+            }
+          });
+    }
 
     final dummyItem = FootWearItem(
       productName: "aradas",
@@ -206,7 +414,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                       thickness: 1.5,
                     ),
                     OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          showTextInputDialog(context, "Enter a new address",
+                              "Main Address", "Detailed Address");
+                        },
                         icon: const Icon(
                           Icons.add_location_alt_outlined,
                           color: Colors.black,
@@ -301,9 +512,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                     ),
                     Row(
                       children: [
-                        Text("${cartTotal.toStringAsFixed(2)}₺", style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),),
+                        Text(
+                          "${cartTotal.toStringAsFixed(2)}₺",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -316,9 +530,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                     content: Text('Processing Order...')));
 
                             db.createOrder(user!.uid).then((value) {
-                              showOrderCompleteDialog(context).then((value) {
-
-                              });
+                              showOrderCompleteDialog(context).then((value) {});
                             });
                           },
                           child: Text(

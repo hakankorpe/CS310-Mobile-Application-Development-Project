@@ -33,6 +33,8 @@ class DBService {
         FirebaseFirestore.instance.collection("reviews");
   final CollectionReference soldCollection =
         FirebaseFirestore.instance.collection("solds");
+  final CollectionReference addressCollection =
+        FirebaseFirestore.instance.collection("address");
 
   Future addUserAutoID(
       String name, String surname, String mail, String token) async {
@@ -529,5 +531,11 @@ class DBService {
 
 
     return await Future.wait(productList.map((productInfos) => returnFootwearItem(productInfos)).toList());
+  }
+
+  Future<void> addAddress(String userToken, String mainAddress, String detailedAddress) async {
+    addressCollection.doc(userToken).update({
+      mainAddress: detailedAddress,
+    });
   }
 }
