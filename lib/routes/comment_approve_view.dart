@@ -1,5 +1,6 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/comment_approve_tile.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -7,7 +8,9 @@ import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CommentApproveView extends StatefulWidget {
   const CommentApproveView(
@@ -22,28 +25,28 @@ class CommentApproveView extends StatefulWidget {
 }
 
 class _CommentApproveViewState extends State<CommentApproveView> {
+
+  DBService db = DBService();
+
+  List<CommentApproveTile> _comments = [];
   int countToApprove = 0;
 
   @override
   Widget build(BuildContext context) {
     print("CommentApproveView build is called.");
+    final user = Provider.of<User?>(context);
 
     setCurrentScreen(
         widget.analytics, "Comment Approve View", "commentApproveView");
 
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
+    db.getCommentsToApprove(user!.uid).then((value) {
+      if (_comments.isEmpty)
+        setState(() {
+          _comments = value;
+          countToApprove = _comments!.length;
+        });
+    });
 
-    final dummyItem = FootWearItem(
-      productName: "Nike",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-      discount: 0.25,
-      stockCount: 27,
-    );
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -154,10 +157,13 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                           textAlign: TextAlign.center,
                         ))
                       : SingleChildScrollView(
-                          child: Wrap(
+                          child: Column(
                             children: [
                               const Divider(
                                 thickness: Dimen.divider_2,
+                              ),
+                              Wrap(
+                                children: _comments,
                               ),
                             ],
                           ),

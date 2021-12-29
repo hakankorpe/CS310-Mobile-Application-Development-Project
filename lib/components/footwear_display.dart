@@ -2,6 +2,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class FootWearDisplay extends StatefulWidget {
   List<FootWearItem> itemList;
@@ -35,7 +36,13 @@ class _FootWearDisplayState extends State<FootWearDisplay> {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Wrap(spacing: 15.0, children: widget.itemList),
+            child: widget.itemList.isNotEmpty ? Wrap(spacing: 15.0, children: widget.itemList) : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("No products for ${widget.displayName}"),
+              ],
+            ),
           ),
         ],
       ),

@@ -152,72 +152,76 @@ class _CheckoutViewState extends State<CheckoutView> {
                 key: _formKey,
                 child: AlertDialog(
                   title: Text(title),
-                  content: Column(
-                    children: [
-                      TextFormField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        keyboardType: TextInputType.number,
-                        maxLines: 2,
-                        validator: (value) {
-                          return null;
-                        },
-                        onSaved: (value) {
-                          if (value != null) {
-                            print('saved $value');
+                  content: Card(
+                    color: Colors.transparent,
+                    elevation: 0.0,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          validator: (value) {
+                            return null;
+                          },
+                          onSaved: (value) {
+                            if (value != null) {
+                              print('saved $value');
+                              mainAddress = value;
+                            }
+                          },
+                          onChanged: (value) {
                             mainAddress = value;
-                          }
-                        },
-                        onChanged: (value) {
-                          mainAddress = value;
-                        },
-                        decoration: InputDecoration(
-                          hintText: hintText1,
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightBlueAccent,
+                          },
+                          decoration: InputDecoration(
+                            hintText: hintText1,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: Dimen.sizedBox_5),
-                      TextFormField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        keyboardType: TextInputType.number,
-                        maxLines: 2,
-                        validator: (value) {
-                          return null;
-                        },
-                        onSaved: (value) {
-                          if (value != null) {
-                            print('saved $value');
+                        const SizedBox(height: Dimen.sizedBox_5),
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          validator: (value) {
+                            return null;
+                          },
+                          onSaved: (value) {
+                            if (value != null) {
+                              print('saved $value');
+                              detailedAddress = value;
+                            }
+                          },
+                          onChanged: (value) {
                             detailedAddress = value;
-                          }
-                        },
-                        onChanged: (value) {
-                          detailedAddress = value;
-                        },
-                        decoration: InputDecoration(
-                          hintText: hintText2,
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightBlueAccent,
+                          },
+                          decoration: InputDecoration(
+                            hintText: hintText2,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   actions: [
                     TextButton(

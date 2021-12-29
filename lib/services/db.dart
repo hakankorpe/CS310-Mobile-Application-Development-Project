@@ -5,6 +5,8 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
+import 'package:cs310_footwear_project/ui/comment_approve_tile.dart';
+import 'package:cs310_footwear_project/ui/comments_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/order_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
@@ -15,6 +17,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io' show Directory, File, Platform;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 
 class DBService {
   StorageService storage = StorageService();
@@ -412,14 +415,19 @@ class DBService {
     });
 
     DateTime now = DateTime.now();
-    String dateOnly = DateTime(now.year, now.month, now.day).toString();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String dateOnly = formatter.format(now);
+    //String dateOnly = DateTime(now.year, now.month, now.day).toString();
 
-    orderCollection.add({
+    String orderID = "";
+
+    await orderCollection.add({
       "order-id": "",
       "order-date": dateOnly,
       "buyer": userToken,
       "products": orderProductInfo,
     }).then((value) {
+      orderID = value.id;
       orderCollection.doc(value.id).update({"order-id": value.id});
     });
 
@@ -432,13 +440,15 @@ class DBService {
       soldCollection.add({
         "sold-id": "",
         "product-id": key,
-        "sold-date": Timestamp.now(),
+        "sold-date": dateOnly,
         "quantity": value,
         "buyer": userToken,
         "seller": productInfo["seller-id"],
         "selling-price":
             productInfo["current-price"] * (1 - productInfo["discount"]),
         "status": "Order Received",
+        "order-id": orderID,
+        "review-given" : false,
       }).then((value) {
         soldCollection.doc(value.id).update({"sold-id": value.id});
       });
@@ -472,17 +482,15 @@ class DBService {
     // ADD NOTIFICATION FOR THAT USER
   }
 
-  Future<List<OrderTile>> getOrderHistory(String userToken) async {
-    List<OrderTile> dummy = [];
-    return dummy;
-  }
-
   Future<void> addReview(String userToken, String productToken,
-      String sellerToken, String comment, double rating) async {
-    //DateTime now = DateTime.now();
+      String sellerToken, String comment, double rating, String orderID) async {
+
+    DateTime now = DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String dateOnly = formatter.format(now);
     //String dateOnly = DateTime(now.year, now.month, now.day).toString();
 
-    reviewCollection.add({
+    await reviewCollection.add({
       "review-id": "",
       "status": "Pending",
       "comment": comment,
@@ -490,16 +498,41 @@ class DBService {
       "user-id": userToken,
       "seller-id": sellerToken,
       "product-id": productToken,
-      "review-date": Timestamp.now(),
+      "review-date": dateOnly,
     }).then((value) {
       reviewCollection.doc(value.id).update({"review-id": value.id});
     });
 
+    List<Map<String, dynamic>> orderToUpdate = await getAllCollectionItems(soldCollection
+        .where("order-id", isEqualTo: orderID)
+        .where("product-id", isEqualTo: productToken));
+
+    String soldID = orderToUpdate[0]["sold-id"];
+
+    soldCollection.doc(soldID).update({"review-given" : true});
+
+    List<Map<String, dynamic>> productInfo = await getAllCollectionItems(
+        productCollection.where("product-id", isEqualTo: productToken));
+
+    int commentCount = int.parse(productInfo[0]["comment-count"]);
+
     // UPDATE THE PRODUCT RATING
+    // UPDATE REVIEW COUNT
+    await productCollection.doc(productToken).update({
+      "rating": (commentCount * double.parse(productInfo[0]["rating"]) + rating) / (commentCount + 1),
+      "comment-count": FieldValue.increment(1),
+   });
 
     // UPDATE THE USER RATING
+    List<Map<String, dynamic>> reviewInfo = await getAllCollectionItems(
+        reviewCollection.where("seller-id", isEqualTo: sellerToken));
 
-    // UPDATE REVIEW COUNT
+    double totalRating = 0;
+    for (int i = 0; i < reviewInfo.length; i++) totalRating += double.parse(reviewInfo[i]["rating"]);
+
+    await userCollection.doc(sellerToken).update({
+      "rating": totalRating / reviewInfo.length,
+    });
   }
 
   Future<void> approveReview(String reviewID) async {
@@ -557,5 +590,65 @@ class DBService {
       {mainAddress: detailedAddress},
       SetOptions(merge: true),
     );
+  }
+  
+  Future<List<OrderTile>> getOrdersOfUser(String userToken) async {
+    List<Map<String, dynamic>> allOrdersOfUser =
+      await getAllCollectionItems(soldCollection.where("buyer", isEqualTo: userToken));
+
+    return Future.wait(allOrdersOfUser.map((orderInfo) async {
+      var productInfo = await getProductInfo(orderInfo["product-id"]);
+
+      return OrderTile(
+        product: await returnFootwearItem(productInfo),
+        userID: userToken,
+        quantity: orderInfo["quantity"],
+        orderDate: orderInfo["sold-date"].toString(),
+        status: orderInfo["status"],
+        orderID: orderInfo["order-id"],
+        reviewGiven: orderInfo["review-given"] as bool,
+      );
+    }).toList());
+  }
+
+  Future<List<CommentsTile>> getCommentsOfUser(String userToken) async {
+    List<Map<String, dynamic>> allComments =
+    await getAllCollectionItems(reviewCollection.where("user-id", isEqualTo: userToken));
+
+    return Future.wait(allComments.map((commentInfo) async {
+      var productInfo = await getProductInfo(commentInfo["product-id"]);
+      //var buyerInfo = await getUserInfo(commentInfo["user-id"]);
+
+      return CommentsTile(
+        product: await returnFootwearItem(productInfo),
+        comment: commentInfo["comment"],
+        reviewDate: commentInfo["review-date"],
+        status: commentInfo["status"],
+        rating: commentInfo["rating"],
+      );
+    }).toList());
+  }
+
+
+
+  Future<List<CommentApproveTile>> getCommentsToApprove(String userToken) async {
+    List<Map<String, dynamic>> allCommentToApprove =
+    await getAllCollectionItems(reviewCollection
+        .where("seller-id", isEqualTo: userToken)
+        .where("status", isEqualTo: "Pending"));
+
+    return Future.wait(allCommentToApprove.map((commentInfo) async {
+      var productInfo = await getProductInfo(commentInfo["product-id"]);
+      var buyerInfo = await getUserInfo(commentInfo["user-id"]);
+
+      return CommentApproveTile(
+        product: await returnFootwearItem(productInfo),
+        username: buyerInfo["username"],
+        comment: commentInfo["comment"],
+        denyComment: () {  },
+        approveComment: () {  },
+        reviewID: commentInfo["review-id"],
+      );
+    }).toList());
   }
 }

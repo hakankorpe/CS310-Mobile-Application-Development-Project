@@ -1,13 +1,17 @@
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
+import 'package:cs310_footwear_project/ui/order_tile.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OrdersView extends StatefulWidget {
   const OrdersView({Key? key, required this.analytics, required this.observer})
@@ -21,27 +25,26 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
-  int countOrders = 1;
+
+  DBService db = DBService();
+
+  List<OrderTile> _orders = [];
+  int countOrders = 0;
 
   @override
   Widget build(BuildContext context) {
     print("OrdersView build is called.");
-
+    final user = Provider.of<User?>(context);
     setCurrentScreen(widget.analytics, "Orders View", "ordersView");
 
-    const dummyImageUrl =
-        "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=";
 
-    final dummyItem = FootWearItem(
-      productName: "ADSADADSDA",
-      brandName: "Nike",
-      sellerName: "Melinda",
-      price: 3.99,
-      rating: 4.8,
-      reviews: 1000,
-      discount: 0.25,
-      stockCount: 27,
-    );
+    db.getOrdersOfUser(user!.uid).then((value) {
+      if (_orders.isEmpty)
+        setState(() {
+          _orders = value;
+          countOrders = _orders!.length;
+        });
+    });
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -91,17 +94,14 @@ class _OrdersViewState extends State<OrdersView> {
                       ],
                     )
                   : SingleChildScrollView(
-                      child: Wrap(
+                      child: Column(
                         children: [
                           const Divider(
                             thickness: Dimen.divider_2,
                           ),
-                          OnSaleTile(
-                              product: dummyItem,
-                              remove: () {},
-                              applyDiscount: () {},
-                              stockUpdate: () {},
-                              priceUpdate: () {}),
+                          Wrap(
+                            children: _orders,
+                          )
                         ],
                       ),
                     ),

@@ -9,9 +9,16 @@ import 'package:flutter/material.dart';
 
 
 class OrderTile extends StatefulWidget {
-  const OrderTile({Key? key, required this.product, required this.orderDate,
-                  required this.orderID, required this.status, required this.quantity,
-                  required this.userID}) : super(key: key);
+  OrderTile(
+      {Key? key,
+      required this.product,
+      required this.orderDate,
+      required this.orderID,
+      required this.status,
+      required this.quantity,
+      required this.userID,
+      this.reviewGiven})
+      : super(key: key);
 
   final FootWearItem product;
   final String orderDate;
@@ -19,19 +26,18 @@ class OrderTile extends StatefulWidget {
   final String status;
   final int quantity;
   final String userID;
-
-
+  bool? reviewGiven;
 
   @override
   _OrderTileState createState() => _OrderTileState();
 }
 
 class _OrderTileState extends State<OrderTile> {
-
   String comment = "";
   double rating = 0.0;
 
-  Future<void> showTextInputDialog(BuildContext context, String title, String hintText1, String hintText2) async {
+  Future<void> showTextInputDialog(BuildContext context, String title,
+      String hintText1, String hintText2) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -56,13 +62,32 @@ class _OrderTileState extends State<OrderTile> {
                           borderSide: BorderSide(
                             color: Colors.lightBlueAccent,
                           ),
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(8.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
                       ),
                       style: const TextStyle(
                         color: Colors.black,
                       ),
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please enter a comment!';
+                        } else {
+                          String trimmedValue = value.trim();
+                          if (trimmedValue.isEmpty) {
+                            return 'Please enter a comment!';
+                          }
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        if (value != null) {
+                          print('saved $value');
+                          comment = value;
+                        }
+                      },
+                      onChanged: (value) {
+                        comment = value;
+                      },
                     ),
                     const SizedBox(height: Dimen.sizedBox_5),
                     TextFormField(
@@ -76,13 +101,35 @@ class _OrderTileState extends State<OrderTile> {
                           borderSide: BorderSide(
                             color: Colors.lightBlueAccent,
                           ),
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(8.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
                       ),
                       style: const TextStyle(
                         color: Colors.black,
                       ),
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please enter a rating!';
+                        } else {
+                          String trimmedValue = value.trim();
+                          if (trimmedValue.isEmpty) {
+                            return 'Please enter a rating!';
+                          }
+                          if (0.0 > double.parse(value) || double.parse(value) > 5.0) {
+                            return "Please enter a rating in the correct range!";
+                          }
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        if (value != null) {
+                          print('saved $value');
+                          rating = double.parse(value);
+                        }
+                      },
+                      onChanged: (value) {
+                        rating = double.parse(value);
+                      },
                     ),
                   ],
                 ),
@@ -98,13 +145,27 @@ class _OrderTileState extends State<OrderTile> {
 
                           DBService db = DBService();
 
-                          db.addReview(widget.userID, widget.product.productToken!, widget.product.sellerToken!, comment, rating);
+                          db
+                              .addReview(
+                            widget.userID,
+                            widget.product.productToken!,
+                            widget.product.sellerToken!,
+                            comment,
+                            rating,
+                            widget.orderID,
+                          )
+                              .then((value) {
+                            widget.reviewGiven = true;
+                            setState(() {
 
-                          Navigator.of(context).pop();
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Added Review!')));
+                              Navigator.of(context).pop();
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Added Review!')));
+                            });
+
+                          });
                         }
                       },
                       child: const Text("Give Review")),
@@ -116,8 +177,7 @@ class _OrderTileState extends State<OrderTile> {
                 ],
               ),
             );
-          }
-          else {
+          } else {
             return Form(
               key: _formKey,
               child: CupertinoAlertDialog(
@@ -138,8 +198,8 @@ class _OrderTileState extends State<OrderTile> {
                             borderSide: BorderSide(
                               color: Colors.lightBlueAccent,
                             ),
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
                           ),
                         ),
                         style: const TextStyle(
@@ -158,8 +218,8 @@ class _OrderTileState extends State<OrderTile> {
                             borderSide: BorderSide(
                               color: Colors.lightBlueAccent,
                             ),
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
                           ),
                         ),
                         style: const TextStyle(
@@ -181,14 +241,19 @@ class _OrderTileState extends State<OrderTile> {
 
                           DBService db = DBService();
 
-
-                          db.addReview(widget.userID, widget.product.productToken!, widget.product.sellerToken!, comment, rating);
+                          db.addReview(
+                            widget.userID,
+                            widget.product.productToken!,
+                            widget.product.sellerToken!,
+                            comment,
+                            rating,
+                            widget.orderID,
+                          );
 
                           Navigator.of(context).pop();
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Added Review!')));
+                              const SnackBar(content: Text('Added Review!')));
                         }
                       },
                       child: const Text("Give Review")),
@@ -204,8 +269,6 @@ class _OrderTileState extends State<OrderTile> {
         });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -214,6 +277,20 @@ class _OrderTileState extends State<OrderTile> {
           elevation: Dimen.appBarElevation,
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    widget.orderDate,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: Dimen.sizedBox_5,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -236,6 +313,8 @@ class _OrderTileState extends State<OrderTile> {
                     width: Dimen.sizedBox_15,
                   ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
@@ -250,21 +329,9 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: Dimen.sizedBox_5,),
-                      Row(
-                        children: [
-                          const Text(
-                            "Order Date: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            widget.orderDate,
-                          ),
-                        ],
+                      const SizedBox(
+                        height: Dimen.sizedBox_5,
                       ),
-                      const SizedBox(height: Dimen.sizedBox_5,),
                       Row(
                         children: [
                           const Text(
@@ -278,7 +345,9 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: Dimen.sizedBox_5,),
+                      const SizedBox(
+                        height: Dimen.sizedBox_5,
+                      ),
                       Row(
                         children: [
                           const Text(
@@ -292,7 +361,9 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: Dimen.sizedBox_5,),
+                      const SizedBox(
+                        height: Dimen.sizedBox_5,
+                      ),
                       Row(
                         children: [
                           const Text(
@@ -306,17 +377,26 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: Dimen.sizedBox_5,),
-                      if (widget.status == "Delivered") ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Give Review",
-                          style: kButtonDarkTextStyle,
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                        ),
+                      const SizedBox(
+                        height: Dimen.sizedBox_5,
                       ),
+                      if (widget.status == "Delivered")
+                        ElevatedButton(
+                          onPressed: () {
+                            if (widget.reviewGiven!)
+                              Navigator.popAndPushNamed(context, "/comments");
+                            else
+                              showTextInputDialog(context, "Give Review",
+                                  "Enter comment", "Enter rating(0-5)");
+                          },
+                          child: Text(
+                            widget.reviewGiven! ? "My Review" : "Give Review",
+                            style: kButtonDarkTextStyle,
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                          ),
+                        ),
                     ],
                   ),
                 ],

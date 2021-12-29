@@ -165,7 +165,7 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(Dimen.regularMargin),
-        child: Column(
+        child: dummyItemList.isNotEmpty ? Column(
             //mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -177,7 +177,23 @@ class _HomeViewState extends State<HomeView> {
                   displayName: "Discounts"),
               FootWearDisplay(
                   itemList: dummyItemList, displayName: "Just For You"),
-            ]),
+            ]
+        ): Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Center(
+              child: Text(
+                  "No products for this seller!\nVisit later.",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 22
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         index: 0,
