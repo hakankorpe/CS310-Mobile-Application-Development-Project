@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
@@ -29,7 +32,17 @@ class _CommentApproveViewState extends State<CommentApproveView> {
   DBService db = DBService();
 
   List<CommentApproveTile> _comments = [];
+
+  StreamSubscription<QuerySnapshot>? streamSub;
+  bool firstTime = true;
   int countToApprove = 0;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (streamSub != null) streamSub!.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +51,22 @@ class _CommentApproveViewState extends State<CommentApproveView> {
 
     setCurrentScreen(
         widget.analytics, "Comment Approve View", "commentApproveView");
+
+    if (_comments.isEmpty && firstTime) {
+      firstTime = false;
+      streamSub = db.reviewCollection
+          .where("seller-id", isEqualTo: user!.uid)
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        print(querySnapshot.docChanges.map((e) => e.doc.data()));
+        db.getCommentsToApprove(user!.uid).then((value) {
+          setState(() {
+            _comments = value;
+            countToApprove = _comments!.length;
+          });
+        });
+      });
+    }
 
     db.getCommentsToApprove(user!.uid).then((value) {
       if (_comments.isEmpty)
@@ -156,18 +185,17 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                           ),
                           textAlign: TextAlign.center,
                         ))
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const Divider(
-                                thickness: Dimen.divider_2,
-                              ),
-                              Wrap(
-                                children: _comments,
-                              ),
-                            ],
+                      : Column(
+                        children: [
+                          const Divider(
+                            thickness: Dimen.divider_2,
+                            height: 0,
                           ),
-                        ),
+                          Wrap(
+                            children: _comments,
+                          ),
+                        ],
+                      ),
                 ],
               ),
               const SizedBox(
