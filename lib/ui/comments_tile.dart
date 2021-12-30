@@ -28,6 +28,20 @@ class CommentsTile extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                reviewDate,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: Dimen.sizedBox_5,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Column(
@@ -163,13 +177,6 @@ class CommentsTile extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                width: Dimen.sizedBox_15,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [Text(reviewDate)],
               ),
             ],
           ),

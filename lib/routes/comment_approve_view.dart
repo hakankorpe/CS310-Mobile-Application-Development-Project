@@ -187,6 +187,9 @@ class _CommentApproveViewState extends State<CommentApproveView> {
                         ))
                       : Column(
                         children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
                           const Divider(
                             thickness: Dimen.divider_2,
                             height: 0,

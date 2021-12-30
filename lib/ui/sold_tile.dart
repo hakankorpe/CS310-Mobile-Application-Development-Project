@@ -194,44 +194,46 @@ class _SoldTileState extends State<SoldTile> {
                   const SizedBox(
                     height: Dimen.sizedBox_15,
                   ),
-                  Container(
-                    color: Colors.black12,
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Center(
-                            child: Text(widget.status!,
-                                textAlign: TextAlign.center),
-                          ),
-                          IconButton(
-                            constraints:
-                            const BoxConstraints(minHeight: 30),
-                            onPressed: () {
-                              showMaterialScrollPicker(
-                                  context: context,
-                                  title: "Choose a status update",
-                                  items: ["Order Received", "Preparing Order", "On Delivery", "Delivered"],
-                                  selectedItem: 1,
-                                  onChanged: (value) {
-                                    widget.status = value.toString();
-                                    //sorter = sorterHelper(value.toString(),);
-                                  }
-                              ).then((value) {
-                                DBService().updateOrderStatus(widget.soldID, widget.status!).then((value) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Order Status Updated!')));
-                                });
-                                setState(() {
-                                  //sortSelected = selected;
-                                });
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_downward_rounded),
-                            iconSize: 17,
-                          ),
-                        ]),
+                  ActionChip(
+                    backgroundColor: Colors.black,
+                    avatar: const Icon(
+                      Icons.change_circle,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                        widget.status!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      showMaterialScrollPicker(
+                          context: context,
+                          title: "Choose a status update",
+                          items: [
+                            "Order Received",
+                            "Preparing Order",
+                            "On Delivery",
+                            "Delivered"
+                          ],
+                          selectedItem: 1,
+                          onChanged: (value) {
+                            widget.status = value.toString();
+                            //sorter = sorterHelper(value.toString(),);
+                          }).then((value) {
+                        DBService()
+                            .updateOrderStatus(widget.soldID, widget.status!)
+                            .then((value) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Order Status Updated!')));
+                        });
+                        setState(() {
+                          //sortSelected = selected;
+                        });
+                      });
+                    },
                   ),
                 ],
               ),

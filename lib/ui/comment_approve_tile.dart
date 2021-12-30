@@ -42,7 +42,7 @@ class CommentApproveTile extends StatelessWidget {
                         const SnackBar(content: Text('Approved Review!')));
                   });
                 },
-                icon: Icons.delete,
+                icon: Icons.check,
                 label: "Approve",
                 backgroundColor: Colors.lightGreenAccent,
                 foregroundColor: Colors.white,
@@ -54,7 +54,7 @@ class CommentApproveTile extends StatelessWidget {
                         const SnackBar(content: Text('Denied Review!')));
                   });
                 },
-                icon: Icons.delete,
+                icon: Icons.clear,
                 label: "Deny",
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,

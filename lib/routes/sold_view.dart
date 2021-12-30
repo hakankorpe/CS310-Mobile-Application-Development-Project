@@ -156,8 +156,12 @@ class _SoldViewState extends State<SoldView> {
                       : SingleChildScrollView(
                           child: Column(
                             children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
                               const Divider(
                                 thickness: Dimen.divider_2,
+                                height: 0,
                               ),
                               Wrap(children: _soldProducts,),
                             ],
