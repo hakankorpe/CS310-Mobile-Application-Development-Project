@@ -558,7 +558,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   content: Text('Updating password...')));
 
                           db
-                              .updateUserPassword(user.uid, newPass)
+                              .updateUserPassword(user.uid, newPass, oldPass)
                               .then((value) {
                             if (value is String) {
                               return ScaffoldMessenger.of(context).showSnackBar(

@@ -12,6 +12,7 @@ import 'package:cs310_footwear_project/ui/order_updates_tile.dart';
 import 'package:cs310_footwear_project/ui/order_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
 import 'package:cs310_footwear_project/ui/user_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -70,8 +71,9 @@ class DBService {
     });
   }
 
-  Future updateUserPassword(String token, String newPassword) async {
-    const String API_Key = "AIzaSyB_4bOnWLoNpMeZbk-grs3LqqdZZUDImT0";
+  Future updateUserPassword(
+      String token, String newPassword, String oldPassword) async {
+    /* const String API_Key = "AIzaSyB_4bOnWLoNpMeZbk-grs3LqqdZZUDImT0";
     const String changePasswordUrl =
         'https://identitytoolkit.googleapis.com/v1/accounts:update?key=$API_Key';
 
@@ -91,9 +93,26 @@ class DBService {
       print(value.statusCode);
       print(value.body);
     });
+ */
+    final user = await FirebaseAuth.instance.currentUser;
+    final cred = EmailAuthProvider.credential(
+        email: user!.email!, password: oldPassword);
 
-    userCollection.doc(token).update({'password': newPassword});
+    user!.reauthenticateWithCredential(cred).then((value) {
+      user!.updatePassword(newPassword).then((_) {
+        userCollection.doc(token).update({'password': newPassword});
+
+        //Success, do something
+      }).catchError((error) {
+        print(error);
+        //Error, show something
+      });
+    }).catchError((err) {
+      print(err);
+    });
   }
+
+  //Pass in the password to updatePassword.
 
   Future getUserInfo(String token) async {
     return userCollection

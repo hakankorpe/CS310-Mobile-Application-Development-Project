@@ -196,7 +196,7 @@ class AuthService {
 
     currentUser.reauthenticateWithCredential(cred).then((value) {
       currentUser.updatePassword(newPassword).then((value) {
-        db.updateUserPassword(currentUser.uid, newPassword);
+        db.updateUserPassword(currentUser.uid, newPassword, oldPassword);
         print("Password updated!!!");
       }).catchError((error) {
         print(error.toString());
