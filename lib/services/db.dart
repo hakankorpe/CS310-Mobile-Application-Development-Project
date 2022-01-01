@@ -502,6 +502,7 @@ class DBService {
       final doc = result.docChanges.first.doc;
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       data["status"] = newUpdate;
+      data["date"] = DateTime.now().millisecondsSinceEpoch;
       await notificationCollection.add(data);
     }
 
@@ -662,7 +663,7 @@ class DBService {
     var result = await getAllCollectionItems(notificationCollection
         .where("receiver", isEqualTo: userID)
         .where("order-id", isNull: false));
-    result.sort((a, b) => a["date"].compareTo(b["date"]));
+    result.sort((b, a) => a["date"].compareTo(b["date"]));
 
     return result
         .map((e) => OrderUpdatesTile(

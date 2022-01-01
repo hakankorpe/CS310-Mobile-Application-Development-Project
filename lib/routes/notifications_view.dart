@@ -28,6 +28,7 @@ class NotificationView extends StatefulWidget {
 
 class _NotificationViewState extends State<NotificationView> {
   List<OrderUpdatesTile>? orderUpdates;
+  Map<String, List<OrderUpdatesTile>> orderUpdateMap = {};
 
   int? get orderUpdatesCount => orderUpdates?.length;
   int campaignsCount = 0;
@@ -41,9 +42,11 @@ class _NotificationViewState extends State<NotificationView> {
     final user = Provider.of<User?>(context);
 
     if (user != null && orderUpdates == null) {
-      DBService().getOrderUpdates(user!.uid).then((value) => setState(() {
-            orderUpdates = value;
-          }));
+      DBService().getOrderUpdates(user!.uid).then((value) {
+        setState(() {
+          orderUpdates = value;
+        });
+      });
     }
 
     setCurrentScreen(widget.analytics, "Notification View", "notificationView");
