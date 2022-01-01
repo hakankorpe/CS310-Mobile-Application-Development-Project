@@ -29,6 +29,9 @@ class OnSaleTile extends StatefulWidget {
 }
 
 class _OnSaleTileState extends State<OnSaleTile> {
+
+  String textFromVariable = "";
+
   Future<void> showTextInputDialog(BuildContext context, String title, String hintText, String updateType) async {
     return showDialog(
         context: context,
@@ -58,6 +61,19 @@ class _OnSaleTileState extends State<OnSaleTile> {
                   style: const TextStyle(
                     color: Colors.black,
                   ),
+                  validator: (value) {
+                    // TODO write validator for 3 cases as seperate function
+                    return null;
+                  },
+                  onSaved: (value) {
+                    if (value != null) {
+                      print('saved $value');
+                      textFromVariable = value;
+                    }
+                  },
+                  onChanged: (value) {
+                    textFromVariable = value;
+                  },
                 ),
                 actions: [
                   TextButton(
@@ -71,9 +87,9 @@ class _OnSaleTileState extends State<OnSaleTile> {
 
                           DBService db = DBService();
 
-                          if (updateType == "price") db.updatePriceOfProduct(widget.product.productToken!, 890);
-                          else if (updateType == "quantity") db.updateStockOfProduct(widget.product.productToken!, 567);
-                          else db.updateDiscountOfProduct(widget.product.productToken!, 0.78);
+                          if (updateType == "price") db.updatePriceOfProduct(widget.product.productToken!, double.parse(textFromVariable));
+                          else if (updateType == "quantity") db.updateStockOfProduct(widget.product.productToken!, int.parse(textFromVariable));
+                          else db.updateDiscountOfProduct(widget.product.productToken!, double.parse(textFromVariable));
 
                           Navigator.of(context).pop();
 
@@ -189,20 +205,25 @@ class _OnSaleTileState extends State<OnSaleTile> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children: [
-                        Container(
-                          child: widget.product.image,
-                          width: MediaQuery.of(context).size.width / 5.5,
-                          height: MediaQuery.of(context).size.width / 5.5,
-                        ),
-                        Text(
-                          widget.product.brandName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            child: widget.product.image,
+                            width: MediaQuery.of(context).size.width / 5.5,
+                            height: MediaQuery.of(context).size.width / 5.5,
                           ),
-                        ),
-                      ],
+                          Text(
+                            widget.product.brandName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       width: Dimen.sizedBox_15,

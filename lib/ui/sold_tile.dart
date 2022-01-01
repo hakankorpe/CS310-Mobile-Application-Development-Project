@@ -208,31 +208,38 @@ class _SoldTileState extends State<SoldTile> {
                       ),
                     ),
                     onPressed: () {
-                      showMaterialScrollPicker(
-                          context: context,
-                          title: "Choose a status update",
-                          items: [
-                            "Order Received",
-                            "Preparing Order",
-                            "On Delivery",
-                            "Delivered"
-                          ],
-                          selectedItem: 1,
-                          onChanged: (value) {
-                            widget.status = value.toString();
-                            //sorter = sorterHelper(value.toString(),);
-                          }).then((value) {
-                        DBService()
-                            .updateOrderStatus(widget.soldID, widget.status!)
-                            .then((value) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Order Status Updated!')));
+
+                      if (widget.status != "Delivered") {
+                        showMaterialScrollPicker(
+                            context: context,
+                            title: "Choose a status update",
+                            items: [
+                              "Order Received",
+                              "Preparing Order",
+                              "On Delivery",
+                              "Delivered"
+                            ],
+                            selectedItem: 1,
+                            onChanged: (value) {
+                              widget.status = value.toString();
+                              //sorter = sorterHelper(value.toString(),);
+                            }).then((value) {
+                          DBService()
+                              .updateOrderStatus(widget.soldID, widget.status!)
+                              .then((value) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Order Status Updated!')));
+                          });
+                          setState(() {
+                            //sortSelected = selected;
+                          });
                         });
-                        setState(() {
-                          //sortSelected = selected;
-                        });
-                      });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('You can not update!\nThe order status has already on its final version!')));
+                      }
                     },
                   ),
                 ],

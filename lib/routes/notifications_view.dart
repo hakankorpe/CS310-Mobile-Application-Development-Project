@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/campaigns_tile.dart';
@@ -27,12 +30,16 @@ class NotificationView extends StatefulWidget {
 }
 
 class _NotificationViewState extends State<NotificationView> {
-  List<OrderUpdatesTile>? orderUpdates;
+  List<OrderUpdatesTile> orderUpdates = [];
   Map<String, List<OrderUpdatesTile>> orderUpdateMap = {};
 
   int? get orderUpdatesCount => orderUpdates?.length;
   int campaignsCount = 0;
   int couponsCount = 0;
+
+  bool firstTime = true;
+  DBService db = DBService();
+  StreamSubscription<QuerySnapshot>? streamSub;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +48,27 @@ class _NotificationViewState extends State<NotificationView> {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     final user = Provider.of<User?>(context);
 
-    if (user != null && orderUpdates == null) {
+    if (orderUpdates.isEmpty && firstTime) {
+      firstTime = false;
+      streamSub = db.notificationCollection
+          .snapshots()
+          .listen((QuerySnapshot querySnapshot) {
+        print(querySnapshot.docChanges.map((e) => e.doc.data()));
+        db.getOrderUpdates(user!.uid).then((value) {
+          setState(() {
+            orderUpdates = value;
+          });
+        });
+      });
+    }
+
+    /*if (user != null && orderUpdates == null) {
       DBService().getOrderUpdates(user!.uid).then((value) {
         setState(() {
           orderUpdates = value;
         });
       });
-    }
+    }*/
 
     setCurrentScreen(widget.analytics, "Notification View", "notificationView");
 
@@ -69,7 +90,7 @@ class _NotificationViewState extends State<NotificationView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Order Updates",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -82,7 +103,8 @@ class _NotificationViewState extends State<NotificationView> {
                 thickness: Dimen.divider_1_5,
                 height: 0,
               ),
-              ...(orderUpdates ?? []),
+              ...(orderUpdates.isNotEmpty ?
+              orderUpdates : [Center(child: Text("No order updates at the moment!"),)]),
               SizedBox(
                 height: Dimen.sizedBox_20,
               ),

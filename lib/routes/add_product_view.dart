@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'dart:io' show File, Platform;
 
 import 'package:image_picker/image_picker.dart';
@@ -44,7 +45,28 @@ class _AddProductViewState extends State<AddProductView> {
   int stockCount = 0;
   double footSize = 0.0;
   String productDetails = "";
+
+
   String category = "";
+  List<String> categoryNames = <String>[
+    "Boots",
+    "Derby",
+    "High-Heeled",
+    "Loafers",
+    "Monk",
+    "Oxford",
+    "Sandals",
+    "Slippers",
+    "Sneakers",
+    "Fitness & Sports",
+  ];
+
+  String gender = "";
+  List<String> genders = <String>[
+    "Male",
+    "Female",
+    "Unisex",
+  ];
 
   bool isIOS = Platform.isIOS;
 
@@ -351,45 +373,6 @@ class _AddProductViewState extends State<AddProductView> {
                               height: Dimen.sizedBox_15,
                             ),
                             TextFormField(
-                              keyboardType: TextInputType.text,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: const InputDecoration(
-                                hintText: "Category",
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.lightBlueAccent,
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Please enter a category for product!';
-                                } else {
-                                  String trimmedValue = value.trim();
-                                  if (trimmedValue.isEmpty) {
-                                    return 'Please enter a category for product!';
-                                  }
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                if (value != null) {
-                                  category = value;
-                                }
-                              },
-                              onChanged: (value) {
-                                if (value != null) {
-                                  category = value;
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: Dimen.sizedBox_15,
-                            ),
-                            TextFormField(
                               keyboardType: TextInputType.number,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
@@ -462,6 +445,68 @@ class _AddProductViewState extends State<AddProductView> {
                                 if (value != null) {
                                   footSize = double.parse(value);
                                 }
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            ActionChip(
+                              backgroundColor: Colors.black,
+                              avatar: const Icon(
+                                Icons.change_circle,
+                                color: Colors.white,
+                              ),
+                              label: Text(
+                                gender.isEmpty ? "Select Gender" : gender,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              onPressed: () {
+                                showMaterialScrollPicker(
+                                    context: context,
+                                    title: "Choose a gender for the product",
+                                    items: genders,
+                                    selectedItem: 1,
+                                    onChanged: (value) {
+                                      gender = value.toString();
+                                      setState(() {
+
+                                      });
+                                      //sorter = sorterHelper(value.toString(),);
+                                    });
+                              },
+                            ),
+                            const SizedBox(
+                              height: Dimen.sizedBox_15,
+                            ),
+                            ActionChip(
+                              backgroundColor: Colors.black,
+                              avatar: const Icon(
+                                Icons.change_circle,
+                                color: Colors.white,
+                              ),
+                              label: Text(
+                                category.isEmpty ? "Select Category" : category,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              onPressed: () {
+                                showMaterialScrollPicker(
+                                    context: context,
+                                    title: "Choose a category for the product",
+                                    items: categoryNames,
+                                    selectedItem: 1,
+                                    onChanged: (value) {
+                                      category = value.toString();
+                                      setState(() {
+
+                                      });
+                                      //sorter = sorterHelper(value.toString(),);
+                                    });
                               },
                             ),
                           ],
@@ -541,7 +586,19 @@ class _AddProductViewState extends State<AddProductView> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
 
-                        if (_image2 != null) {
+                        if (gender == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please select a gender for the product!')));
+                        }
+
+                        else if (category == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please select a category for the product!')));
+                        }
+
+                        else if (_image2 != null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Adding product...')));
@@ -556,7 +613,8 @@ class _AddProductViewState extends State<AddProductView> {
                                   footSize as double,
                                   productDetails,
                                   user!.uid,
-                                  _image2!)
+                                  _image2!,
+                                  gender)
                               .then((value) {
                             if (value is String) {
                               return ScaffoldMessenger.of(context).showSnackBar(

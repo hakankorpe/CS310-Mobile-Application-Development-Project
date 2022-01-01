@@ -73,27 +73,7 @@ class DBService {
 
   Future updateUserPassword(
       String token, String newPassword, String oldPassword) async {
-    /* const String API_Key = "AIzaSyB_4bOnWLoNpMeZbk-grs3LqqdZZUDImT0";
-    const String changePasswordUrl =
-        'https://identitytoolkit.googleapis.com/v1/accounts:update?key=$API_Key';
 
-    final Map<String, dynamic> payload = {
-      'idToken': token,
-      'password': newPassword,
-      'returnSecureToken': false,
-    };
-
-    var url = Uri.parse(changePasswordUrl);
-
-    await http.post(
-      url,
-      body: json.encode(payload),
-      headers: {'Content-Type': 'application/json'},
-    ).then((value) {
-      print(value.statusCode);
-      print(value.body);
-    });
- */
     final user = await FirebaseAuth.instance.currentUser;
     final cred = EmailAuthProvider.credential(
         email: user!.email!, password: oldPassword);
@@ -112,7 +92,30 @@ class DBService {
     });
   }
 
-  //Pass in the password to updatePassword.
+  Future<void> deleteUser(String userToken, String userPassword) async {
+    final user = await FirebaseAuth.instance.currentUser;
+    final cred = EmailAuthProvider.credential(
+        email: user!.email!, password: userPassword);
+
+    await user!.reauthenticateWithCredential(cred).then((value) {
+      FirebaseAuth.instance.currentUser!.delete().then((value) => print("user with $userToken deleted"));
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  Future<void> disableUser(String userToken, String userPassword) async {
+    final user = await FirebaseAuth.instance.currentUser;
+    final cred = EmailAuthProvider.credential(
+        email: user!.email!, password: userPassword);
+
+
+    await user!.reauthenticateWithCredential(cred).then((value) {
+      FirebaseAuth.instance.currentUser!.delete().then((value) => print("user with $userToken deleted"));
+    }).catchError((err) {
+      print(err);
+    });
+  }
 
   Future getUserInfo(String token) async {
     return userCollection
@@ -144,7 +147,8 @@ class DBService {
       double footSize,
       String productDetails,
       String sellerID,
-      File image) async {
+      File image,
+      String gender) async {
     productCollection.add({
       'product-id': "",
       'product-name': productName,
@@ -161,6 +165,7 @@ class DBService {
       'seller-id': sellerID,
       'rating': 0,
       'comment-count': 0,
+      "gender": gender
     }).then((value) {
       productCollection.doc(value.id).update({"product-id": value.id});
 
@@ -458,7 +463,10 @@ class DBService {
       "order-id": orderID,
       "date": DateTime.now().millisecondsSinceEpoch,
       "viewed": false,
-      "status": "Pending",
+      "status": "Order Received",
+      "notification-id": "",
+    }).then((value) {
+      notificationCollection.doc(value.id).update({"notification-id": value.id});
     });
 
     // empty cart
@@ -513,7 +521,20 @@ class DBService {
       "status": newUpdate,
     });
 
-    final userNotification = notificationCollection.where("order-id",
+    await notificationCollection.add({
+      "receiver": soldItem["buyer"],
+      "order-id": soldItem["order-id"],
+      "date": DateTime.now().millisecondsSinceEpoch,
+      "viewed": false,
+      "status": "New Update",
+      "notification-id": "",
+    }).then((value) {
+      notificationCollection.doc(value.id).update({"notification-id": value.id});
+    });
+
+
+
+    /*final userNotification = notificationCollection.where("order-id",
         isEqualTo: soldItem["order-id"]);
     final result = await userNotification.get();
 
@@ -523,7 +544,7 @@ class DBService {
       data["status"] = newUpdate;
       data["date"] = DateTime.now().millisecondsSinceEpoch;
       await notificationCollection.add(data);
-    }
+    }*/
 
     // ADD NOTIFICATION FOR THAT USER
   }
@@ -681,14 +702,16 @@ class DBService {
   Future<List<OrderUpdatesTile>> getOrderUpdates(String userID) async {
     var result = await getAllCollectionItems(notificationCollection
         .where("receiver", isEqualTo: userID)
-        .where("order-id", isNull: false));
+        .where("order-id", isNull: false)
+        .where("viewed", isEqualTo: false));
     result.sort((b, a) => a["date"].compareTo(b["date"]));
 
     return result
         .map((e) => OrderUpdatesTile(
             notificationDate: e["date"],
             orderNumber: e["order-id"],
-            updateMessage: e["status"]))
+            updateMessage: e["status"], 
+            notificationID: e["notification-id"],))
         .toList();
   }
 
@@ -712,5 +735,9 @@ class DBService {
         reviewID: commentInfo["review-id"],
       );
     }).toList());
+  }
+
+  Future<void> readNotification(String notiticationID) async {
+    notificationCollection.doc(notiticationID).update({"viewed": true});
   }
 }

@@ -294,110 +294,122 @@ class _OrderTileState extends State<OrderTile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    children: [
-                      Container(
-                        child: widget.product.image,
-                        width: MediaQuery.of(context).size.width / 5.5,
-                        height: MediaQuery.of(context).size.width / 5.5,
-                      ),
-                      Text(
-                        widget.product.productName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Container(
+                          child: widget.product.image,
+                          width: MediaQuery.of(context).size.width / 5.5,
+                          height: MediaQuery.of(context).size.width / 5.5,
                         ),
-                      ),
-                    ],
+                        Text(
+                          widget.product.productName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     width: Dimen.sizedBox_15,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Order Number: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "Order Number: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                          Text(
-                            widget.orderID,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: Dimen.sizedBox_5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Order Status: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
+                            Expanded(
+                              child: Text(
+                                widget.orderID,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          Text(
-                            widget.status,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: Dimen.sizedBox_5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Quantity: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            widget.quantity.toString(),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: Dimen.sizedBox_5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Seller: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            widget.product.sellerName,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: Dimen.sizedBox_5,
-                      ),
-                      if (widget.status == "Delivered")
-                        ElevatedButton(
-                          onPressed: () {
-                            if (widget.reviewGiven!)
-                              Navigator.popAndPushNamed(context, "/comments");
-                            else
-                              showTextInputDialog(context, "Give Review",
-                                  "Enter comment", "Enter rating(0-5)");
-                          },
-                          child: Text(
-                            widget.reviewGiven! ? "My Review" : "Give Review",
-                            style: kButtonDarkTextStyle,
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                          ),
+                          ],
                         ),
-                    ],
+                        const SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Order Status: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              widget.status,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Quantity: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              widget.quantity.toString(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Seller: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              widget.product.sellerName,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: Dimen.sizedBox_5,
+                        ),
+                        if (widget.status == "Delivered")
+                          ElevatedButton(
+                            onPressed: () {
+                              if (widget.reviewGiven!)
+                                Navigator.popAndPushNamed(context, "/comments");
+                              else
+                                showTextInputDialog(context, "Give Review",
+                                    "Enter comment", "Enter rating(0-5)");
+                            },
+                            child: Text(
+                              widget.reviewGiven! ? "My Review" : "Give Review",
+                              style: kButtonDarkTextStyle,
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ],
               ),

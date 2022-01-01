@@ -14,6 +14,7 @@ import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -61,11 +62,10 @@ class _OnSaleViewState extends State<OnSaleView> {
             .getProductsOnSale(user!.uid)
             .then((value) => db.returnOnSaleTileFromMap(value))
             .then((value) {
-          if (_onSaleProducts.length == 0)
-            setState(() {
-              _onSaleProducts = value;
-              countOnSale = _onSaleProducts!.length;
-            });
+          setState(() {
+            _onSaleProducts = value;
+            countOnSale = _onSaleProducts!.length;
+          });
         });
       });
     }
