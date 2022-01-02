@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
+import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
@@ -23,6 +25,7 @@ import 'package:intl/intl.dart';
 
 class DBService {
   StorageService storage = StorageService();
+  //AuthService auth = AuthService();
 
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
@@ -68,12 +71,12 @@ class DBService {
       'password': password,
       'sign-in-type': signInType,
       'rating': 0,
+      'disabled': false,
     });
   }
 
   Future updateUserPassword(
       String token, String newPassword, String oldPassword) async {
-
     final user = await FirebaseAuth.instance.currentUser;
     final cred = EmailAuthProvider.credential(
         email: user!.email!, password: oldPassword);
@@ -98,23 +101,29 @@ class DBService {
         email: user!.email!, password: userPassword);
 
     await user!.reauthenticateWithCredential(cred).then((value) {
-      FirebaseAuth.instance.currentUser!.delete().then((value) => print("user with $userToken deleted"));
+      FirebaseAuth.instance.currentUser!
+          .delete()
+          .then((value) => print("user with $userToken deleted"));
     }).catchError((err) {
       print(err);
     });
   }
 
   Future<void> disableUser(String userToken, String userPassword) async {
-    final user = await FirebaseAuth.instance.currentUser;
-    final cred = EmailAuthProvider.credential(
-        email: user!.email!, password: userPassword);
+    // Update the database to understand whether user is disabled or not
+    await userCollection.doc(userToken).update({"disabled": true});
 
+    // Logout user
+    AuthService().signOut();
+  }
 
-    await user!.reauthenticateWithCredential(cred).then((value) {
-      FirebaseAuth.instance.currentUser!.delete().then((value) => print("user with $userToken deleted"));
-    }).catchError((err) {
-      print(err);
-    });
+  Future<void> activateUser(String mail) async {
+    List<Map<String, dynamic>> users = await getAllCollectionItems(
+        userCollection.where("email", isEqualTo: mail));
+
+    await userCollection
+        .doc(users.first["userToken"])
+        .update({"disabled": false});
   }
 
   Future getUserInfo(String token) async {
@@ -294,17 +303,29 @@ class DBService {
   }
 
   Future addProductToCart(String userID, String productID, int quantity) async {
-    cartCollection.doc(userID).set(
+    Map<String, dynamic> productInfo = await getProductInfo(productID);
+
+    await cartCollection.doc(userID).set(
       {
         productID: FieldValue.increment(quantity),
       },
       SetOptions(merge: true),
     );
+
+    await cartCollection.doc(userID).get().then((DocumentSnapshot documentSnapshot) {
+      Map<String, dynamic> cart = documentSnapshot.data() as Map<String, dynamic>;
+
+      cartCollection.doc(userID).update(
+          {productID: min(cart[productID], productInfo["remaining-stock-count"])});
+    });
   }
 
   Future updateProductQuantityAtCart(
       String userID, String productID, int newQuantity) async {
-    cartCollection.doc(userID).update({productID: newQuantity});
+    Map<String, dynamic> productInfo = await getProductInfo(productID);
+
+    cartCollection.doc(userID).update(
+        {productID: min(newQuantity, productInfo["remaining-stock-count"])});
   }
 
   Future getCartOfUser(String userID) async {
@@ -466,7 +487,9 @@ class DBService {
       "status": "Order Received",
       "notification-id": "",
     }).then((value) {
-      notificationCollection.doc(value.id).update({"notification-id": value.id});
+      notificationCollection
+          .doc(value.id)
+          .update({"notification-id": value.id});
     });
 
     // empty cart
@@ -529,10 +552,10 @@ class DBService {
       "status": "New Update",
       "notification-id": "",
     }).then((value) {
-      notificationCollection.doc(value.id).update({"notification-id": value.id});
+      notificationCollection
+          .doc(value.id)
+          .update({"notification-id": value.id});
     });
-
-
 
     /*final userNotification = notificationCollection.where("order-id",
         isEqualTo: soldItem["order-id"]);
@@ -708,10 +731,11 @@ class DBService {
 
     return result
         .map((e) => OrderUpdatesTile(
-            notificationDate: e["date"],
-            orderNumber: e["order-id"],
-            updateMessage: e["status"], 
-            notificationID: e["notification-id"],))
+              notificationDate: e["date"],
+              orderNumber: e["order-id"],
+              updateMessage: e["status"],
+              notificationID: e["notification-id"],
+            ))
         .toList();
   }
 
@@ -739,5 +763,25 @@ class DBService {
 
   Future<void> readNotification(String notiticationID) async {
     notificationCollection.doc(notiticationID).update({"viewed": true});
+  }
+
+  Future<List<String>> checkCartStock(String userID) async {
+    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+
+    bool check = true;
+    List<String> violatingProducts = [];
+
+    await cartCollection.doc(userID).get().then((DocumentSnapshot documentSnapshot) {
+      Map<String, dynamic> cart = documentSnapshot.data() as Map<String, dynamic>;
+
+      cart.forEach((key, value) {
+        Map<String, dynamic> productInfo = allProducts.firstWhere((element) => element["product-id"] == key);
+        if (cart[key] > productInfo["remaining-stock-count"])
+            violatingProducts.add(productInfo["product-name"]);
+      });
+
+    });
+
+    return violatingProducts;
   }
 }

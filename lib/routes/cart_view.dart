@@ -136,24 +136,36 @@ class _CartViewState extends State<CartView> {
                               child: Text(
                                 "Product",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               )),
                           Expanded(
                               flex: 2,
                               child: Text(
                                 "Price",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               )),
                           Expanded(
                               flex: 2,
                               child: Text(
                                 "Quantity",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               )),
                           Expanded(
                               flex: 2,
                               child: Text(
                                 "Subtotal",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               )),
                         ],
                       ),

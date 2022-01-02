@@ -6,6 +6,7 @@ import 'package:cs310_footwear_project/services/auth.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
@@ -185,6 +186,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   content: Text('Deleted your account!')));
                       }
 
+                      else {
+                        db.disableUser(userToken, password);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Disabled your account!\nYou can reactivate your account by logging in.')));
+                      }
+
                       Navigator.of(context).pop();
                     },
                     child: Text(buttonText)),
@@ -245,6 +254,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     print("EditProfileView build is called.");
     final user = Provider.of<User?>(context);
+
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
     if (user != null ) {
       if (_userInfo == null) initializeUserInfo(user!.uid);
@@ -354,10 +365,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                     OutlinedButton(
                       onPressed: () {
                         showAlertDialog(
-                            "Deleting Account",
-                            "Do you really want to delete your account on Footwear? This action cannot be undone!",
-                            "Delete",
-                            "delete",
+                            "Disabling Account",
+                            "Do you really want to disable your account on Footwear? You can reactive your account Footwear by logging in later.",
+                            "Disable",
+                            "disable",
                             user.uid,
                             _userInfo["password"]);
                       },

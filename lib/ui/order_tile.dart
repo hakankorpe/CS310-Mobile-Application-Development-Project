@@ -49,89 +49,91 @@ class _OrderTileState extends State<OrderTile> {
               key: _formKey,
               child: AlertDialog(
                 title: Text(title),
-                content: Column(
-                  children: [
-                    TextFormField(
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardType: TextInputType.number,
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                        hintText: hintText1,
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.lightBlueAccent,
+                content: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.number,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          hintText: hintText1,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.lightBlueAccent,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
-                      ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please enter a comment!';
-                        } else {
-                          String trimmedValue = value.trim();
-                          if (trimmedValue.isEmpty) {
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        validator: (value) {
+                          if (value == null) {
                             return 'Please enter a comment!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if (trimmedValue.isEmpty) {
+                              return 'Please enter a comment!';
+                            }
                           }
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        if (value != null) {
-                          print('saved $value');
+                          return null;
+                        },
+                        onSaved: (value) {
+                          if (value != null) {
+                            print('saved $value');
+                            comment = value;
+                          }
+                        },
+                        onChanged: (value) {
                           comment = value;
-                        }
-                      },
-                      onChanged: (value) {
-                        comment = value;
-                      },
-                    ),
-                    const SizedBox(height: Dimen.sizedBox_5),
-                    TextFormField(
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      keyboardType: TextInputType.number,
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                        hintText: hintText2,
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.lightBlueAccent,
+                        },
+                      ),
+                      const SizedBox(height: Dimen.sizedBox_15),
+                      TextFormField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.number,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          hintText: hintText2,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.lightBlueAccent,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
-                      ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please enter a rating!';
-                        } else {
-                          String trimmedValue = value.trim();
-                          if (trimmedValue.isEmpty) {
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        validator: (value) {
+                          if (value == null) {
                             return 'Please enter a rating!';
+                          } else {
+                            String trimmedValue = value.trim();
+                            if (trimmedValue.isEmpty) {
+                              return 'Please enter a rating!';
+                            }
+                            if (0.0 > double.parse(value) || double.parse(value) > 5.0) {
+                              return "Please enter a rating in the correct range!";
+                            }
                           }
-                          if (0.0 > double.parse(value) || double.parse(value) > 5.0) {
-                            return "Please enter a rating in the correct range!";
+                          return null;
+                        },
+                        onSaved: (value) {
+                          if (value != null) {
+                            print('saved $value');
+                            rating = double.parse(value);
                           }
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        if (value != null) {
-                          print('saved $value');
+                        },
+                        onChanged: (value) {
                           rating = double.parse(value);
-                        }
-                      },
-                      onChanged: (value) {
-                        rating = double.parse(value);
-                      },
-                    ),
-                  ],
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -185,48 +187,50 @@ class _OrderTileState extends State<OrderTile> {
                 content: Card(
                   color: Colors.transparent,
                   elevation: 0.0,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        keyboardType: TextInputType.number,
-                        maxLines: 2,
-                        decoration: InputDecoration(
-                          hintText: hintText1,
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightBlueAccent,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            hintText: hintText1,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: Dimen.sizedBox_5),
-                      TextFormField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        keyboardType: TextInputType.number,
-                        maxLines: 2,
-                        decoration: InputDecoration(
-                          hintText: hintText2,
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.lightBlueAccent,
+                        const SizedBox(height: Dimen.sizedBox_5),
+                        TextFormField(
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.number,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            hintText: hintText2,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.black,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 actions: [

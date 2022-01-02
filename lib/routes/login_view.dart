@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:cs310_footwear_project/routes/profile_view.dart';
 import 'package:cs310_footwear_project/routes/register_view.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:email_validator/email_validator.dart';
@@ -33,6 +37,8 @@ class _LoginViewState extends State<LoginView> {
 
   AuthService auth = AuthService();
 
+  bool isIOS = Platform.isIOS;
+
   void setmessage(String msg) {
     setState(() {
       _message = msg;
@@ -45,6 +51,60 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: Colors.black26,
       duration: const Duration(milliseconds: 400),
     ));
+  }
+
+  Future<void> showAlertDialog(
+      String title, String message, String buttonText,) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          if (!isIOS) {
+            return AlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: Text(message),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      await DBService().activateUser(email);
+                      await  auth.loginWithMailAndPass(email, pass);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(buttonText)),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancel"))
+              ],
+            );
+          } else {
+            return CupertinoAlertDialog(
+              title: Text(title),
+              content: SingleChildScrollView(
+                child: Text(message),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      DBService().activateUser(email).then((value) {
+                        auth.loginWithMailAndPass(email, pass);
+                      }).then((value) {
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    child: Text(buttonText)),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancel"))
+              ],
+            );
+          }
+        });
   }
 
   @override
@@ -239,16 +299,22 @@ class _LoginViewState extends State<LoginView> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Logging in')));
 
+
+
                               auth
                                   .loginWithMailAndPass(email, pass)
                                   .then((value) {
                                 if (value is String) {
+                                  if (value != "User is disabled")
                                   return ScaffoldMessenger.of(context)
                                       .showSnackBar(
                                           SnackBar(content: Text("${value}")));
+
+                                  else {
+                                    showAlertDialog("Account Disabled", "Your account has been disabled. Do you want to reactive again?", "Activate");
+                                  }
                                 }
                               });
-
                               //Navigator.popAndPushNamed(context, "/profile");
                             }
                           },

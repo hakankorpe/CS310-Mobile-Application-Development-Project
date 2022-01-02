@@ -18,6 +18,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:provider/provider.dart';
 
@@ -37,10 +38,19 @@ class _CheckoutViewState extends State<CheckoutView> {
   DBService db = DBService();
 
   final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   bool _value = false;
   String mainAddress = "";
   String detailedAddress = "";
   bool firstTime = true;
+
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  bool useGlassMorphism = false;
+  bool useBackgroundImage = false;
 
   StreamSubscription<DocumentSnapshot>? streamSub;
 
@@ -73,8 +83,8 @@ class _CheckoutViewState extends State<CheckoutView> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      //Navigator.popAndPushNamed(context, "/home");
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     },
                     child: const Text("Continue"))
               ],
@@ -95,8 +105,8 @@ class _CheckoutViewState extends State<CheckoutView> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      //Navigator.popAndPushNamed(context, "/home");
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     },
                     child: const Text("Continue"))
               ],
@@ -152,75 +162,77 @@ class _CheckoutViewState extends State<CheckoutView> {
                 key: _formKey,
                 child: AlertDialog(
                   title: Text(title),
-                  content: Card(
-                    color: Colors.transparent,
-                    elevation: 0.0,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.number,
-                          maxLines: 2,
-                          validator: (value) {
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              print('saved $value');
+                  content: SingleChildScrollView(
+                    child: Card(
+                      color: Colors.transparent,
+                      elevation: 0.0,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.number,
+                            maxLines: 2,
+                            validator: (value) {
+                              return null;
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                print('saved $value');
+                                mainAddress = value;
+                              }
+                            },
+                            onChanged: (value) {
                               mainAddress = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            mainAddress = value;
-                          },
-                          decoration: InputDecoration(
-                            hintText: hintText1,
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                            },
+                            decoration: InputDecoration(
+                              hintText: hintText1,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
                             ),
                           ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: Dimen.sizedBox_5),
-                        TextFormField(
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.number,
-                          maxLines: 2,
-                          validator: (value) {
-                            return null;
-                          },
-                          onSaved: (value) {
-                            if (value != null) {
-                              print('saved $value');
+                          const SizedBox(height: Dimen.sizedBox_15),
+                          TextFormField(
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.number,
+                            maxLines: 2,
+                            validator: (value) {
+                              return null;
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                print('saved $value');
+                                detailedAddress = value;
+                              }
+                            },
+                            onChanged: (value) {
                               detailedAddress = value;
-                            }
-                          },
-                          onChanged: (value) {
-                            detailedAddress = value;
-                          },
-                          decoration: InputDecoration(
-                            hintText: hintText2,
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                            },
+                            decoration: InputDecoration(
+                              hintText: hintText2,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
                             ),
                           ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   actions: [
@@ -263,51 +275,53 @@ class _CheckoutViewState extends State<CheckoutView> {
                 key: _formKey,
                 child: CupertinoAlertDialog(
                   title: Text(title),
-                  content: Card(
-                    color: Colors.transparent,
-                    elevation: 0.0,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.number,
-                          maxLines: 2,
-                          decoration: InputDecoration(
-                            hintText: hintText1,
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                  content: SingleChildScrollView(
+                    child: Card(
+                      color: Colors.transparent,
+                      elevation: 0.0,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.number,
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                              hintText: hintText1,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
                             ),
                           ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: Dimen.sizedBox_5),
-                        TextFormField(
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.number,
-                          maxLines: 2,
-                          decoration: InputDecoration(
-                            hintText: hintText2,
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.lightBlueAccent,
+                          const SizedBox(height: Dimen.sizedBox_5),
+                          TextFormField(
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.number,
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                              hintText: hintText2,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlueAccent,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
                               ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
                             ),
                           ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   actions: [
@@ -370,7 +384,91 @@ class _CheckoutViewState extends State<CheckoutView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    CreditCardWidget(
+                      cardNumber: cardNumber,
+                      expiryDate: expiryDate,
+                      cardHolderName: cardHolderName,
+                      cvvCode: cvvCode,
+                      showBackView: isCvvFocused,
+                      cardBgColor: Colors.red,
+                      glassmorphismConfig: useGlassMorphism
+                          ? Glassmorphism.defaultConfig()
+                          : null,
+                      obscureCardNumber: true,
+                      obscureCardCvv: true,
+                      isHolderNameVisible: true,
+                      height: 175,
+                      textStyle: const TextStyle(color: Colors.yellowAccent),
+                      width: MediaQuery.of(context).size.width,
+                      isChipVisible: true,
+                      isSwipeGestureEnabled: true,
+                      animationDuration: const Duration(milliseconds: 1000),
+                      onCreditCardWidgetChange: (CreditCardBrand) {},
+                    ),
+                    CreditCardForm(
+                      formKey: _formKey2,
+                      obscureCvv: true,
+                      obscureNumber: true,
+                      cardNumber: cardNumber,
+                      expiryDate: expiryDate,
+                      cardHolderName: cardHolderName,
+                      cvvCode: cvvCode,
+                      onCreditCardModelChange:
+                          (CreditCardModel creditCardModel) {
+                        setState(() {
+                          cardNumber = creditCardModel.cardNumber;
+                          expiryDate = creditCardModel.expiryDate;
+                          cardHolderName = creditCardModel.cardHolderName;
+                          cvvCode = creditCardModel.cvvCode;
+                          isCvvFocused = creditCardModel.isCvvFocused;
+                        });
+                      },
+                      themeColor: Colors.red,
+                      isHolderNameVisible: true,
+                      isCardNumberVisible: true,
+                      isExpiryDateVisible: true,
+                      cardNumberDecoration: const InputDecoration(
+                        labelText: "Number",
+                        hintText: "XXXX XXXX XXXX XXXX",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightBlueAccent,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                      ),
+                      expiryDateDecoration: const InputDecoration(
+                        labelText: "Expiration Date",
+                        hintText: "XX/XX",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightBlueAccent,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                      ),
+                      cvvCodeDecoration: const InputDecoration(
+                        labelText: "CVV",
+                        hintText: "XXX",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightBlueAccent,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                      ),
+                      cardHolderDecoration: const InputDecoration(
+                        labelText: "Name Surname",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightBlueAccent,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                      ),
+                    ),
+
+                    /*const Text(
                       "Card Information",
                       style: TextStyle(
                         color: Colors.redAccent,
@@ -412,7 +510,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               ),
                             )),
                       ],
-                    ),
+                    ),*/
                   ],
                 ),
                 const SizedBox(
@@ -516,16 +614,24 @@ class _CheckoutViewState extends State<CheckoutView> {
                           width: 10,
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            //FirebaseCrashlytics.instance.crash();
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Processing Order...')));
-
-                            db.createOrder(user!.uid).then((value) {
-                              showOrderCompleteDialog(context).then((value) {});
-                            });
+                          onPressed: () async {
+                            if (_formKey2.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Processing Order...')));
+                              List<String> voilatingProducts = await db.checkCartStock(user!.uid);
+                              if (voilatingProducts.isEmpty) {
+                                await db.createOrder(user!.uid);
+                                await showOrderCompleteDialog(context);
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text('Some stocks of product are updated!\n'
+                                            'Please update the quantity of the products given below:\n'
+                                            '${voilatingProducts.join(",")}')));
+                              }
+                            }
                           },
                           child: Text(
                             "Confirm",

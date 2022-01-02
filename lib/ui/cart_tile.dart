@@ -72,40 +72,36 @@ class _CartTileState extends State<CartTile> {
                         child: Text(
                             "${(widget.product.price * (1 - widget.product.discount!)).toStringAsFixed(2)}₺",
                             textAlign: TextAlign.center)),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        color: Colors.black12,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(widget.quantity.toString(),
-                                  textAlign: TextAlign.center),
-                              IconButton(
-                                constraints:
-                                    const BoxConstraints(minHeight: 30),
-                                onPressed: () {
-                                  showMaterialNumberPicker(
-                                    context: context,
-                                    title:
-                                        'Update Quantity',
-                                    maxNumber: widget.product.stockCount!,
-                                    minNumber: 1,
-                                    selectedNumber: widget.quantity,
-                                    onChanged: (value) => setState(() {
-                                      DBService().updateProductQuantityAtCart(
-                                          widget.userID!,
-                                          widget.product.productToken!,
-                                          value);
-                                      widget.quantity = value;
-                                    }),
-                                  );
-                                },
-                                icon: const Icon(Icons.arrow_downward_rounded),
-                                iconSize: 17,
-                              ),
-                            ]),
+                    ActionChip(
+                      backgroundColor: Colors.black,
+                      avatar: const Icon(
+                        Icons.change_circle,
+                        color: Colors.white,
                       ),
+                      label: Text(
+                        widget.quantity.toString()!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      onPressed: () {
+                        showMaterialNumberPicker(
+                          context: context,
+                          title:
+                          'Update Quantity',
+                          maxNumber: widget.product.stockCount!,
+                          minNumber: 1,
+                          selectedNumber: widget.quantity,
+                          onChanged: (value) => setState(() {
+                            DBService().updateProductQuantityAtCart(
+                                widget.userID!,
+                                widget.product.productToken!,
+                                value);
+                            widget.quantity = value;
+                          }),
+                        );
+                      },
                     ),
                     Expanded(
                         flex: 2,

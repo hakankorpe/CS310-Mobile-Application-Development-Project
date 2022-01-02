@@ -134,6 +134,17 @@ class AuthService {
   }
 
   Future loginWithMailAndPass(String mail, String pass) async {
+    DBService db = DBService();
+
+    List<Map<String, dynamic>> users = await db.getAllCollectionItems(
+        db.userCollection.where("email", isEqualTo: mail));
+
+    if (users.isNotEmpty && users[0]["disabled"]) {
+      if (users[0]["password"] != pass) return "wrong-password";
+      else return "User is disabled";
+    }
+
+    
     try {
       UserCredential result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);

@@ -249,35 +249,31 @@ class _DescriptionViewState extends State<DescriptionView> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.black12,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(widget.quantity.toString(),
-                                textAlign: TextAlign.center),
-                            IconButton(
-                              constraints: const BoxConstraints(minHeight: 30),
-                              onPressed: () {
-                                showMaterialNumberPicker(
-                                  context: context,
-                                  title: 'Quantity',
-                                  maxNumber: 91,
-                                  minNumber: 1,
-                                  selectedNumber: widget.quantity,
-                                  onChanged: (value) =>
-                                      setState(() => widget.quantity = value),
-                                );
-                              },
-                              icon: const Icon(Icons.arrow_downward_rounded),
-                              iconSize: 17,
-                            ),
-                          ]),
+                  ActionChip(
+                    backgroundColor: Colors.black,
+                    avatar: const Icon(
+                      Icons.change_circle,
+                      color: Colors.white,
                     ),
+                    label: Text(
+                      widget.quantity.toString()!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      showMaterialNumberPicker(
+                        context: context,
+                        title: 'Quantity',
+                        maxNumber: product!.stockCount!,
+                        minNumber: 1,
+                        selectedNumber: widget.quantity,
+                        onChanged: (value) =>
+                            setState(() => widget.quantity = value),
+                      );
+                    },
                   ),
-                  // Quantity Selector
                   Expanded(
                     flex: 2,
                     child: IconButton(
@@ -349,32 +345,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                         ),
                         side: const BorderSide(
                           color: Colors.black,
-                          width: 0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.popAndPushNamed(
-                          context,
-                          "/sizeChart",
-                          arguments: {"productId": productId},
-                        );
-                      },
-                      child: const Text(
-                        "Size Chart",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        side: const BorderSide(
-                          color: Colors.white,
                           width: 0,
                         ),
                       ),
