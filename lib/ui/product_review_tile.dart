@@ -80,7 +80,7 @@ class ProductReviewTile extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(thickness: Dimen.divider_1_5,),
+          //const Divider(thickness: Dimen.divider_1_5,),
         ],
       ),
     );

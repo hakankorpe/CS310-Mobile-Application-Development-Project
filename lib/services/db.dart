@@ -804,11 +804,9 @@ class DBService {
             .where("product-id", isEqualTo: productToken)
             .where("status", isEqualTo: "Approved"));
 
-    List<ProductReviewTile> result = allReviews.map((reviewInfo) {
-      var username = "";
-      getUserInfo(reviewInfo["user-id"]).then((value) {
-        username = value["username"];
-      });
+    return Future.wait(allReviews.map((reviewInfo) async {
+      var userInfo = await getUserInfo(reviewInfo["user-id"]);
+      String username = userInfo["username"];
 
       return ProductReviewTile(
           username: username,
@@ -816,8 +814,6 @@ class DBService {
           comment: reviewInfo["comment"],
           reviewDate: reviewInfo["review-date"]
       );
-    }).toList();
-
-    return result;
+    }).toList());
   }
 }
