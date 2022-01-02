@@ -21,7 +21,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:provider/provider.dart';
 
-
 class CheckoutView extends StatefulWidget {
   const CheckoutView(
       {Key? key, required this.analytics, required this.observer})
@@ -379,39 +378,13 @@ class _CheckoutViewState extends State<CheckoutView> {
                         fontSize: 20,
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
                     TextFormField(
-                      obscureText: false,
-                      maxLength: 16,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
+                      keyboardType: TextInputType.number,
                       enableSuggestions: false,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autocorrect: false,
                       decoration: const InputDecoration(
                         hintText: "Card Number",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.lightBlueAccent,
-                          ),
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(8.0)),
-                        ),
                       ),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Credit card number cannot be empty!';
-                        }else if (value.length != 16){
-                          return 'Credit card number must contain 16 characters!';
-                        }
-                        else {
-                          return null;
-                        }
-                      }
-                    ),
-                    const SizedBox(
-                      height: 25,
                     ),
                     Row(
                       children: [
@@ -419,30 +392,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                             flex: 1,
                             child: TextFormField(
                               keyboardType: TextInputType.datetime,
-                              maxLength: 4,
                               enableSuggestions: false,
                               autocorrect: false,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                decoration: const InputDecoration(
-                                  hintText: "MM/YY",
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.lightBlueAccent,
-                                    ),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'MM/YY form cannot be empty!';
-                                  }else if (value.length != 4){
-                                    return 'Must contain 4 chars!';
-                                  }
-                                  else {
-                                    return null;
-                                  }
-                                }
+                              decoration: const InputDecoration(
+                                hintText: "MM/YY",
+                              ),
                             )),
                         const SizedBox(
                           width: 15,
@@ -450,31 +404,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                         Expanded(
                             flex: 1,
                             child: TextFormField(
-                              maxLength: 3,
                               keyboardType: TextInputType.number,
                               enableSuggestions: false,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                autocorrect: false,
-                                decoration: const InputDecoration(
-                                  hintText: "CVV",
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.lightBlueAccent,
-                                    ),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'CVV cannot be empty!';
-                                  }else if (value.length != 3){
-                                    return 'Must contain 3 chars!';
-                                  }
-                                  else {
-                                    return null;
-                                  }
-                                }
+                              autocorrect: false,
+                              decoration: const InputDecoration(
+                                hintText: "CVV",
+                              ),
                             )),
                       ],
                     ),
@@ -582,12 +517,6 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            if (!_formKey.currentState!.validate()){
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('You must complete all necessities correctly...')));
-                              return;
-                            }
                             //FirebaseCrashlytics.instance.crash();
 
                             ScaffoldMessenger.of(context).showSnackBar(
