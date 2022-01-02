@@ -12,6 +12,7 @@ import 'package:cs310_footwear_project/ui/comments_tile.dart';
 import 'package:cs310_footwear_project/ui/onsale_tile.dart';
 import 'package:cs310_footwear_project/ui/order_updates_tile.dart';
 import 'package:cs310_footwear_project/ui/order_tile.dart';
+import 'package:cs310_footwear_project/ui/product_review_tile.dart';
 import 'package:cs310_footwear_project/ui/sold_tile.dart';
 import 'package:cs310_footwear_project/ui/user_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -299,6 +300,7 @@ class DBService {
       description: product["details"],
       sellerToken: product["seller-id"],
       gender: product["gender"] ?? "Unisex",
+      sellerRating: userInfo["rating"],
     );
   }
 
@@ -312,11 +314,16 @@ class DBService {
       SetOptions(merge: true),
     );
 
-    await cartCollection.doc(userID).get().then((DocumentSnapshot documentSnapshot) {
-      Map<String, dynamic> cart = documentSnapshot.data() as Map<String, dynamic>;
+    await cartCollection
+        .doc(userID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      Map<String, dynamic> cart =
+          documentSnapshot.data() as Map<String, dynamic>;
 
-      cartCollection.doc(userID).update(
-          {productID: min(cart[productID], productInfo["remaining-stock-count"])});
+      cartCollection.doc(userID).update({
+        productID: min(cart[productID], productInfo["remaining-stock-count"])
+      });
     });
   }
 
@@ -766,22 +773,51 @@ class DBService {
   }
 
   Future<List<String>> checkCartStock(String userID) async {
-    List<Map<String, dynamic>> allProducts = await getAllCollectionItems(productCollection);
+    List<Map<String, dynamic>> allProducts =
+        await getAllCollectionItems(productCollection);
 
     bool check = true;
     List<String> violatingProducts = [];
 
-    await cartCollection.doc(userID).get().then((DocumentSnapshot documentSnapshot) {
-      Map<String, dynamic> cart = documentSnapshot.data() as Map<String, dynamic>;
+    await cartCollection
+        .doc(userID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      Map<String, dynamic> cart =
+          documentSnapshot.data() as Map<String, dynamic>;
 
       cart.forEach((key, value) {
-        Map<String, dynamic> productInfo = allProducts.firstWhere((element) => element["product-id"] == key);
+        Map<String, dynamic> productInfo =
+            allProducts.firstWhere((element) => element["product-id"] == key);
         if (cart[key] > productInfo["remaining-stock-count"])
-            violatingProducts.add(productInfo["product-name"]);
+          violatingProducts.add(productInfo["product-name"]);
       });
-
     });
 
     return violatingProducts;
+  }
+
+  Future<List<ProductReviewTile>> getReviewsOfProduct(
+      String productToken) async {
+    List<Map<String, dynamic>> allReviews = await getAllCollectionItems(
+        reviewCollection
+            .where("product-id", isEqualTo: productToken)
+            .where("status", isEqualTo: "Approved"));
+
+    List<ProductReviewTile> result = allReviews.map((reviewInfo) {
+      var username = "";
+      getUserInfo(reviewInfo["user-id"]).then((value) {
+        username = value["username"];
+      });
+
+      return ProductReviewTile(
+          username: username,
+          rating: reviewInfo["rating"],
+          comment: reviewInfo["comment"],
+          reviewDate: reviewInfo["review-date"]
+      );
+    }).toList();
+
+    return result;
   }
 }

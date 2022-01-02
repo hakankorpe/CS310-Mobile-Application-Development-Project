@@ -2,6 +2,7 @@ import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
+import 'package:cs310_footwear_project/ui/product_review_tile.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
 import 'package:cs310_footwear_project/utils/styles.dart';
@@ -32,6 +33,7 @@ class _ReviewsViewState extends State<ReviewsView> {
 
   bool isBookmarked = false;
   FootWearItem? product;
+  List<ProductReviewTile>? reviews;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,14 @@ class _ReviewsViewState extends State<ReviewsView> {
             isBookmarked = true;
           });
         }
+      });
+    }
+
+    if (reviews == null) {
+      db.getReviewsOfProduct(productId).then((value) {
+        setState(() {
+          reviews = value;
+        });
       });
     }
 
@@ -130,7 +140,7 @@ class _ReviewsViewState extends State<ReviewsView> {
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const SizedBox(
+                      /*const SizedBox(
                         height: 7,
                       ),
                       Row(
@@ -142,9 +152,27 @@ class _ReviewsViewState extends State<ReviewsView> {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600)),
                         ],
-                      ),
+                      ),*/
                       const SizedBox(
                         height: 13,
+                      ),
+                      RatingBar.builder(
+                        ignoreGestures: true,
+                        initialRating:
+                        product != null ? product!.sellerRating!.toDouble() : 0.0,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemSize: 18.52,
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 5,
+                        ),
+                        onRatingUpdate: (rating) {
+                          print(rating);
+                        },
                       ),
                     ],
                   ),
@@ -162,7 +190,7 @@ class _ReviewsViewState extends State<ReviewsView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? product!.productName :  "",
+                          product != null ? product!.productName : "",
                           style: const TextStyle(
                               fontSize: 23,
                               fontStyle: FontStyle.normal,
@@ -170,7 +198,7 @@ class _ReviewsViewState extends State<ReviewsView> {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          product != null ? product!.category! :  "",
+                          product != null ? product!.category! : "",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -185,7 +213,8 @@ class _ReviewsViewState extends State<ReviewsView> {
                     flex: 2,
                     child: RatingBar.builder(
                       ignoreGestures: true,
-                      initialRating: product != null ? product!.rating!.toDouble() : 0.0,
+                      initialRating:
+                      product != null ? product!.rating!.toDouble() : 0.0,
                       minRating: 0,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -213,7 +242,7 @@ class _ReviewsViewState extends State<ReviewsView> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      product != null ? "${product!.price!.toString()}₺" :  "",
+                      product != null ? "${(product!.price!).toStringAsFixed(2)}₺" : "",
                       textAlign: TextAlign.right,
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
@@ -226,14 +255,18 @@ class _ReviewsViewState extends State<ReviewsView> {
                     child: Column(
                       children: [
                         Text(
-                          product != null ? "${product!.price! * (1 - product!.discount!)}₺" :  "",
+                          product != null
+                              ? "${(product!.price! * (1 - product!.discount!)).toStringAsFixed(2)}₺"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          product != null ? "${product!.discount! * 100}% Off" :  "",
+                          product != null
+                              ? "${(product!.discount! * 100).toStringAsFixed(2)}% Off"
+                              : "",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                             color: Colors.redAccent,
@@ -260,7 +293,7 @@ class _ReviewsViewState extends State<ReviewsView> {
                       showMaterialNumberPicker(
                         context: context,
                         title: 'Quantity',
-                        maxNumber: 91,
+                        maxNumber: product!.stockCount!,
                         minNumber: 1,
                         selectedNumber: widget.quantity,
                         onChanged: (value) =>
@@ -276,9 +309,13 @@ class _ReviewsViewState extends State<ReviewsView> {
                         if (user == null) {
                           Navigator.pushNamed(context, "/login");
                         } else {
-                          db.addProductToCart(user.uid, productId, widget.quantity!).then((value) {
+                          db
+                              .addProductToCart(
+                              user.uid, productId, widget.quantity!)
+                              .then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Added to cart!')));
+                                const SnackBar(
+                                    content: Text('Added to cart!')));
                             Navigator.popAndPushNamed(context, "/cart");
                           });
                         }
@@ -388,166 +425,8 @@ class _ReviewsViewState extends State<ReviewsView> {
                               fontSize: 18
                             ),
                           ),
-                          SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Expanded(
-                                        flex: 1,
-                                        child: CircleAvatar(
-
-                                        ),
-                                      ),
-                                      const SizedBox(width: 9,),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                SizedBox(width: 7,),
-                                                Text("E*** B***"),
-                                                SizedBox(width: 7,),
-                                                Text("09/19/2021"),
-                                              ],
-                                            ),
-                                            const Text(
-                                                "This product is fire!!!"
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 15,),
-                                  Row(
-                                    children: [
-                                      const Expanded(
-                                        flex: 1,
-                                        child: CircleAvatar(
-
-                                        ),
-                                      ),
-                                      const SizedBox(width: 9,),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                SizedBox(width: 7,),
-                                                Text("E*** B***"),
-                                                SizedBox(width: 7,),
-                                                Text("09/19/2021"),
-                                              ],
-                                            ),
-                                            const Text(
-                                                "This product is fire!!!"
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 15,),
-                                  Row(
-                                    children: [
-                                      const Expanded(
-                                        flex: 1,
-                                        child: CircleAvatar(
-
-                                        ),
-                                      ),
-                                      const SizedBox(width: 9,),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.orangeAccent,
-                                                ),
-                                                SizedBox(width: 7,),
-                                                Text("E*** B***"),
-                                                SizedBox(width: 7,),
-                                                Text("09/19/2021"),
-                                              ],
-                                            ),
-                                            const Text(
-                                                "This product is fire!!!"
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                          Wrap(
+                            children: reviews ?? [],
                           ),
                         ],
                       ),

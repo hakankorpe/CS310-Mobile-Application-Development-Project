@@ -131,7 +131,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const SizedBox(
+                     /*const SizedBox(
                         height: 7,
                       ),
                       Row(
@@ -143,9 +143,27 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600)),
                         ],
-                      ),
+                      ),*/
                       const SizedBox(
                         height: 13,
+                      ),
+                      RatingBar.builder(
+                        ignoreGestures: true,
+                        initialRating:
+                        product != null ? product!.sellerRating!.toDouble() : 0.0,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemSize: 18.52,
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 5,
+                        ),
+                        onRatingUpdate: (rating) {
+                          print(rating);
+                        },
                       ),
                     ],
                   ),
