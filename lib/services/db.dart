@@ -300,7 +300,7 @@ class DBService {
       description: product["details"],
       sellerToken: product["seller-id"],
       gender: product["gender"] ?? "Unisex",
-      sellerRating: userInfo["rating"],
+      sellerRating: userInfo["rating"].toDouble(),
     );
   }
 

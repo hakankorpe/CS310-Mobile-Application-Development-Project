@@ -34,17 +34,19 @@ class _CategoryMainViewState extends State<CategoryMainView> {
       CategoryName: "Sneakers",
     );
 
+    
+
     List<String> categoryImageLinks = <String>[
       "https://www.kindpng.com/picc/m/205-2051898_timberland-timberland-vector-png-transparent-png.png",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
-      "https://media.istockphoto.com/vectors/running-shoes-line-and-glyph-icon-fitness-and-sport-gym-sign-vector-vector-id898039038?k=20&m=898039038&s=612x612&w=0&h=Qxqdsi9LAtFVNYkgjnN6GVvQ4aDaRtwyIjinns3L6j0=",
+      "https://toppng.com/uploads/preview/leather-derby-shoe-vector-men-shoes-icon-115631711540hu1rqen8y.png",
+      "https://www.nicepng.com/png/detail/24-247002_free-vector-high-heel-shoes-women-fashion-clip.png",
+      "https://w7.pngwing.com/pngs/45/339/png-transparent-slip-on-shoe-suede-walking-others-brown-leather-suede.png",
+      "https://cdn3.iconfinder.com/data/icons/footwear-fill-set/512/Single_Monk-1024.png",
+      "https://cdn.imgbin.com/7/4/9/imgbin-oxford-shoe-footwear-brogue-shoe-shoemaking-men-shoes-JwJ1w52nhJDJyLDxN22j4fneT.jpg",
+      "https://w7.pngwing.com/pngs/834/435/png-transparent-flip-flops-slipper-beach-sandal-fashion-outdoor-shoe-flip-flops.png",
+      "https://png2.cleanpng.com/sh/b2b2574c39c091d50e79f0aa9748d405/L0KzQYm3VsA1N5RtfZH0aYP2gLBuTgNtcaF1feQ2Y3zyd376iP9mNaRxgdZuLXbyf8XAhfFzNZl0jeVuLYPvecH3hgJ0NWZnSac5YkS6QIO6VvUzNmU7TqM7MkizQYa5WMExPWgAUaI5OUGxgLBu/kisspng-slipper-clog-shoe-slide-footwear-house-slippers-5b150b470236e2.4661228015281057990091.png",
+      "https://w7.pngwing.com/pngs/379/798/png-transparent-sneakers-shoe-nike-high-heeled-footwear-adidas-nike-sports-shoes-white-sport-outdoor-shoe.png",
+      "https://pngset.com/images/running-man-free-running-man-shorts-clothing-shoe-footwear-transparent-png-1588053.png",
     ];
 
     List<String> categoryNames = <String>[

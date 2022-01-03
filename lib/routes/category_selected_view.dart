@@ -89,7 +89,9 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     });
 
     var newList = (newIterable ?? original)!.toList();
-    newList.sort(sorter);
+
+    if (sorter != null) newList.sort(sorter);
+
     return newList.map((e) => e["product-id"] as String).toList();
   }
 
@@ -140,10 +142,11 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     if (arguments != null) categoryName = arguments["categoryName"];
-    if (categoryName != null) {
+    if (categoryName != null && allItemsMap.isEmpty) {
       db
-          .getAllCollectionItems(
-              db.productCollection.where("category", isEqualTo: categoryName))
+          .getAllCollectionItems(db.productCollection
+              .where("category", isEqualTo: categoryName)
+              .where("remaining-stock-count", isGreaterThan: 0))
           .then((value) {
         allItemsMap = value;
         return Future.wait(
@@ -473,11 +476,18 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
                                 ),
                         ],
                       ),
-                    Wrap(
-                      children: allItems,
-                      spacing: 15.0,
-                      runSpacing: 25.0,
-                      alignment: WrapAlignment.center,
+                    const SizedBox(
+                      height: Dimen.sizedBox_5,
+                    ),
+                    Center(
+                      child: Wrap(
+                        children: filters.isEmpty && sorter == null
+                            ? allItems
+                            : foundItems,
+                        spacing: 15.0,
+                        runSpacing: 25.0,
+                        alignment: WrapAlignment.center,
+                      ),
                     ),
                   ],
                 )
