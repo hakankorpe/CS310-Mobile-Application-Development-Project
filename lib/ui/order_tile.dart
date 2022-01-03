@@ -158,13 +158,14 @@ class _OrderTileState extends State<OrderTile> {
                           )
                               .then((value) {
                             widget.reviewGiven = true;
+                            Navigator.of(context).pop();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Added Review!')));
                             setState(() {
 
 
-                              Navigator.of(context).pop();
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Added Review!')));
                             });
 
                           });
@@ -398,11 +399,12 @@ class _OrderTileState extends State<OrderTile> {
                         if (widget.status == "Delivered")
                           ElevatedButton(
                             onPressed: () {
-                              if (widget.reviewGiven!)
+                              if (widget.reviewGiven!) {
                                 Navigator.popAndPushNamed(context, "/comments");
-                              else
+                              } else {
                                 showTextInputDialog(context, "Give Review",
                                     "Enter comment", "Enter rating(0-5)");
+                              }
                             },
                             child: Text(
                               widget.reviewGiven! ? "My Review" : "Give Review",

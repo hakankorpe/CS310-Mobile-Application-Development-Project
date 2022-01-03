@@ -570,7 +570,7 @@ class DBService {
       "order-id": soldItem["order-id"],
       "date": DateTime.now().millisecondsSinceEpoch,
       "viewed": false,
-      "status": "New Update",
+      "status": newUpdate,
       "notification-id": "",
     }).then((value) {
       notificationCollection
@@ -625,13 +625,13 @@ class DBService {
     List<Map<String, dynamic>> productInfo = await getAllCollectionItems(
         productCollection.where("product-id", isEqualTo: productToken));
 
-    int commentCount = int.parse(productInfo[0]["comment-count"]);
+    int commentCount = productInfo[0]["comment-count"];
 
     // UPDATE THE PRODUCT RATING
     // UPDATE REVIEW COUNT
     await productCollection.doc(productToken).update({
       "rating":
-          (commentCount * double.parse(productInfo[0]["rating"]) + rating) /
+          (commentCount * productInfo[0]["rating"] + rating) /
               (commentCount + 1),
       "comment-count": FieldValue.increment(1),
     });
@@ -642,7 +642,7 @@ class DBService {
 
     double totalRating = 0;
     for (int i = 0; i < reviewInfo.length; i++)
-      totalRating += double.parse(reviewInfo[i]["rating"]);
+      totalRating += reviewInfo[i]["rating"];
 
     await userCollection.doc(sellerToken).update({
       "rating": totalRating / reviewInfo.length,
