@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DescriptionView extends StatefulWidget {
   DescriptionView(
@@ -123,29 +124,23 @@ class _DescriptionViewState extends State<DescriptionView> {
                     children: [
                       Row(
                         children: [
-                          Text(product != null ? product!.sellerName : "",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed("/home",
+                                    arguments: {"userID": product!.sellerToken, "username": product!.sellerName});
+                              },
+                              child: Text(product != null ? product!.sellerName : "",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold)),
+                          ),
                         ],
                       ),
-                     /*const SizedBox(
-                        height: 7,
-                      ),
-                      Row(
-                        children: const [
-                          Text("6.4/10",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600)),
-                        ],
-                      ),*/
+
                       const SizedBox(
-                        height: 13,
+                        height: Dimen.sizedBox_5,
                       ),
                       RatingBar.builder(
                         ignoreGestures: true,
@@ -296,9 +291,18 @@ class _DescriptionViewState extends State<DescriptionView> {
                     flex: 2,
                     child: IconButton(
                       alignment: Alignment.center,
-                      onPressed: () {
+                      onPressed: () async {
                         if (user == null) {
                           Navigator.pushNamed(context, "/login");
+                          /*SharedPreferences prefs = await SharedPreferences.getInstance();
+                          List<String> cart = prefs.getStringList("cart") ?? [];
+                          cart.add(productId + "-" + widget.quantity.toString());
+                          prefs.setStringList("cart", cart);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Added to cart!')));
+                          Navigator.popAndPushNamed(context, "/cart");*/
                         } else {
                           db
                               .addProductToCart(

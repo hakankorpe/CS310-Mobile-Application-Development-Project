@@ -76,6 +76,10 @@ class DBService {
     });
   }
 
+  Future<bool> checkUsernameForRegister(String username) async {
+    return (await getAllCollectionItems(userCollection.where("username", isEqualTo: username))).isEmpty;
+  }
+
   Future updateUserPassword(
       String token, String newPassword, String oldPassword) async {
     final user = await FirebaseAuth.instance.currentUser;
@@ -363,6 +367,16 @@ class DBService {
       return tempCartTile;
     }));
   }
+
+  Future<List<CartTile>> getCartItemsOfUnregistered(List<String> cart) async {
+    Map<String, dynamic> cartItems = {};
+    cart.forEach((element) {
+      List<String> productInfo =  element.split("-");
+      cartItems[productInfo[0]] = int.parse(productInfo[1]);
+    });
+
+    return await getCartItemsFromProductIDs(cartItems, "");
+}
 
   Future getBookmarksOfUser(
     String userID,

@@ -1,6 +1,7 @@
 import 'package:cs310_footwear_project/routes/profile_view.dart';
 import 'package:cs310_footwear_project/services/analytics.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
+import 'package:cs310_footwear_project/services/db.dart';
 import 'package:cs310_footwear_project/ui/navigation_bar.dart';
 import 'package:cs310_footwear_project/utils/color.dart';
 import 'package:cs310_footwear_project/utils/dimension.dart';
@@ -32,6 +33,7 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   AuthService auth = AuthService();
+  DBService db = DBService();
 
   final _formKey = GlobalKey<FormState>();
   String name = "";
@@ -238,7 +240,7 @@ class _RegisterViewState extends State<RegisterView> {
                                   BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-                          validator: (value) {
+                          validator: (value)  {
                             if (value == null) {
                               return 'Username field cannot be empty!';
                             } else {
@@ -430,7 +432,7 @@ class _RegisterViewState extends State<RegisterView> {
                       Expanded(
                         flex: 1,
                         child: OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               print('Mail: ' + email + "\nPass: " + pass);
                               _formKey.currentState!.save();
@@ -441,24 +443,32 @@ class _RegisterViewState extends State<RegisterView> {
                                   const SnackBar(
                                       content: Text('Registering......')));
 
-                              auth
-                                  .signUp(
-                                      email,
-                                      pass,
-                                      name,
-                                      surname,
-                                      username,
-                                      widget.mailAddress != null
-                                          ? "google-sign-in"
-                                          : "mailAndPass",
-                                      widget.credentials?[0])
-                                  .then((value) {
-                                if (value is String) {
-                                  return ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                          SnackBar(content: Text("${value}")));
-                                }
-                              });
+                              if (await db.checkUsernameForRegister(username)) {
+                                auth
+                                    .signUp(
+                                    email,
+                                    pass,
+                                    name,
+                                    surname,
+                                    username,
+                                    widget.mailAddress != null
+                                        ? "google-sign-in"
+                                        : "mailAndPass",
+                                    widget.credentials?[0])
+                                    .then((value) {
+                                  if (value is String) {
+                                    return ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                        SnackBar(content: Text("${value}")));
+                                  }
+                                });
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('This username has already taken by another user!\n'
+                                            'Please enter another username.')));
+                              }
                             }
                           },
                           child: Text(
