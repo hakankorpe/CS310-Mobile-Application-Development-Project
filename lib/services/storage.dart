@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,8 +38,7 @@ class StorageService {
     } on FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print(e.code);
-
-      //await storage.ref('avatar.png').writeToFile(downloadToFile);
+      await storage.ref('avatar.png').writeToFile(downloadToFile);
     }
   }
 
@@ -56,21 +52,6 @@ class StorageService {
       imageCache!.clearLiveImages();
     }
 
-    return returnCheckedImage(downloadToFile);
-  }
-
-  static Image returnCheckedImage(File file,
-      {double height = 128, double width = 128}) {
-    try {
-      return Image.file(
-        file,
-        height: height,
-        width: width,
-      );
-    } catch (err) {
-      Uint8List blankBytes = const Base64Codec().decode(
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-      return Image.memory(blankBytes, height: height, width: width);
-    }
+    return Image.file(downloadToFile);
   }
 }

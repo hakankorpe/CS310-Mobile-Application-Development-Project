@@ -162,8 +162,8 @@ class _EditProfileViewState extends State<EditProfileView> {
             });
   }
 
-  Future<void> showAlertDialog(String title, String message, String buttonText,
-      String type, String userToken, String password) async {
+  Future<void> showAlertDialog(
+      String title, String message, String buttonText, String type, String userToken, String password) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -177,18 +177,21 @@ class _EditProfileViewState extends State<EditProfileView> {
               actions: [
                 TextButton(
                     onPressed: () {
+
                       if (type == "delete") {
-                        db.deleteUser(userToken, password);
+                          db.deleteUser(userToken, password);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Deleted your account!')));
+                      }
+
+                      else {
+                        db.disableUser(userToken, password);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Deleted your account!')));
-                      } else {
-                        db.disableUser(userToken, password);
-
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                'Disabled your account!\nYou can reactivate your account by logging in.')));
+                                content: Text('Disabled your account!\nYou can reactivate your account by logging in.')));
                       }
 
                       Navigator.of(context).pop();
@@ -254,11 +257,10 @@ class _EditProfileViewState extends State<EditProfileView> {
 
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-    if (user != null) {
+    if (user != null ) {
       if (_userInfo == null) initializeUserInfo(user!.uid);
 
-      setCurrentScreen(
-          widget.analytics, "Edit Profile View", "editProfileView");
+      setCurrentScreen(widget.analytics, "Edit Profile View", "editProfileView");
 
       db.getUserInfo(user!.uid).then((value) {
         //_userInfo = value;
@@ -304,15 +306,16 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ClipOval(
                           //_userInfo["sign-in-type"] != "google-sign-in"
                           child: widget.image2 != null
-                              ? StorageService.returnCheckedImage(
-                                  widget.image2!,
-                                  width: 120,
-                                  height: 120)
+                              ? Image.file(
+                            widget.image2!,
+                            width: 120,
+                            height: 120,
+                          )
                               : Image.network(
-                                  "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-                                  width: 120,
-                                  height: 120,
-                                ),
+                            "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+                            width: 120,
+                            height: 120,
+                          ),
                         ),
                         OutlinedButton(
                           onPressed: () async {
@@ -356,7 +359,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.redAccent),
+                        MaterialStateProperty.all(Colors.redAccent),
                       ),
                     ),
                     OutlinedButton(
@@ -377,7 +380,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.yellowAccent),
+                        MaterialStateProperty.all(Colors.yellowAccent),
                       ),
                     ),
                   ],
@@ -387,224 +390,223 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
                 _userInfo?["sign-in-type"] == "mailAndPass"
                     ? Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    obscureText: true,
-                                    autocorrect: false,
-                                    enableSuggestions: false,
-                                    keyboardType: TextInputType.text,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    decoration: const InputDecoration(
-                                      hintText: "Old Password",
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.lightBlueAccent,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                      ),
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Password field cannot be empty!';
-                                      } else {
-                                        String trimmedValue = value.trim();
-                                        if (trimmedValue.isEmpty) {
-                                          return 'Password field cannot be empty!';
-                                        }
-                                        if (trimmedValue.length < 8) {
-                                          return 'Your password must contain at least 8 characters!';
-                                        }
-                                        if (trimmedValue !=
-                                            _userInfo["password"]) {
-                                          return 'Please enter your old password correctly!';
-                                        }
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      if (value != null) {
-                                        oldPass = value;
-                                      }
-                                    },
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        oldPass = value;
-                                      }
-                                    },
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              obscureText: true,
+                              autocorrect: false,
+                              enableSuggestions: false,
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "Old Password",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
                                   ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(8.0)),
                                 ),
-                              ],
+                              ),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Password field cannot be empty!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Password field cannot be empty!';
+                                  }
+                                  if (trimmedValue.length < 8) {
+                                    return 'Your password must contain at least 8 characters!';
+                                  }
+                                  if (trimmedValue !=
+                                      _userInfo["password"]) {
+                                    return 'Please enter your old password correctly!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  oldPass = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  oldPass = value;
+                                }
+                              },
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    obscureText: true,
-                                    autocorrect: false,
-                                    enableSuggestions: false,
-                                    keyboardType: TextInputType.text,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    decoration: const InputDecoration(
-                                      hintText: "New Password",
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.lightBlueAccent,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                      ),
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Password field cannot be empty!';
-                                      } else {
-                                        String trimmedValue = value.trim();
-                                        if (trimmedValue.isEmpty) {
-                                          return 'Password field cannot be empty!';
-                                        }
-                                        if (trimmedValue.length < 8) {
-                                          return 'Your password must contain at least 8 characters!';
-                                        }
-                                        if (trimmedValue ==
-                                            _userInfo["password"]) {
-                                          return 'Your new password should be different than your last password!';
-                                        }
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      if (value != null) {
-                                        newPass = value;
-                                      }
-                                    },
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        newPass = value;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    obscureText: true,
-                                    autocorrect: false,
-                                    enableSuggestions: false,
-                                    keyboardType: TextInputType.text,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    decoration: const InputDecoration(
-                                      hintText: "New Password Again",
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.lightBlueAccent,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                      ),
-                                    ),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Password field cannot be empty!';
-                                      } else {
-                                        String trimmedValue = value.trim();
-                                        if (trimmedValue.isEmpty) {
-                                          return 'Password field cannot be empty!';
-                                        }
-                                        if (value != newPass) {
-                                          return 'Please enter the same password!';
-                                        }
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      if (value != null) {
-                                        newPassAgain = value;
-                                      }
-                                    },
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        newPassAgain = value;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    : Form(
-                        key: _formKey,
-                        child: Column(),
+                          ),
+                        ],
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              obscureText: true,
+                              autocorrect: false,
+                              enableSuggestions: false,
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "New Password",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(8.0)),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Password field cannot be empty!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Password field cannot be empty!';
+                                  }
+                                  if (trimmedValue.length < 8) {
+                                    return 'Your password must contain at least 8 characters!';
+                                  }
+                                  if (trimmedValue ==
+                                      _userInfo["password"]) {
+                                    return 'Your new password should be different than your last password!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  newPass = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  newPass = value;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              obscureText: true,
+                              autocorrect: false,
+                              enableSuggestions: false,
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                hintText: "New Password Again",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.lightBlueAccent,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(8.0)),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Password field cannot be empty!';
+                                } else {
+                                  String trimmedValue = value.trim();
+                                  if (trimmedValue.isEmpty) {
+                                    return 'Password field cannot be empty!';
+                                  }
+                                  if (value != newPass) {
+                                    return 'Please enter the same password!';
+                                  }
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                if (value != null) {
+                                  newPassAgain = value;
+                                }
+                              },
+                              onChanged: (value) {
+                                if (value != null) {
+                                  newPassAgain = value;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+                    : Form(
+                  key: _formKey,
+                  child: Column(),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
                 _userInfo?["sign-in-type"] == "mailAndPass"
                     ? OutlinedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Updating password...')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Updating password...')));
 
-                            db
-                                .updateUserPassword(user.uid, newPass, oldPass)
-                                .then((value) {
-                              if (value is String) {
-                                return ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                        SnackBar(content: Text("${value}")));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Password updated!')));
-                              }
-                            });
-                          }
-                        },
-                        child: const Text(
-                          "Change password",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              Colors.lightGreenAccent),
-                        ),
-                      )
+                      db
+                          .updateUserPassword(user.uid, newPass, oldPass)
+                          .then((value) {
+                        if (value is String) {
+                          return ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("${value}")));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Password updated!')));
+                        }
+                      });
+                    }
+                  },
+                  child: const Text(
+                    "Change password",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStateProperty.all(Colors.lightGreenAccent),
+                  ),
+                )
                     : Container(),
               ],
             ),

@@ -46,6 +46,7 @@ class _AddProductViewState extends State<AddProductView> {
   double footSize = 0.0;
   String productDetails = "";
 
+
   String category = "";
   List<String> categoryNames = <String>[
     "Boots",
@@ -220,8 +221,11 @@ class _AddProductViewState extends State<AddProductView> {
                             ),
                             Container(
                               child: _image2 != null
-                                  ? StorageService.returnCheckedImage(_image2!,
-                                      height: 180, width: 180)
+                                  ? Image.file(
+                                      _image2!,
+                                      height: 180,
+                                      width: 180,
+                                    )
                                   : const SizedBox(
                                       child: Center(
                                           child: Text("No image is selected!")),
@@ -467,7 +471,9 @@ class _AddProductViewState extends State<AddProductView> {
                                     selectedItem: 1,
                                     onChanged: (value) {
                                       gender = value.toString();
-                                      setState(() {});
+                                      setState(() {
+
+                                      });
                                       //sorter = sorterHelper(value.toString(),);
                                     });
                               },
@@ -496,7 +502,9 @@ class _AddProductViewState extends State<AddProductView> {
                                     selectedItem: 1,
                                     onChanged: (value) {
                                       category = value.toString();
-                                      setState(() {});
+                                      setState(() {
+
+                                      });
                                       //sorter = sorterHelper(value.toString(),);
                                     });
                               },
@@ -581,13 +589,16 @@ class _AddProductViewState extends State<AddProductView> {
                         if (gender == "") {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text(
-                                      'Please select a gender for the product!')));
-                        } else if (category == "") {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  'Please select a category for the product!')));
-                        } else if (_image2 != null) {
+                                  content: Text('Please select a gender for the product!')));
+                        }
+
+                        else if (category == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please select a category for the product!')));
+                        }
+
+                        else if (_image2 != null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Adding product...')));
