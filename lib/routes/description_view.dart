@@ -138,7 +138,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                           ),
                         ],
                       ),
-
                       const SizedBox(
                         height: Dimen.sizedBox_5,
                       ),
@@ -186,11 +185,43 @@ class _DescriptionViewState extends State<DescriptionView> {
                         Text(
                           product != null ? product!.category! : "",
                           style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                            fontSize: 18,
+                            color: Colors.black54,
                             fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
+                        Text(
+                          product != null ? product!.gender! : "",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Shoe Size",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                            const SizedBox(width: Dimen.sizedBox_5,),
+                            Text(
+                              product != null ? product!.footSize.toString() : "",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -411,37 +442,39 @@ class _DescriptionViewState extends State<DescriptionView> {
                       margin: const EdgeInsets.all(13.0),
                       color: Colors.white,
                       height: 230.0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          const Text(
-                            "Product Details",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 12,
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    product != null
-                                        ? product!.description!
-                                        : "",
-                                    style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                ],
+                            const Text(
+                              "Product Details",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                               ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      product != null
+                                          ? product!.description!
+                                          : "",
+                                      style: const TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

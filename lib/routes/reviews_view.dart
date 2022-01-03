@@ -132,29 +132,19 @@ class _ReviewsViewState extends State<ReviewsView> {
                     children: [
                       Row(
                         children: [
-                          Text(product != null ? product!.sellerName : "",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed("/home",
+                                  arguments: {"userID": product!.sellerToken, "username": product!.sellerName});
+                            },
+                            child: Text(product != null ? product!.sellerName : "",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold)),
+                          ),
                         ],
-                      ),
-                      /*const SizedBox(
-                        height: 7,
-                      ),
-                      Row(
-                        children: const [
-                          Text("6.4/10",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600)),
-                        ],
-                      ),*/
-                      const SizedBox(
-                        height: 13,
                       ),
                       RatingBar.builder(
                         ignoreGestures: true,
@@ -200,11 +190,43 @@ class _ReviewsViewState extends State<ReviewsView> {
                         Text(
                           product != null ? product!.category! : "",
                           style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                            fontSize: 18,
+                            color: Colors.black54,
                             fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
+                        Text(
+                          product != null ? product!.gender! : "",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Shoe Size",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                            const SizedBox(width: Dimen.sizedBox_5,),
+                            Text(
+                              product != null ? product!.footSize.toString() : "",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -414,21 +436,23 @@ class _ReviewsViewState extends State<ReviewsView> {
                       margin: const EdgeInsets.all(13.0),
                       color:  Colors.white,
                       height: 230,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 12,),
-                          const Text(
-                            "Reviews",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 12,),
+                            const Text(
+                              "Reviews",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18
+                              ),
                             ),
-                          ),
-                          Wrap(
-                            children: reviews ?? [],
-                          ),
-                        ],
+                            Wrap(
+                              children: reviews ?? [],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

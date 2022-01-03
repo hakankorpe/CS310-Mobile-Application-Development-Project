@@ -305,6 +305,7 @@ class DBService {
       sellerToken: product["seller-id"],
       gender: product["gender"] ?? "Unisex",
       sellerRating: userInfo["rating"].toDouble(),
+      footSize: product["foot-size"],
     );
   }
 

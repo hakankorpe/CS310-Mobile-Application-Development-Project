@@ -24,6 +24,7 @@ class FootWearItem extends StatelessWidget {
   String? sellerToken;
   double? sellerRating;
   String? gender;
+  double? footSize;
 
   FootWearItem(
       {Key? key,
@@ -43,6 +44,7 @@ class FootWearItem extends StatelessWidget {
         this.sellerToken,
         this.gender,
         this.sellerRating,
+        this.footSize,
       Image? img})
       : super(key: key) {
     image = img ??
