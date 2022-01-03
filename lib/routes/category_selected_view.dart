@@ -89,7 +89,9 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     });
 
     var newList = (newIterable ?? original)!.toList();
-    newList.sort(sorter);
+
+    if (sorter != null) newList.sort(sorter);
+
     return newList.map((e) => e["product-id"] as String).toList();
   }
 
@@ -140,7 +142,7 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     if (arguments != null) categoryName = arguments["categoryName"];
-    if (categoryName != null) {
+    if (categoryName != null && allItemsMap.isEmpty) {
       db
           .getAllCollectionItems(
               db.productCollection.where("category", isEqualTo: categoryName))
@@ -474,7 +476,9 @@ class _CategorySelectedViewState extends State<CategorySelectedView> {
                         ],
                       ),
                     Wrap(
-                      children: allItems,
+                      children: filters.isEmpty && sorter == null
+                          ? allItems
+                          : foundItems,
                       spacing: 15.0,
                       runSpacing: 25.0,
                       alignment: WrapAlignment.center,

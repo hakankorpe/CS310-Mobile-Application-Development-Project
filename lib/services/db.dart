@@ -300,7 +300,7 @@ class DBService {
       description: product["details"],
       sellerToken: product["seller-id"],
       gender: product["gender"] ?? "Unisex",
-      sellerRating: userInfo["rating"],
+      sellerRating: userInfo["rating"].toDouble(),
     );
   }
 
@@ -812,8 +812,7 @@ class DBService {
           username: username,
           rating: reviewInfo["rating"],
           comment: reviewInfo["comment"],
-          reviewDate: reviewInfo["review-date"]
-      );
+          reviewDate: reviewInfo["review-date"]);
     }).toList());
   }
 }

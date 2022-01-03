@@ -89,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
 
     print(_userInfo);
 
-    storage.downloadImage(_userInfo['userToken']);
+    storage.returnImage(_userInfo['userToken']);
     Directory appDocDir = await getApplicationDocumentsDirectory();
     setState(() {
       _image2 = File('${appDocDir.path}/${_userInfo!['userToken']}.png');
@@ -165,35 +165,35 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(Dimen.regularMargin),
-        child: dummyItemList.isNotEmpty ? Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FootWearDisplay(itemList: dummyItemList, displayName: "Featured"),
-              FootWearDisplay(
-                  itemList: dummyItemList
-                      .where((element) => (element.discount ?? 0) > 0)
-                      .toList(),
-                  displayName: "Discounts"),
-              FootWearDisplay(
-                  itemList: dummyItemList, displayName: "Just For You"),
-            ]
-        ): Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Center(
-              child: Text(
-                  "No products for this seller!\nVisit later.",
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 22
-                ),
-                textAlign: TextAlign.center,
+        child: dummyItemList.isNotEmpty
+            ? Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    FootWearDisplay(
+                        itemList: dummyItemList, displayName: "Featured"),
+                    FootWearDisplay(
+                        itemList: dummyItemList
+                            .where((element) => (element.discount ?? 0) > 0)
+                            .toList(),
+                        displayName: "Discounts"),
+                    FootWearDisplay(
+                        itemList: dummyItemList, displayName: "Just For You"),
+                  ])
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Center(
+                    child: Text(
+                      "No products for this seller!\nVisit later.",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
       bottomNavigationBar: NavigationBar(
         index: 0,
