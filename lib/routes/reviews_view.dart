@@ -123,10 +123,12 @@ class _ReviewsViewState extends State<ReviewsView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.66,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: product?.image,
+                  InteractiveViewer(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.66,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: product?.image,
+                    ),
                   ),
                   Column(
                     children: [

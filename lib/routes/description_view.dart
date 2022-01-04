@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DescriptionView extends StatefulWidget {
@@ -34,6 +35,8 @@ class _DescriptionViewState extends State<DescriptionView> {
 
   bool isBookmarked = false;
   FootWearItem? product;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +118,12 @@ class _DescriptionViewState extends State<DescriptionView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.66,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: product?.image,
+                  InteractiveViewer(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.66,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: product?.image,
+                    ),
                   ),
                   Column(
                     children: [
