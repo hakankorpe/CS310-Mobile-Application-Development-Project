@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 
 
@@ -165,6 +166,21 @@ class _ReviewsViewState extends State<ReviewsView> {
                         onRatingUpdate: (rating) {
                           print(rating);
                         },
+                      ),
+                      const SizedBox(
+                        height: Dimen.sizedBox_20,
+                      ),
+                      if (product != null && product!.location != null) IconButton(
+                        onPressed: () {
+                          if (product!.location != null) {
+                            MapsLauncher.launchCoordinates(
+                                product!.location!.latitude, product!.location!.longitude);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.location_pin,
+                          size: 35,
+                        ),
                       ),
                     ],
                   ),

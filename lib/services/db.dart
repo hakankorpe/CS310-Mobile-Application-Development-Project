@@ -23,6 +23,7 @@ import 'dart:io' show Directory, File, Platform;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 
 class DBService {
   StorageService storage = StorageService();
@@ -163,6 +164,9 @@ class DBService {
       String sellerID,
       File image,
       String gender) async {
+
+    String productID = "";
+
     productCollection.add({
       'product-id': "",
       'product-name': productName,
@@ -181,6 +185,7 @@ class DBService {
       'comment-count': 0,
       "gender": gender
     }).then((value) {
+      productID = value.id;
       productCollection.doc(value.id).update({"product-id": value.id});
 
       // Uplaod the new image to Firebase
@@ -189,6 +194,34 @@ class DBService {
       print('Error: ${error.toString()}');
 
       return error.toString();
+    });
+
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    await productCollection.doc(productID).update({
+      "location": GeoPoint(_locationData.latitude!, _locationData.longitude!),
     });
   }
 
@@ -306,6 +339,7 @@ class DBService {
       gender: product["gender"] ?? "Unisex",
       sellerRating: userInfo["rating"].toDouble(),
       footSize: product["foot-size"],
+      location: product["location"],
     );
   }
 

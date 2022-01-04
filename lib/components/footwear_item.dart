@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,8 @@ class FootWearItem extends StatelessWidget {
   String? gender;
   double? footSize;
 
+  GeoPoint? location;
+
   FootWearItem(
       {Key? key,
       required this.brandName,
@@ -45,6 +48,7 @@ class FootWearItem extends StatelessWidget {
         this.gender,
         this.sellerRating,
         this.footSize,
+        this.location,
       Image? img})
       : super(key: key) {
     image = img ??

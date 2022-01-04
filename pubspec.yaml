@@ -65,6 +65,8 @@ dependencies:
   intl: ^0.17.0
   flutter_credit_card: ^3.0.1
   photo_view: ^0.13.0
+  location: ^4.3.0
+  maps_launcher: ^2.0.1
 
 
 

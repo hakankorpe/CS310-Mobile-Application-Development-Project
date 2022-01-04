@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -138,7 +139,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       color: Colors.black87,
-                                      fontSize: 14,
+                                      fontSize: 12.25,
                                       fontWeight: FontWeight.bold)),
                           ),
                         ],
@@ -163,6 +164,21 @@ class _DescriptionViewState extends State<DescriptionView> {
                         onRatingUpdate: (rating) {
                           print(rating);
                         },
+                      ),
+                      const SizedBox(
+                        height: Dimen.sizedBox_20,
+                      ),
+                      if (product != null && product!.location != null) IconButton(
+                          onPressed: () {
+                            if (product!.location != null) {
+                              MapsLauncher.launchCoordinates(
+                                  product!.location!.latitude, product!.location!.longitude);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.location_pin,
+                            size: 35,
+                          ),
                       ),
                     ],
                   ),
