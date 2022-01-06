@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/routes/register_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -108,8 +109,12 @@ class AuthService {
       // Add user to database before returning to profile
       DBService dbService = DBService();
       String userToken = await user.uid;
-      dbService.addUser(
-          name, surname, mail, userToken, username, pass, signInType);
+      String key =
+          "BGAj3X11f26AYcykeR452COmkuuBnyOjHuRUMCaeUZtl-agK8lCkrQimMBstHzCIulViDQXvQJdfVXjhP2EDtqk";
+      String? registerToken =
+          await FirebaseMessaging.instance.getToken(vapidKey: key);
+      dbService.addUser(name, surname, mail, userToken, username, pass,
+          signInType, registerToken!);
 
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {
@@ -140,11 +145,12 @@ class AuthService {
         db.userCollection.where("email", isEqualTo: mail));
 
     if (users.isNotEmpty && users[0]["disabled"]) {
-      if (users[0]["password"] != pass) return "wrong-password";
-      else return "User is disabled";
+      if (users[0]["password"] != pass)
+        return "wrong-password";
+      else
+        return "User is disabled";
     }
 
-    
     try {
       UserCredential result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);

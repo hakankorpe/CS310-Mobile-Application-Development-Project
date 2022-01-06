@@ -67,6 +67,7 @@ dependencies:
   photo_view: ^0.13.0
   location: ^4.3.0
   maps_launcher: ^2.0.1
+  firebase_messaging: ^11.2.4
 
 
 

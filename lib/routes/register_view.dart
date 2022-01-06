@@ -10,6 +10,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class _RegisterViewState extends State<RegisterView> {
     final user = Provider.of<User?>(context);
     FirebaseAnalytics analytics = widget.analytics;
     FirebaseAnalyticsObserver observer = widget.observer;
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
     if (user == null) {
       setCurrentScreen(widget.analytics, "Register View", "registerView");
@@ -240,7 +242,7 @@ class _RegisterViewState extends State<RegisterView> {
                                   BorderRadius.all(Radius.circular(8.0)),
                             ),
                           ),
-                          validator: (value)  {
+                          validator: (value) {
                             if (value == null) {
                               return 'Username field cannot be empty!';
                             } else {
@@ -446,27 +448,27 @@ class _RegisterViewState extends State<RegisterView> {
                               if (await db.checkUsernameForRegister(username)) {
                                 auth
                                     .signUp(
-                                    email,
-                                    pass,
-                                    name,
-                                    surname,
-                                    username,
-                                    widget.mailAddress != null
-                                        ? "google-sign-in"
-                                        : "mailAndPass",
-                                    widget.credentials?[0])
+                                        email,
+                                        pass,
+                                        name,
+                                        surname,
+                                        username,
+                                        widget.mailAddress != null
+                                            ? "google-sign-in"
+                                            : "mailAndPass",
+                                        widget.credentials?[0])
                                     .then((value) {
                                   if (value is String) {
                                     return ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                        SnackBar(content: Text("${value}")));
+                                        .showSnackBar(SnackBar(
+                                            content: Text("${value}")));
                                   }
                                 });
-                              }
-                              else {
+                              } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text('This username has already taken by another user!\n'
+                                        content: Text(
+                                            'This username has already taken by another user!\n'
                                             'Please enter another username.')));
                               }
                             }

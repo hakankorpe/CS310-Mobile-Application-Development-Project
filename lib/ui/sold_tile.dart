@@ -201,14 +201,13 @@ class _SoldTileState extends State<SoldTile> {
                       color: Colors.white,
                     ),
                     label: Text(
-                        widget.status!,
+                      widget.status!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     onPressed: () {
-
                       if (widget.status != "Delivered") {
                         showMaterialScrollPicker(
                             context: context,
@@ -236,9 +235,9 @@ class _SoldTileState extends State<SoldTile> {
                           });
                         });
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('You can not update!\nThe order status has already on its final version!')));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                'You can not update!\nThe order status has already on its final version!')));
                       }
                     },
                   ),

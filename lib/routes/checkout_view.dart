@@ -619,15 +619,17 @@ class _CheckoutViewState extends State<CheckoutView> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processing Order...')));
-                              List<String> voilatingProducts = await db.checkCartStock(user!.uid);
+                              List<String> voilatingProducts =
+                                  await db.checkCartStock(user!.uid);
                               if (voilatingProducts.isEmpty) {
                                 await db.createOrder(user!.uid);
+
                                 await showOrderCompleteDialog(context);
-                              }
-                              else {
+                              } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text('Some stocks of product are updated!\n'
+                                        content: Text(
+                                            'Some stocks of product are updated!\n'
                                             'Please update the quantity of the products given below:\n'
                                             '${voilatingProducts.join(",")}')));
                               }

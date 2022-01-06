@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cs310_footwear_project/components/footwear_item.dart';
 import 'package:cs310_footwear_project/services/auth.dart';
+import 'package:cs310_footwear_project/services/requests.dart';
 import 'package:cs310_footwear_project/services/storage.dart';
 import 'package:cs310_footwear_project/ui/bookmarks_tile.dart';
 import 'package:cs310_footwear_project/ui/cart_tile.dart';
@@ -62,8 +63,15 @@ class DBService {
         .catchError((error) => print('Error: ${error.toString()}'));
   }
 
-  Future addUser(String name, String surname, String mail, String token,
-      String username, String password, String signInType) async {
+  Future addUser(
+      String name,
+      String surname,
+      String mail,
+      String token,
+      String username,
+      String password,
+      String signInType,
+      String registerToken) async {
     userCollection.doc(token).set({
       'name': name,
       'surname': surname,
@@ -74,11 +82,14 @@ class DBService {
       'sign-in-type': signInType,
       'rating': 0,
       'disabled': false,
+      'registerToken': registerToken,
     });
   }
 
   Future<bool> checkUsernameForRegister(String username) async {
-    return (await getAllCollectionItems(userCollection.where("username", isEqualTo: username))).isEmpty;
+    return (await getAllCollectionItems(
+            userCollection.where("username", isEqualTo: username)))
+        .isEmpty;
   }
 
   Future updateUserPassword(
@@ -164,7 +175,6 @@ class DBService {
       String sellerID,
       File image,
       String gender) async {
-
     String productID = "";
 
     productCollection.add({
@@ -406,12 +416,12 @@ class DBService {
   Future<List<CartTile>> getCartItemsOfUnregistered(List<String> cart) async {
     Map<String, dynamic> cartItems = {};
     cart.forEach((element) {
-      List<String> productInfo =  element.split("-");
+      List<String> productInfo = element.split("-");
       cartItems[productInfo[0]] = int.parse(productInfo[1]);
     });
 
     return await getCartItemsFromProductIDs(cartItems, "");
-}
+  }
 
   Future getBookmarksOfUser(
     String userID,
@@ -600,6 +610,17 @@ class DBService {
       "status": newUpdate,
     });
 
+    dynamic buyerInfo = await getUserInfo(soldItem["buyer"]);
+
+    String? token = buyerInfo?["registerToken"];
+
+    if (token != null) {
+      RequestService.sendNotification(
+          token,
+          "Your order status is updated to $newUpdate",
+          "Order status update - ${buyerInfo?['username'] ?? ''}");
+    }
+
     await notificationCollection.add({
       "receiver": soldItem["buyer"],
       "order-id": soldItem["order-id"],
@@ -665,9 +686,8 @@ class DBService {
     // UPDATE THE PRODUCT RATING
     // UPDATE REVIEW COUNT
     await productCollection.doc(productToken).update({
-      "rating":
-          (commentCount * productInfo[0]["rating"] + rating) /
-              (commentCount + 1),
+      "rating": (commentCount * productInfo[0]["rating"] + rating) /
+          (commentCount + 1),
       "comment-count": FieldValue.increment(1),
     });
 
@@ -861,8 +881,7 @@ class DBService {
           username: username,
           rating: reviewInfo["rating"],
           comment: reviewInfo["comment"],
-          reviewDate: reviewInfo["review-date"]
-      );
+          reviewDate: reviewInfo["review-date"]);
     }).toList());
   }
 }
