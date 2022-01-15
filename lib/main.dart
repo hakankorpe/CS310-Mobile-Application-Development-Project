@@ -79,29 +79,30 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null) {
-        print("${notification.title}\n${notification.body}");
-        flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
-              //icon: 'app_icon',
-            ),
-          ),
-        );
-      }
-    });
+        ?.createNotificationChannel(channel)
+        .then((value) => {
+              FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+                RemoteNotification? notification = message.notification;
+                AndroidNotification? android = message.notification?.android;
+                if (notification != null && android != null) {
+                  print("${notification.title}\n${notification.body}");
+                  flutterLocalNotificationsPlugin.show(
+                    notification.hashCode,
+                    notification.title,
+                    notification.body,
+                    NotificationDetails(
+                      android: AndroidNotificationDetails(
+                        channel.id,
+                        channel.name,
+                        // TODO add a proper drawable resource to android, for now using
+                        //      one that already exists in example app.
+                        //icon: 'app_icon',
+                      ),
+                    ),
+                  );
+                }
+              })
+            });
   }
 
   @override
