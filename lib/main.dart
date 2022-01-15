@@ -57,8 +57,50 @@ class MyFirebaseApp extends StatefulWidget {
 }
 
 class _MyFirebaseAppState extends State<MyFirebaseApp> {
-  final Future<FirebaseApp> _initialization =  Firebase.initializeApp();
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
+  @override
+  void initState() {
+    super.initState();
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('mipmap/ic_launcher');
+    final AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      importance: Importance.max,
+    );
+
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        print("${notification.title}\n${notification.body}");
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              //icon: 'app_icon',
+            ),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +119,8 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+          FlutterError.onError =
+              FirebaseCrashlytics.instance.recordFlutterError;
           return const AppBase();
         }
 
@@ -200,9 +243,9 @@ class _AppBaseState extends State<AppBase> {
                       observer: observer,
                     ),
                 '/notification': (context) => NotificationView(
-                  analytics: analytics,
-                  observer: observer,
-                ),
+                      analytics: analytics,
+                      observer: observer,
+                    ),
               },
             );
           } else {

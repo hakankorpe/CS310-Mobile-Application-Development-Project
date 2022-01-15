@@ -68,6 +68,7 @@ dependencies:
   location: ^4.3.0
   maps_launcher: ^2.0.1
   firebase_messaging: ^11.2.4
+  flutter_local_notifications: ^9.2.0
 
 
 

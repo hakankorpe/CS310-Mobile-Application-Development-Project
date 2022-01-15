@@ -582,7 +582,18 @@ class DBService {
 
     // Update the remaining product count of sold products
     // Update the sold count of a product
-    cart.forEach((key, value) {
+    cart.forEach((key, value) async {
+      try {
+        final productInfo = await getProductInfo(key);
+        final sellerId = await productInfo["seller"];
+        final productName = await productInfo["product-name"];
+
+        await RequestService.sendNotification(sellerId,
+            "Someone bought your product $productName", "You sold a product");
+      } catch (error) {
+        print(error);
+      }
+
       productCollection.doc(key).update({
         "remaining-stock-count": FieldValue.increment(-1 * value),
         "sold-count": FieldValue.increment(value),
