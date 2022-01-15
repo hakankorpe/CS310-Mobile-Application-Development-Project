@@ -10,7 +10,9 @@ import 'package:cs310_footwear_project/utils/styles.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 class SoldView extends StatefulWidget {
@@ -163,7 +165,9 @@ class _SoldViewState extends State<SoldView> {
                                 thickness: Dimen.divider_2,
                                 height: 0,
                               ),
-                              Wrap(children: _soldProducts,),
+                              Wrap(
+                                children: _soldProducts,
+                              ),
                             ],
                           ),
                         ),

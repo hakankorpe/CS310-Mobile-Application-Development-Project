@@ -20,7 +20,12 @@ class RequestService {
       "notification": {
         "body": message,
         "title": topic,
-      }
+      },
+      'data': {
+        "click_action": "FLUTTER_NOTIFICATION_CLICK",
+        "id": "1",
+        "status": "done",
+      },
     };
 
     final response = await http.post(targetUri,

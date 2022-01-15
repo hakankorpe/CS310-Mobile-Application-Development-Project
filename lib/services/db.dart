@@ -299,6 +299,17 @@ class DBService {
     List<Map<String, dynamic>> allSold = await getAllCollectionItems(
         await soldCollection.where('seller', isEqualTo: sellerID));
 
+    allSold.sort((a, b) {
+      final dateA = a["sold-date"];
+      final dateB = b["sold-date"];
+
+      if (dateA == null || dateB == null) {
+        return 0;
+      }
+
+      return dateB.compareTo(dateA);
+    });
+
     return Future.wait(allSold.map((e) async {
       var productInfo = await getProductInfo(e["product-id"]);
       var userInfo = await getUserInfo(e["buyer"]);
