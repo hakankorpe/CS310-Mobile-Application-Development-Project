@@ -71,14 +71,21 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
 
       await FirebaseMessaging.instance.getToken();
 
+      var initializeAndroidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+
       final AndroidNotificationChannel channel = AndroidNotificationChannel(
         'high_importance_channel', // id
         'High Importance Notifications', // title
         importance: Importance.max,
       );
 
+      final settings =
+          InitializationSettings(android: initializeAndroidSettings);
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin.initialize(settings);
 
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
@@ -98,9 +105,6 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
               android: AndroidNotificationDetails(
                 channel.id,
                 channel.name,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                //icon: 'app_icon',
               ),
             ),
           );
