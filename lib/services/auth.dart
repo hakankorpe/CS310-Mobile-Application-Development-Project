@@ -14,6 +14,8 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final googleSignIn = GoogleSignIn();
   final DBService db = DBService();
+  final String serverKey =
+      "BGAj3X11f26AYcykeR452COmkuuBnyOjHuRUMCaeUZtl-agK8lCkrQimMBstHzCIulViDQXvQJdfVXjhP2EDtqk";
 
   User? _userFromFirebase(User? user) {
     return user ?? null;
@@ -76,7 +78,19 @@ class AuthService {
       }
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential[0]);
+      String? registerToken =
+          await FirebaseMessaging.instance.getToken(vapidKey: serverKey);
+
+      final credentials =
+          await FirebaseAuth.instance.signInWithCredential(credential[0]);
+      if (registerToken != null) {
+        await db.userCollection
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          "registerToken": registerToken,
+        });
+      }
+      return credentials;
     } on FirebaseAuthException catch (e) {
       await FirebaseCrashlytics.instance.recordError(
         e,
@@ -109,10 +123,9 @@ class AuthService {
       // Add user to database before returning to profile
       DBService dbService = DBService();
       String userToken = await user.uid;
-      String key =
-          "BGAj3X11f26AYcykeR452COmkuuBnyOjHuRUMCaeUZtl-agK8lCkrQimMBstHzCIulViDQXvQJdfVXjhP2EDtqk";
+
       String? registerToken =
-          await FirebaseMessaging.instance.getToken(vapidKey: key);
+          await FirebaseMessaging.instance.getToken(vapidKey: serverKey);
       dbService.addUser(name, surname, mail, userToken, username, pass,
           signInType, registerToken!);
 
@@ -155,6 +168,13 @@ class AuthService {
       UserCredential result =
           await _auth.signInWithEmailAndPassword(email: mail, password: pass);
       User user = result.user!;
+      String? registerToken =
+          await FirebaseMessaging.instance.getToken(vapidKey: serverKey);
+      if (registerToken != null) {
+        await db.userCollection.doc(user.uid).update({
+          "registerToken": registerToken,
+        });
+      }
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {
       await FirebaseCrashlytics.instance.recordError(
@@ -176,6 +196,9 @@ class AuthService {
         await googleSignIn.disconnect();
         await googleSignIn.signOut();
       }
+      await db.userCollection
+          .doc(_auth.currentUser!.uid)
+          .update({"registerToken": FieldValue.delete()});
       return await _auth.signOut();
     } catch (e) {
       await FirebaseCrashlytics.instance.recordError(
