@@ -22,6 +22,7 @@ class RequestService {
         "body": message,
         "title": topic,
       },
+      "android": {"priority": "high"}
     };
 
     final response = await http.post(targetUri,

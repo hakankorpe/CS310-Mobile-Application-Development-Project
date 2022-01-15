@@ -59,50 +59,56 @@ class MyFirebaseApp extends StatefulWidget {
 }
 
 class _MyFirebaseAppState extends State<MyFirebaseApp> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  Future<FirebaseApp>? _initialization;
 
   @override
   void initState() {
     super.initState();
 
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings('mipmap/ic_launcher');
-    final AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      importance: Importance.max,
-    );
+    () async {
+      _initialization = Firebase.initializeApp();
+      await _initialization;
 
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+      await FirebaseMessaging.instance.getToken();
 
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel)
-        .then((value) => {
-              FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-                RemoteNotification? notification = message.notification;
-                AndroidNotification? android = message.notification?.android;
-                if (notification != null && android != null) {
-                  print("${notification.title}\n${notification.body}");
-                  flutterLocalNotificationsPlugin.show(
-                    notification.hashCode,
-                    notification.title,
-                    notification.body,
-                    NotificationDetails(
-                      android: AndroidNotificationDetails(
-                        channel.id,
-                        channel.name,
-                        // TODO add a proper drawable resource to android, for now using
-                        //      one that already exists in example app.
-                        //icon: 'app_icon',
-                      ),
-                    ),
-                  );
-                }
-              })
-            });
+      final AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.max,
+      );
+
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+        if (notification != null && android != null) {
+          print("${notification.title}\n${notification.body}");
+          flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                //icon: 'app_icon',
+              ),
+            ),
+          );
+        }
+      });
+    }();
+
+    //FirebaseMessaging.instance.getToken();
   }
 
   @override
