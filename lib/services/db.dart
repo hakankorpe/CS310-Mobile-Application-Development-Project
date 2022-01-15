@@ -600,7 +600,7 @@ class DBService {
         final seller = await getUserInfo(sellerId);
         final productName = await productInfo["product-name"];
 
-        if (seller["registerToken"]) {
+        if (seller["registerToken"] != null) {
           await RequestService.sendNotification(sellerId,
               "Someone bought your product $productName", "You sold a product");
         }
