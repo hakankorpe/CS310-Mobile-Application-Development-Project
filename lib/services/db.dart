@@ -596,11 +596,14 @@ class DBService {
     cart.forEach((key, value) async {
       try {
         final productInfo = await getProductInfo(key);
-        final sellerId = await productInfo["seller"];
+        final sellerId = await productInfo["seller-id"];
+        final seller = await getUserInfo(sellerId);
         final productName = await productInfo["product-name"];
 
-        await RequestService.sendNotification(sellerId,
-            "Someone bought your product $productName", "You sold a product");
+        if (seller["registerToken"]) {
+          await RequestService.sendNotification(sellerId,
+              "Someone bought your product $productName", "You sold a product");
+        }
       } catch (error) {
         print(error);
       }
